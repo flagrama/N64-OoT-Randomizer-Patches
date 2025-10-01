@@ -1,0 +1,22 @@
+diff --git a/include/versions.h b/include/versions.h
+index 620b27999..b5e786798 100644
+--- a/include/versions.h
++++ b/include/versions.h
+@@ -1,6 +1,8 @@
+ #ifndef VERSIONS_H
+ #define VERSIONS_H
+
++#include "region.h"
++
+ // OOT versions in build order
+ #define NTSC_1_0       1
+ #define NTSC_1_1       2
+@@ -41,7 +43,7 @@
+ #endif
+
+ // Macro for constants that change in 50 Hz N64 PAL versions.
+-#if !OOT_PAL_N64
++#if OOT_REGION != REGION_EU
+ #define FRAMERATE_CONST(value60Hz, value50Hz) (value60Hz)
+ #else
+ #define FRAMERATE_CONST(value60Hz, value50Hz) (value50Hz)

@@ -1,0 +1,52 @@
+diff --git a/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c b/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c
+index c17027975..3563f9b21 100644
+--- a/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c
++++ b/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c
+@@ -918,8 +918,48 @@ void ObjectKankyo_Beams(ObjectKankyo* this, PlayState* play) {
+                     Audio_PlayCutsceneEffectsSequence(SEQ_CS_EFFECTS_TRIAL_DESTROY);
+                 }
+                 Math_ApproachZeroF(&this->effects[i].size, 0.1f, 0.1f);
++            } else if (Flags_GetEventChkInf(EVENTCHKINF_C3)) {
++                this->effects[i].size = 0.0f;
+             }
+         }
++    } else if (gSaveContext.cutsceneTrigger == 0) {
++        /* Skipped cutscene, scale beam anyway */
++        if (gSaveContext.save.entranceIndex == ENTR_INSIDE_GANONS_CASTLE_2) {
++            if (this->effects[0].size == 0.1f) {
++                Audio_PlayCutsceneEffectsSequence(SEQ_CS_EFFECTS_TRIAL_DESTROY);
++            }
++            Math_ApproachZeroF(&this->effects[0].size, 0.1f, 0.1f);
++        }
++        if (gSaveContext.save.entranceIndex == ENTR_INSIDE_GANONS_CASTLE_3) {
++            if (this->effects[1].size == 0.1f) {
++                Audio_PlayCutsceneEffectsSequence(SEQ_CS_EFFECTS_TRIAL_DESTROY);
++            }
++            Math_ApproachZeroF(&this->effects[1].size, 0.1f, 0.1f);
++        }
++        if (gSaveContext.save.entranceIndex == ENTR_INSIDE_GANONS_CASTLE_4) {
++            if (this->effects[2].size == 0.1f) {
++                Audio_PlayCutsceneEffectsSequence(SEQ_CS_EFFECTS_TRIAL_DESTROY);
++            }
++            Math_ApproachZeroF(&this->effects[2].size, 0.1f, 0.1f);
++        }
++        if (gSaveContext.save.entranceIndex == ENTR_INSIDE_GANONS_CASTLE_5) {
++            if (this->effects[3].size == 0.1f) {
++                Audio_PlayCutsceneEffectsSequence(SEQ_CS_EFFECTS_TRIAL_DESTROY);
++            }
++            Math_ApproachZeroF(&this->effects[3].size, 0.1f, 0.1f);
++        }
++        if (gSaveContext.save.entranceIndex == ENTR_INSIDE_GANONS_CASTLE_6) {
++            if (this->effects[4].size == 0.1f) {
++                Audio_PlayCutsceneEffectsSequence(SEQ_CS_EFFECTS_TRIAL_DESTROY);
++            }
++            Math_ApproachZeroF(&this->effects[4].size, 0.1f, 0.1f);
++        }
++        if (gSaveContext.save.entranceIndex == ENTR_INSIDE_GANONS_CASTLE_7) {
++            if (this->effects[5].size == 0.1f) {
++                Audio_PlayCutsceneEffectsSequence(SEQ_CS_EFFECTS_TRIAL_DESTROY);
++            }
++            Math_ApproachZeroF(&this->effects[5].size, 0.1f, 0.1f);
++        }
+     }
+ }

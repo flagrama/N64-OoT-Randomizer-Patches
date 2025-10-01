@@ -1,0 +1,25 @@
+diff --git a/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.c b/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.c
+index 983dbf0d7..21ac6f726 100644
+--- a/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.c
++++ b/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.c
+@@ -157,7 +157,11 @@ void EnPoRelay_SetupRace(EnPoRelay* this) {
+     EnPoRelay_Vec3sToVec3f(&vec, &D_80AD8C30[this->pathIndex]);
+     this->actionTimer = ((s16)(this->actor.shape.rot.y - this->actor.world.rot.y - 0x8000) >> 0xB) % 32U;
+     Interface_SetTimer(0);
+-    this->hookshotSlotFull = INV_CONTENT(ITEM_HOOKSHOT) != ITEM_NONE;
++    if (gSaveContext.save.randomizer.shuffleChests) {
++        this->hookshotSlotFull = 0;
++    } else {
++        this->hookshotSlotFull = INV_CONTENT(ITEM_HOOKSHOT) != ITEM_NONE;
++    }
+     this->unk_19A = Actor_WorldYawTowardPoint(&this->actor, &vec);
+     this->actor.flags |= ACTOR_FLAG_LOCK_ON_DISABLED;
+     Actor_PlaySfx(&this->actor, NA_SE_EN_PO_LAUGH);
+@@ -339,7 +343,7 @@ void EnPoRelay_DisappearAndReward(EnPoRelay* this, PlayState* play) {
+         }
+     }
+     if (Math_StepToF(&this->actor.scale.x, 0.0f, 0.001f) != 0) {
+-        if (this->hookshotSlotFull != 0) {
++        if (this->hookshotSlotFull != 0 || (gSaveContext.save.randomizer.shuffleChests && Flags_GetClear(play, 4))) {
+             Vec3f sp60;
+             s32 pad1;

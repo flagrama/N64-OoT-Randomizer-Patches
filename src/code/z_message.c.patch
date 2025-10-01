@@ -1,0 +1,38 @@
+diff --git a/src/code/z_message.c b/src/code/z_message.c
+index 1d6fee156..96d93e845 100644
+--- a/src/code/z_message.c
++++ b/src/code/z_message.c
+@@ -1512,9 +1512,9 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
+                                                       msgCtx->msgMode < MSGMODE_SCARECROW_LONG_RECORDING_START))) {
+                     for (j = i;; j++) {
+                         character = MSG_BUF_DECODED[j];
+-                        if (character == MESSAGE_SHIFT) {
++                        if (character == MESSAGE_SHIFT || character == MESSAGE_ITEM_ICON) {
+                             j++;
+-                        } else if ((character == MESSAGE_QUICKTEXT_DISABLE) || (character == MESSAGE_PERSISTENT) ||
++                        } else if (((character == MESSAGE_QUICKTEXT_DISABLE) && msgCtx->textBoxType >= TEXTBOX_TYPE_OCARINA) || (character == MESSAGE_PERSISTENT) ||
+                                    (character == MESSAGE_EVENT) || (character == MESSAGE_BOX_BREAK_DELAYED) ||
+                                    (character == MESSAGE_AWAIT_BUTTON_PRESS) || (character == MESSAGE_BOX_BREAK) ||
+                                    (character == MESSAGE_END)) {
+@@ -1632,7 +1632,7 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
+                 msgCtx->textDelay = MSG_BUF_DECODED[++i];
+                 break;
+             case MESSAGE_UNSKIPPABLE:
+-                msgCtx->textUnskippable = true;
++                /*msgCtx->textUnskippable = true;*/
+                 break;
+             case MESSAGE_TWO_CHOICE:
+                 msgCtx->textboxEndType = TEXTBOX_ENDTYPE_2_CHOICE;
+@@ -2147,6 +2147,12 @@ void Message_Decode(PlayState* play) {
+     } else
+ #endif
+     {
++        if (gSaveContext.quicktextSetting
++            && msgCtx->ocarinaAction != OCARINA_ACTION_SCARECROW_LONG_PLAYBACK && msgCtx->ocarinaAction != OCARINA_ACTION_SCARECROW_SPAWN_PLAYBACK) {
++            msgCtx->msgBufDecoded[decodedBufPos] = MESSAGE_QUICKTEXT_ENABLE;
++            decodedBufPos++;
++        }
++
+         // English text for NTSC, eng/ger/fra text for PAL
+         for (;;) {
+             curChar = MSG_BUF_DECODED[decodedBufPos] = MSG_BUF[msgCtx->msgBufPos];

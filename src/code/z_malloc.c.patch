@@ -1,0 +1,127 @@
+diff --git a/src/code/z_malloc.c b/src/code/z_malloc.c
+index 513a61b31..168b55949 100644
+--- a/src/code/z_malloc.c
++++ b/src/code/z_malloc.c
+@@ -7,6 +7,7 @@
+ #define LOG_SEVERITY_VERBOSE 3
+
+ Arena sZeldaArena;
++size_t sMaxAllocated;
+
+ #if DEBUG_FEATURES
+ s32 gZeldaArenaLogSeverity = LOG_SEVERITY_ERROR;
+@@ -29,11 +30,20 @@ void ZeldaArena_CheckPointer(void* ptr, u32 size, const char* name, const char*
+ #define ZELDA_ARENA_CHECK_POINTER(ptr, size, name, action) (void)0
+ #endif
+
++void ZeldaArena_GetSizes(u32* outMaxFree, u32* outFree, u32* outAlloc) {
++    ArenaImpl_GetSizes(&sZeldaArena, outMaxFree, outFree, outAlloc);
++}
++
+ void* ZeldaArena_Malloc(u32 size) {
+     void* ptr = __osMalloc(&sZeldaArena, size);
+
+     // TODO re-evaluate "secure" as a translation (in this file and others using "確保")
+     ZELDA_ARENA_CHECK_POINTER(ptr, size, "zelda_malloc", T("確保", "Secure"));
++#if DEBUG_FEATURES_MEM
++    u32 outMaxFree, outFree, outAlloc;
++    ZeldaArena_GetSizes(&outMaxFree, &outFree, &outAlloc);
++    if (outAlloc > sMaxAllocated) { sMaxAllocated = outAlloc; }
++#endif
+     return ptr;
+ }
+
+@@ -42,6 +52,11 @@ void* ZeldaArena_MallocDebug(u32 size, const char* file, int line) {
+     void* ptr = __osMallocDebug(&sZeldaArena, size, file, line);
+
+     ZELDA_ARENA_CHECK_POINTER(ptr, size, "zelda_malloc_DEBUG", T("確保", "Secure"));
++#if DEBUG_FEATURES_MEM
++    u32 outMaxFree, outFree, outAlloc;
++    ZeldaArena_GetSizes(&outMaxFree, &outFree, &outAlloc);
++    if (outAlloc > sMaxAllocated) { sMaxAllocated = outAlloc; }
++#endif
+     return ptr;
+ }
+ #endif
+@@ -50,6 +65,11 @@ void* ZeldaArena_MallocR(u32 size) {
+     void* ptr = __osMallocR(&sZeldaArena, size);
+
+     ZELDA_ARENA_CHECK_POINTER(ptr, size, "zelda_malloc_r", T("確保", "Secure"));
++#if DEBUG_FEATURES_MEM
++    u32 outMaxFree, outFree, outAlloc;
++    ZeldaArena_GetSizes(&outMaxFree, &outFree, &outAlloc);
++    if (outAlloc > sMaxAllocated) { sMaxAllocated = outAlloc; }
++#endif
+     return ptr;
+ }
+
+@@ -58,6 +78,12 @@ void* ZeldaArena_MallocRDebug(u32 size, const char* file, int line) {
+     void* ptr = __osMallocRDebug(&sZeldaArena, size, file, line);
+
+     ZELDA_ARENA_CHECK_POINTER(ptr, size, "zelda_malloc_r_DEBUG", T("確保", "Secure"));
++
++#if DEBUG_FEATURES_MEM
++    u32 outMaxFree, outFree, outAlloc;
++    ZeldaArena_GetSizes(&outMaxFree, &outFree, &outAlloc);
++    if (outAlloc > sMaxAllocated) { sMaxAllocated = outAlloc; }
++#endif
+     return ptr;
+ }
+ #endif
+@@ -72,6 +98,11 @@ void* ZeldaArena_Realloc(void* ptr, u32 newSize) {
+ void* ZeldaArena_ReallocDebug(void* ptr, u32 newSize, const char* file, int line) {
+     ptr = __osReallocDebug(&sZeldaArena, ptr, newSize, file, line);
+     ZELDA_ARENA_CHECK_POINTER(ptr, newSize, "zelda_realloc_DEBUG", T("再確保", "Re-securing"));
++#if DEBUG_FEATURES_MEM
++    u32 outMaxFree, outFree, outAlloc;
++    ZeldaArena_GetSizes(&outMaxFree, &outFree, &outAlloc);
++    if (outAlloc > sMaxAllocated) { sMaxAllocated = outAlloc; }
++#endif
+     return ptr;
+ }
+ #endif
+@@ -96,6 +127,11 @@ void* ZeldaArena_Calloc(u32 num, u32 size) {
+     }
+
+     ZELDA_ARENA_CHECK_POINTER(ret, n, "zelda_calloc", T("確保", "Secure"));
++#if DEBUG_FEATURES_MEM
++    u32 outMaxFree, outFree, outAlloc;
++    ZeldaArena_GetSizes(&outMaxFree, &outFree, &outAlloc);
++    if (outAlloc > sMaxAllocated) { sMaxAllocated = outAlloc; }
++#endif
+     return ret;
+ }
+
+@@ -106,10 +142,6 @@ void ZeldaArena_Display(void) {
+ }
+ #endif
+
+-void ZeldaArena_GetSizes(u32* outMaxFree, u32* outFree, u32* outAlloc) {
+-    ArenaImpl_GetSizes(&sZeldaArena, outMaxFree, outFree, outAlloc);
+-}
+-
+ void ZeldaArena_Check(void) {
+     __osCheckArena(&sZeldaArena);
+ }
+@@ -119,6 +151,7 @@ void ZeldaArena_Init(void* start, u32 size) {
+     gZeldaArenaLogSeverity = LOG_SEVERITY_NOLOG;
+ #endif
+     __osMallocInit(&sZeldaArena, start, size);
++    sMaxAllocated = 0;
+ }
+
+ void ZeldaArena_Cleanup(void) {
+@@ -126,8 +159,13 @@ void ZeldaArena_Cleanup(void) {
+     gZeldaArenaLogSeverity = LOG_SEVERITY_NOLOG;
+ #endif
+     __osMallocCleanup(&sZeldaArena);
++    sMaxAllocated = 0;
+ }
+
+ s32 ZeldaArena_IsInitialized(void) {
+     return __osMallocIsInitialized(&sZeldaArena);
+ }
++
++size_t ZeldaArena_MaxAllocated(void) {
++    return sMaxAllocated;
++}

@@ -1,0 +1,17 @@
+diff --git a/include/libc64/qrand.h b/include/libc64/qrand.h
+index cc66d4f43..fa99bae26 100644
+--- a/include/libc64/qrand.h
++++ b/include/libc64/qrand.h
+@@ -4,10 +4,12 @@
+ #include "ultra64.h"
+
+ u32 Rand_Next(void);
++u32 Rand_Next_Mod(u32 mod);
+ void Rand_Seed(u32 seed);
+ f32 Rand_ZeroOne(void);
+ void Rand_Seed_Variable(u32* rndNum, u32 seed);
+ u32 Rand_Next_Variable(u32* rndNum);
++u32 Rand_Next_Mod_Variable(u32* rndNum, u32 mod);
+ f32 Rand_ZeroOne_Variable(u32* rndNum);
+
+ #if !PLATFORM_N64

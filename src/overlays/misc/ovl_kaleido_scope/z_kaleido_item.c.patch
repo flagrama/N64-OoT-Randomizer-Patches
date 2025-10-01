@@ -1,0 +1,146 @@
+diff --git a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_item.c b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_item.c
+index 97458d024..ed85cc17c 100644
+--- a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_item.c
++++ b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_item.c
+@@ -168,77 +168,94 @@ void KaleidoScope_DrawItemSelect(PlayState* play) {
+
+                 do {
+                     if (pauseCtx->stickAdjX < -30) { // left
+-                        // if not on the left-most column
+-                        if (pauseCtx->cursorX[PAUSE_ITEM] != 0) {
+-                            // move left
+-                            pauseCtx->cursorX[PAUSE_ITEM]--;
+-                            pauseCtx->cursorPoint[PAUSE_ITEM] -= 1;
++                        // move left
++                        pauseCtx->cursorX[PAUSE_ITEM]--;
++                        pauseCtx->cursorPoint[PAUSE_ITEM] -= 1;
+
++                        cursorX = pauseCtx->cursorX[PAUSE_ITEM];
++                        cursorY = pauseCtx->cursorY[PAUSE_ITEM];
++                        cursorPoint = pauseCtx->cursorPoint[PAUSE_ITEM];
++
++                        while (cursorX >= 0) {
+                             // if there's an item there, stop there
+-                            if (gSaveContext.save.info.inventory.items[pauseCtx->cursorPoint[PAUSE_ITEM]] !=
+-                                ITEM_NONE) {
++                            if (gSaveContext.save.info.inventory.items[cursorPoint] != ITEM_NONE) {
+                                 cursorMoveResult = 1;
++                                break;
+                             }
+-                        } else {
+-                            // move the cursor to its initial horizontal position and try find an item on the next line
+
+-                            pauseCtx->cursorX[PAUSE_ITEM] = cursorX;
++                            // Move cursor towards the bottom row
++                            cursorY += 1;
++                            cursorPoint += ITEM_GRID_COLS;
+
+-                            pauseCtx->cursorY[PAUSE_ITEM]++;
+-                            if (pauseCtx->cursorY[PAUSE_ITEM] >= ITEM_GRID_ROWS) {
+-                                pauseCtx->cursorY[PAUSE_ITEM] = 0;
++                            // If trying to go below last row, loop back to first row
++                            if (cursorY >= ITEM_GRID_ROWS) {
++                                cursorY = 0;
+                             }
+-
+-                            pauseCtx->cursorPoint[PAUSE_ITEM] =
+-                                pauseCtx->cursorX[PAUSE_ITEM] + (pauseCtx->cursorY[PAUSE_ITEM] * ITEM_GRID_COLS);
+-
+-                            if (pauseCtx->cursorPoint[PAUSE_ITEM] >= (ITEM_GRID_ROWS * ITEM_GRID_COLS)) {
+-                                pauseCtx->cursorPoint[PAUSE_ITEM] = pauseCtx->cursorX[PAUSE_ITEM];
++                            if (cursorPoint >= ITEM_GRID_ROWS * ITEM_GRID_COLS) {
++                                cursorPoint = cursorX;
+                             }
+
++                            // Looped over all rows in the column, move on to the next column
+                             if (cursorY == pauseCtx->cursorY[PAUSE_ITEM]) {
+-                                // there is no item to the left of the initial position, on any line
+-
+-                                pauseCtx->cursorX[PAUSE_ITEM] = cursorX;
+-                                pauseCtx->cursorPoint[PAUSE_ITEM] = cursorPoint;
++                                cursorX--;
++                                cursorPoint = cursorX + cursorY * ITEM_GRID_COLS;
++                            }
++                        }
+
+-                                KaleidoScope_MoveCursorToSpecialPos(play, PAUSE_CURSOR_PAGE_LEFT);
++                        pauseCtx->cursorPoint[PAUSE_ITEM] = cursorPoint;
++                        pauseCtx->cursorX[PAUSE_ITEM] = cursorX;
++                        pauseCtx->cursorY[PAUSE_ITEM] = cursorY;
+
+-                                cursorMoveResult = 2;
+-                            }
++                        if (cursorX < 0) {
++                            KaleidoScope_MoveCursorToSpecialPos(play, PAUSE_CURSOR_PAGE_LEFT);
++                            cursorMoveResult = 2;
+                         }
+                     } else if (pauseCtx->stickAdjX > 30) {
+-                        if (pauseCtx->cursorX[PAUSE_ITEM] < (ITEM_GRID_COLS - 1)) {
+-                            pauseCtx->cursorX[PAUSE_ITEM]++;
+-                            pauseCtx->cursorPoint[PAUSE_ITEM] += 1;
++                        // if right pressed
++                        pauseCtx->cursorX[PAUSE_ITEM]++; // move cursor to the right
++                        pauseCtx->cursorPoint[PAUSE_ITEM] += 1; // move cursor to the right
+
+-                            if (gSaveContext.save.info.inventory.items[pauseCtx->cursorPoint[PAUSE_ITEM]] !=
+-                                ITEM_NONE) {
+-                                cursorMoveResult = 1;
+-                            }
+-                        } else {
+-                            pauseCtx->cursorX[PAUSE_ITEM] = cursorX;
+-                            pauseCtx->cursorY[PAUSE_ITEM]++;
++                        cursorX = pauseCtx->cursorX[PAUSE_ITEM];
++                        cursorY = pauseCtx->cursorY[PAUSE_ITEM];
++                        cursorPoint = pauseCtx->cursorPoint[PAUSE_ITEM];
+
+-                            if (pauseCtx->cursorY[PAUSE_ITEM] >= ITEM_GRID_ROWS) {
+-                                pauseCtx->cursorY[PAUSE_ITEM] = 0;
++                        while (cursorX < ITEM_GRID_COLS) {
++                            // If item found, use found position
++                            if (gSaveContext.save.info.inventory.items[cursorPoint] != ITEM_NONE) {
++                                pauseCtx->cursorPoint[PAUSE_ITEM] = cursorPoint;
++                                pauseCtx->cursorX[PAUSE_ITEM] = cursorX;
++                                pauseCtx->cursorY[PAUSE_ITEM] = cursorY;
++                                cursorMoveResult = 1;
++                                break;
+                             }
+
+-                            pauseCtx->cursorPoint[PAUSE_ITEM] =
+-                                pauseCtx->cursorX[PAUSE_ITEM] + (pauseCtx->cursorY[PAUSE_ITEM] * ITEM_GRID_COLS);
++                            // Move cursor towards the bottom row until it finds an item
++                            cursorY += 1;
++                            cursorPoint += ITEM_GRID_COLS;
+
+-                            if (pauseCtx->cursorPoint[PAUSE_ITEM] >= (ITEM_GRID_ROWS * ITEM_GRID_COLS)) {
+-                                pauseCtx->cursorPoint[PAUSE_ITEM] = pauseCtx->cursorX[PAUSE_ITEM];
++                            // If trying to go below last row, loop back to first row
++                            if (cursorY >= ITEM_GRID_ROWS) {
++                                cursorY = 0;
++                            }
++                            if (cursorPoint >= ITEM_GRID_ROWS * ITEM_GRID_COLS) {
++                                cursorPoint = cursorX;
+                             }
+
++                            // Looped over all rows in the column, move on to the next one
+                             if (cursorY == pauseCtx->cursorY[PAUSE_ITEM]) {
+-                                pauseCtx->cursorX[PAUSE_ITEM] = cursorX;
+-                                pauseCtx->cursorPoint[PAUSE_ITEM] = cursorPoint;
++                                cursorX++;
++                                cursorPoint = cursorX + cursorY * ITEM_GRID_COLS;
++                            }
++                        }
+
+-                                KaleidoScope_MoveCursorToSpecialPos(play, PAUSE_CURSOR_PAGE_RIGHT);
++                        pauseCtx->cursorPoint[PAUSE_ITEM] = cursorPoint;
++                        pauseCtx->cursorX[PAUSE_ITEM] = cursorX;
++                        pauseCtx->cursorY[PAUSE_ITEM] = cursorY;
+
+-                                cursorMoveResult = 2;
+-                            }
++                        if (cursorX == ITEM_GRID_COLS) {
++                            // Looped over all possible item locations, move to right special pos
++                            KaleidoScope_MoveCursorToSpecialPos(play, PAUSE_CURSOR_PAGE_RIGHT);
++                            cursorMoveResult = 2;
+                         }
+                     }
+                 } while (cursorMoveResult == 0);

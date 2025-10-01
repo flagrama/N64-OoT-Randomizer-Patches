@@ -1,0 +1,10 @@
+diff --git a/src/boot/build.c b/src/boot/build.c
+index 035e685db..0b380cbda 100644
+--- a/src/boot/build.c
++++ b/src/boot/build.c
+@@ -4,4 +4,5 @@
+
+ const char gBuildCreator[] = BUILD_CREATOR;
+ const char gBuildDate[] = BUILD_DATE " " BUILD_TIME;
++const char gBuildVersion[] = BUILD_VERSION;
+ const char gBuildMakeOption[] = "";

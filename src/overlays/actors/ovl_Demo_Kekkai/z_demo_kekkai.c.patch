@@ -1,0 +1,20 @@
+diff --git a/src/overlays/actors/ovl_Demo_Kekkai/z_demo_kekkai.c b/src/overlays/actors/ovl_Demo_Kekkai/z_demo_kekkai.c
+index 2a79aef45..032b44354 100644
+--- a/src/overlays/actors/ovl_Demo_Kekkai/z_demo_kekkai.c
++++ b/src/overlays/actors/ovl_Demo_Kekkai/z_demo_kekkai.c
+@@ -175,6 +175,7 @@ void DemoKekkai_SpawnParticles(DemoKekkai* this, PlayState* play) {
+ void DemoKekkai_TowerBarrier(DemoKekkai* this, PlayState* play) {
+     if ((play->csCtx.state != CS_STATE_IDLE) && (play->csCtx.actorCues[0] != NULL) &&
+         (play->csCtx.actorCues[0]->id != 1) && (play->csCtx.actorCues[0]->id == 2)) {
++        Flags_SetEventChkInf(EVENTCHKINF_C3);
+         if (!(this->sfxFlag & 1)) {
+             Audio_PlayCutsceneEffectsSequence(SEQ_CS_EFFECTS_DISPEL_BARRIER);
+             this->sfxFlag |= 1;
+@@ -184,7 +185,6 @@ void DemoKekkai_TowerBarrier(DemoKekkai* this, PlayState* play) {
+         } else {
+             this->timer++;
+             if (this->timer > 100) {
+-                Flags_SetEventChkInf(EVENTCHKINF_C3);
+                 Actor_Kill(&this->actor);
+                 return;
+             } else if (this->timer > 40) {

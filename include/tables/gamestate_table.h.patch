@@ -1,0 +1,9 @@
+diff --git a/include/tables/gamestate_table.h b/include/tables/gamestate_table.h
+index 280740fe2..60c573734 100644
+--- a/include/tables/gamestate_table.h
++++ b/include/tables/gamestate_table.h
+@@ -14,3 +14,4 @@
+ /* 0x03 */ DEFINE_GAMESTATE_INTERNAL(Play, GAMESTATE_PLAY)
+ /* 0x04 */ DEFINE_GAMESTATE(TitleSetup, GAMESTATE_TITLE_SETUP, opening)
+ /* 0x05 */ DEFINE_GAMESTATE(FileSelect, GAMESTATE_FILE_SELECT, file_choose)
++/* 0x06 */ DEFINE_GAMESTATE(Randomizer, GAMESTATE_RANDOMIZER, randomizer)

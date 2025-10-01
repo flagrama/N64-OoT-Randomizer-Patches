@@ -1,0 +1,54 @@
+diff --git a/src/overlays/gamestates/ovl_title/z_title.c b/src/overlays/gamestates/ovl_title/z_title.c
+index 588588b24..fdd6beba4 100644
+--- a/src/overlays/gamestates/ovl_title/z_title.c
++++ b/src/overlays/gamestates/ovl_title/z_title.c
+@@ -31,7 +31,6 @@
+
+ #include "assets/textures/nintendo_rogo_static/nintendo_rogo_static.h"
+
+-#if DEBUG_FEATURES
+ void ConsoleLogo_PrintBuildInfo(Gfx** gfxP) {
+     Gfx* gfx;
+     GfxPrint* printer;
+@@ -42,18 +41,21 @@ void ConsoleLogo_PrintBuildInfo(Gfx** gfxP) {
+     GfxPrint_Init(printer);
+     GfxPrint_Open(printer, gfx);
+     GfxPrint_SetColor(printer, 255, 155, 255, 255);
++    GfxPrint_SetPos(printer, 32, 27);
++    GfxPrint_Printf(printer, "V%s", gBuildVersion);
++#if DEBUG_FEATURES
+     GfxPrint_SetPos(printer, 9, 21);
+-    GfxPrint_Printf(printer, "NOT MARIO CLUB VERSION");
++    GfxPrint_Printf(printer, "RANDOMIZER (DEBUG)");
+     GfxPrint_SetColor(printer, 255, 255, 255, 255);
+     GfxPrint_SetPos(printer, 7, 23);
+     GfxPrint_Printf(printer, "[Creator:%s]", gBuildCreator);
+     GfxPrint_SetPos(printer, 7, 24);
+     GfxPrint_Printf(printer, "[Date:%s]", gBuildDate);
++#endif
+     gfx = GfxPrint_Close(printer);
+     GfxPrint_Destroy(printer);
+     *gfxP = gfx;
+ }
+-#endif
+
+ void ConsoleLogo_Calc(ConsoleLogoState* this) {
+ #if !PLATFORM_GC
+@@ -173,14 +175,10 @@ void ConsoleLogo_Main(GameState* thisx) {
+     ConsoleLogo_Calc(this);
+     ConsoleLogo_Draw(this);
+
+-#if DEBUG_FEATURES
+-    if (gIsCtrlr2Valid) {
+-        Gfx* gfx = POLY_OPA_DISP;
++    Gfx* gfx = POLY_OPA_DISP;
+
+-        ConsoleLogo_PrintBuildInfo(&gfx);
+-        POLY_OPA_DISP = gfx;
+-    }
+-#endif
++    ConsoleLogo_PrintBuildInfo(&gfx);
++    POLY_OPA_DISP = gfx;
+
+ #if PLATFORM_IQUE
+     this->exit = true;

@@ -1,0 +1,17 @@
+diff --git a/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c b/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c
+index a3a385696..1f7b931c2 100644
+--- a/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c
++++ b/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c
+@@ -112,10 +112,11 @@ void func_808BAF40(BgTokiSwd* this, PlayState* play) {
+         play->csCtx.script = gRevealMasterSwordCs;
+         gSaveContext.cutsceneTrigger = 1;
+     }
+-    if (!LINK_IS_ADULT || GET_EVENTCHKINF(EVENTCHKINF_55)) {
++    if (!LINK_IS_ADULT || GET_EVENTCHKINF(EVENTCHKINF_55) || gSaveContext.save.randomizer.shuffleChests) {
+         if (Actor_HasParent(&this->actor, play)) {
+             if (!LINK_IS_ADULT) {
+                 Item_Give(play, ITEM_SWORD_MASTER);
++                Item_Give(play, ITEM_MEDALLION_LIGHT); // Give in case cutscene is skipped
+                 play->csCtx.script = gPullMasterSwordCs;
+             } else {
+                 play->csCtx.script = gPlaceMasterSwordCs;

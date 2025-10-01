@@ -1,0 +1,66 @@
+diff --git a/include/z64save.h b/include/z64save.h
+index 71b141405..0c07f728b 100644
+--- a/include/z64save.h
++++ b/include/z64save.h
+@@ -1,6 +1,7 @@
+ #ifndef Z64SAVE_H
+ #define Z64SAVE_H
+
++#include "randomizer_play.h"
+ #include "ultra64.h"
+ #include "versions.h"
+ #include "z64inventory.h"
+@@ -23,6 +24,11 @@ typedef enum Language {
+     /*   */ LANGUAGE_MAX
+ } Language;
+
++typedef enum QuicktextSetting {
++    QUICKTEXT_SETTING_OFF,
++    QUICKTEXT_SETTING_ON,
++} QuicktextSetting;
++
+ // `_FORCE` means that this request will respond to `forceRisingButtonAlphas`.
+ // If set, the buttons will also raise alphas but will also account for disabled buttons
+
+@@ -213,6 +219,15 @@ typedef enum WorldMapArea {
+     /* 22 */ WORLD_MAP_AREA_MAX // also grottos and fairy's/great fairy's fountains (scenes with varying locations)
+ } WorldMapArea;
+
++// randomizer save data
++typedef struct SaveRandomizerData {
++    bool initialized;
++    bool generated;
++    u32 seed;
++    bool shuffleChests;
++    GetItemID chestContents[CHEST_MAX];
++} SaveRandomizerData;
++
+ // offsets in SavePlayerData and SaveContext/Save
+ typedef struct SavePlayerData {
+     /* 0x00  0x001C */ char newf[6]; // string "ZELDAZ"
+@@ -275,6 +290,7 @@ typedef struct Save {
+     /* 0x14 */ s32 totalDays;
+     /* 0x18 */ s32 bgsDayCount; // increments with totalDays, can be cleared with `Environment_ClearBgsDayCount`
+     /* 0x1C */ SaveInfo info; // "information"
++    SaveRandomizerData randomizer;
+ } Save;
+
+ typedef struct SaveContext {
+@@ -340,6 +356,7 @@ typedef struct SaveContext {
+     /* 0x1420 */ s16 worldMapArea;
+     /* 0x1422 */ s16 sunsSongState; // controls the effects of suns song
+     /* 0x1424 */ s16 healthAccumulator;
++    u8 quicktextSetting;
+ } SaveContext; // size = 0x1428
+
+ typedef enum ButtonStatus {
+@@ -404,7 +421,9 @@ typedef enum SceneLayer {
+
+ typedef enum LinkAge {
+     /* 0 */ LINK_AGE_ADULT,
+-    /* 1 */ LINK_AGE_CHILD
++    /* 1 */ LINK_AGE_CHILD,
++    LINK_AGE_BOTH,
++    LINK_AGE_EITHER,
+ } LinkAge;
+

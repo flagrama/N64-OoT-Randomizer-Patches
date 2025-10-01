@@ -1,0 +1,12 @@
+diff --git a/include/zelda_arena.h b/include/zelda_arena.h
+index cf6740657..9c08874de 100644
+--- a/include/zelda_arena.h
++++ b/include/zelda_arena.h
+@@ -15,6 +15,7 @@ void ZeldaArena_Check(void);
+ void ZeldaArena_Init(void* start, u32 size);
+ void ZeldaArena_Cleanup(void);
+ s32 ZeldaArena_IsInitialized(void);
++size_t ZeldaArena_MaxAllocated(void);
+
+ #if DEBUG_FEATURES
+ void ZeldaArena_CheckPointer(void* ptr, u32 size, const char* name, const char* action);

@@ -1,0 +1,238 @@
+diff --git a/Makefile b/Makefile
+index 56134bd7f..c91d73d13 100644
+--- a/Makefile
++++ b/Makefile
+@@ -16,28 +16,16 @@ SHELL = /usr/bin/env bash
+ # If COMPARE is 1, check the output md5sum after building. Set to 0 when modding.
+ COMPARE ?= 1
+ # If NON_MATCHING is 1, define the NON_MATCHING C flag when building. Set to 1 when modding.
+-NON_MATCHING ?= 0
++NON_MATCHING ?= 1
+ # If ORIG_COMPILER is 1, compile with QEMU_IRIX and the original compiler.
+ ORIG_COMPILER ?= 0
+ # If COMPILER is "gcc", compile with GCC instead of IDO.
+-COMPILER ?= ido
++COMPILER ?= gcc
+ # Target game version. Ensure the corresponding input ROM is placed in baseroms/$(VERSION)/baserom.z64.
+ # Currently the following versions are supported:
+-#   ntsc-1.0       N64 NTSC 1.0 (Japan/US depending on REGION)
+-#   ntsc-1.1       N64 NTSC 1.1 (Japan/US depending on REGION)
+-#   pal-1.0        N64 PAL 1.0 (Europe)
+-#   ntsc-1.2       N64 NTSC 1.2 (Japan/US depending on REGION)
++#   randomizer     Randomizer, requires pal-1.1 baserom
+ #   pal-1.1        N64 PAL 1.1 (Europe)
+-#   gc-jp          GameCube Japan
+-#   gc-jp-mq       GameCube Japan Master Quest
+-#   gc-us          GameCube US
+-#   gc-us-mq       GameCube US Master Quest
+-#   gc-eu-mq-dbg   GameCube Europe/PAL Master Quest Debug (default)
+-#   gc-eu          GameCube Europe/PAL
+-#   gc-eu-mq       GameCube Europe/PAL Master Quest
+-#   gc-jp-ce       GameCube Japan (Collector's Edition disc)
+-#   ique-cn        iQue Player (Simplified Chinese)
+-VERSION ?= gc-eu-mq-dbg
++VERSION ?= randomizer
+ # Number of threads to extract and compress with.
+ N_THREADS ?= $(shell nproc)
+ # If DEBUG_OBJECTS is 1, produce additional debugging files such as objdump output or raw binaries for assets
+@@ -58,41 +46,16 @@ N64_EMULATOR ?=
+
+ # Version-specific settings
+ REGIONAL_CHECKSUM := 0
+-ifeq ($(VERSION),ntsc-1.0)
+-  REGIONAL_CHECKSUM := 1
+-  REGION ?= JP
+-  PLATFORM := N64
+-  DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := zelda@srd44
+-  BUILD_DATE := 98-10-21
+-  BUILD_TIME := 04:56:31
+-  REVISION := 0
+-else ifeq ($(VERSION),ntsc-1.1)
+-  REGIONAL_CHECKSUM := 1
+-  REGION ?= JP
+-  PLATFORM := N64
+-  DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := zelda@srd44
+-  BUILD_DATE := 98-10-26
+-  BUILD_TIME := 10:58:45
+-  REVISION := 1
+-else ifeq ($(VERSION),pal-1.0)
+-  REGION ?= EU
+-  PLATFORM := N64
++ifeq ($(VERSION),randomizer)
++  REGIONAL_CHECKSUM := 0
++  REGION ?= US
++  PLATFORM ?= N64
+   DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := zelda@srd44
+-  BUILD_DATE := 98-11-10
+-  BUILD_TIME := 14:34:22
++  BUILD_CREATOR ?= someone
++  BUILD_DATE ?= $(shell date +'%y-%m-%d')
++  BUILD_TIME ?= $(shell date +'%H:%M:%S')
++  BUILD_VERSION ?= $(shell date +'%y%m%d')
+   REVISION := 0
+-else ifeq ($(VERSION),ntsc-1.2)
+-  REGIONAL_CHECKSUM := 1
+-  REGION ?= JP
+-  PLATFORM := N64
+-  DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := zelda@srd44
+-  BUILD_DATE := 98-11-12
+-  BUILD_TIME := 18:17:03
+-  REVISION := 2
+ else ifeq ($(VERSION),pal-1.1)
+   REGION ?= EU
+   PLATFORM := N64
+@@ -100,79 +63,8 @@ else ifeq ($(VERSION),pal-1.1)
+   BUILD_CREATOR := zelda@srd44
+   BUILD_DATE := 98-11-18
+   BUILD_TIME := 17:36:49
++  BUILD_VERSION := ""
+   REVISION := 1
+-else ifeq ($(VERSION),gc-jp)
+-  REGION ?= JP
+-  PLATFORM := GC
+-  DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := zelda@srd022j
+-  BUILD_DATE := 02-10-29
+-  BUILD_TIME := 23:49:53
+-  REVISION := 15
+-else ifeq ($(VERSION),gc-jp-mq)
+-  REGION ?= JP
+-  PLATFORM := GC
+-  DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := zelda@srd022j
+-  BUILD_DATE := 02-10-30
+-  BUILD_TIME := 00:15:15
+-  REVISION := 15
+-else ifeq ($(VERSION),gc-us)
+-  REGION ?= US
+-  PLATFORM := GC
+-  DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := zelda@srd022j
+-  BUILD_DATE := 02-12-19
+-  BUILD_TIME := 13:28:09
+-  REVISION := 15
+-else ifeq ($(VERSION),gc-us-mq)
+-  REGION ?= US
+-  PLATFORM := GC
+-  DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := zelda@srd022j
+-  BUILD_DATE := 02-12-19
+-  BUILD_TIME := 14:05:42
+-  REVISION := 15
+-else ifeq ($(VERSION),gc-eu-mq-dbg)
+-  REGION ?= EU
+-  PLATFORM := GC
+-  DEBUG_FEATURES ?= 1
+-  BUILD_CREATOR := zelda@srd022j
+-  BUILD_DATE := 03-02-21
+-  BUILD_TIME := 00:16:31
+-  REVISION := 15
+-else ifeq ($(VERSION),gc-eu)
+-  REGION ?= EU
+-  PLATFORM := GC
+-  DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := zelda@srd022j
+-  BUILD_DATE := 03-02-21
+-  BUILD_TIME := 20:12:23
+-  REVISION := 15
+-else ifeq ($(VERSION),gc-eu-mq)
+-  REGION ?= EU
+-  PLATFORM := GC
+-  DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := zelda@srd022j
+-  BUILD_DATE := 03-02-21
+-  BUILD_TIME := 20:37:19
+-  REVISION := 15
+-else ifeq ($(VERSION),gc-jp-ce)
+-  REGION ?= JP
+-  PLATFORM := GC
+-  DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := zelda@srd022j
+-  BUILD_DATE := 03-10-08
+-  BUILD_TIME := 21:53:00
+-  REVISION := 15
+-else ifeq ($(VERSION),ique-cn)
+-  REGION ?= US
+-  PLATFORM := IQUE
+-  DEBUG_FEATURES ?= 0
+-  BUILD_CREATOR := build@toad.routefree.com
+-  BUILD_DATE := 03-10-22
+-  BUILD_TIME := 16:23:19
+-  REVISION := 0
+ else
+ $(error Unsupported version $(VERSION))
+ endif
+@@ -197,8 +89,10 @@ endif
+ PROJECT_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+ BUILD_DIR := build/$(VERSION)
+ EXPECTED_DIR := expected/$(BUILD_DIR)
+-BASEROM_DIR := baseroms/$(VERSION)
+-EXTRACTED_DIR := extracted/$(VERSION)
++# randomizer will be based on pal-1.1
++BASEROM_DIR := baseroms/pal-1.1
++# randomizer will be based on pal-1.1 so can use its extracted assets
++EXTRACTED_DIR := extracted/pal-1.1
+ VENV := .venv
+
+ MAKE = make
+@@ -220,8 +114,8 @@ $(error Unsupported platform $(PLATFORM))
+ endif
+
+ # Converts e.g. ntsc-1.0 to NTSC_1_0
+-VERSION_MACRO := $(shell echo $(VERSION) | tr a-z-. A-Z__)
+-CPP_DEFINES += -DOOT_VERSION=$(VERSION_MACRO) -DOOT_REVISION=$(REVISION)
++#VERSION_MACRO := $(shell echo $(VERSION) | tr a-z-. A-Z__)
++CPP_DEFINES += -DOOT_VERSION=PAL_1_1 -DOOT_REVISION=$(REVISION)
+ CPP_DEFINES += -DOOT_REGION=REGION_$(REGION)
+ CPP_DEFINES += -DLIBULTRA_VERSION=LIBULTRA_VERSION_$(LIBULTRA_VERSION)
+ CPP_DEFINES += -DLIBULTRA_PATCH=$(LIBULTRA_PATCH)
+@@ -534,7 +428,7 @@ $(shell mkdir -p $(foreach dir, \
+                     $(dir:$(EXTRACTED_DIR)/%=$(BUILD_DIR)/%)))
+ endif
+
+-$(BUILD_DIR)/src/boot/build.o: CPP_DEFINES += -DBUILD_CREATOR="\"$(BUILD_CREATOR)\"" -DBUILD_DATE="\"$(BUILD_DATE)\"" -DBUILD_TIME="\"$(BUILD_TIME)\""
++$(BUILD_DIR)/src/boot/build.o: CPP_DEFINES += -DBUILD_CREATOR="\"$(BUILD_CREATOR)\"" -DBUILD_DATE="\"$(BUILD_DATE)\"" -DBUILD_TIME="\"$(BUILD_TIME)\"" -DBUILD_VERSION="\"$(BUILD_VERSION)\""
+
+ $(BUILD_DIR)/src/audio/internal/seqplayer.o: CPP_DEFINES += -DMML_VERSION=MML_VERSION_OOT
+
+@@ -734,7 +628,7 @@ endif
+
+ ifeq ($(PERMUTER),)  # permuter + preprocess.py misbehaves, permuter doesn't care about rodata diffs or bss ordering so just don't use it in that case
+ # Handle encoding (UTF-8 -> EUC-JP) and custom pragmas
+-$(BUILD_DIR)/src/%.o: PREPROCESS := ./tools/preprocess.sh -v $(VERSION) -i $(ICONV) --
++$(BUILD_DIR)/src/%.o: PREPROCESS := ./tools/preprocess.sh -v pal-1.1 -i $(ICONV) --
+ endif
+
+ else
+@@ -745,6 +639,8 @@ $(BUILD_DIR)/src/libultra/libc/ll.o: OPTFLAGS := -Ofast
+ $(BUILD_DIR)/src/overlays/%.o: CFLAGS += -fno-merge-constants -mno-explicit-relocs -mno-split-addresses
+ endif
+
++-include .make_wii-vc.mk
++
+ #### Main Targets ###
+
+ all: rom compress
+@@ -789,12 +685,12 @@ venv:
+
+ setup: venv
+ 	$(MAKE) -C tools
+-	$(PYTHON) tools/decompress_baserom.py $(VERSION)
+-	$(PYTHON) tools/extract_baserom.py $(BASEROM_DIR)/baserom-decompressed.z64 $(EXTRACTED_DIR)/baserom -v $(VERSION)
+-	$(PYTHON) -m tools.assets.extract $(EXTRACTED_DIR)/baserom $(EXTRACTED_DIR) -v $(VERSION) -j$(N_THREADS)
+-	$(PYTHON) tools/extract_incbins.py $(EXTRACTED_DIR)/baserom $(EXTRACTED_DIR)/incbin -v $(VERSION)
+-	$(PYTHON) tools/extract_text.py $(EXTRACTED_DIR)/baserom $(EXTRACTED_DIR)/text -v $(VERSION)
+-	$(PYTHON) tools/extract_audio.py -b $(EXTRACTED_DIR)/baserom -o $(EXTRACTED_DIR) -v $(VERSION) --read-xml
++	$(PYTHON) tools/decompress_baserom.py pal-1.1
++	$(PYTHON) tools/extract_baserom.py $(BASEROM_DIR)/baserom-decompressed.z64 $(EXTRACTED_DIR)/baserom -v pal-1.1
++	$(PYTHON) -m tools.assets.extract $(EXTRACTED_DIR)/baserom $(EXTRACTED_DIR) -v pal-1.1 -j$(N_THREADS)
++	$(PYTHON) tools/extract_incbins.py $(EXTRACTED_DIR)/baserom $(EXTRACTED_DIR)/incbin -v pal-1.1
++	$(PYTHON) tools/extract_text.py $(EXTRACTED_DIR)/baserom $(EXTRACTED_DIR)/text -v pal-1.1
++	$(PYTHON) tools/extract_audio.py -b $(EXTRACTED_DIR)/baserom -o $(EXTRACTED_DIR) -v pal-1.1 --read-xml
+
+ disasm:
+ 	$(RM) -r $(EXPECTED_DIR)

@@ -1,0 +1,12 @@
+diff --git a/src/code/z_game_dlftbls.c b/src/code/z_game_dlftbls.c
+index 57efe90df..f0d4c1a86 100644
+--- a/src/code/z_game_dlftbls.c
++++ b/src/code/z_game_dlftbls.c
+@@ -2,6 +2,7 @@
+ #include "console_logo_state.h"
+ #include "file_select_state.h"
+ #include "map_select_state.h"
++#include "randomizer_state.h"
+ #include "setup_state.h"
+ #include "title_setup_state.h"
+ #include "z_game_dlftbls.h"

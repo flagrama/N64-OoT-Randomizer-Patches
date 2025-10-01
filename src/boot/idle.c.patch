@@ -1,0 +1,13 @@
+diff --git a/src/boot/idle.c b/src/boot/idle.c
+index 743219d94..ceb3a87b4 100644
+--- a/src/boot/idle.c
++++ b/src/boot/idle.c
+@@ -113,7 +113,7 @@ void Idle_ThreadEntry(void* arg) {
+ #endif
+             break;
+     }
+-#elif !OOT_PAL_N64
++#elif !OOT_PAL_N64 || OOT_REGION != REGION_EU
+     // 60 Hz only (GameCube and NTSC N64)
+     switch (osTvType) {
+         case OS_TV_PAL:

@@ -1,0 +1,12 @@
+diff --git a/include/z64object.h b/include/z64object.h
+index 016eda00d..acd80eebf 100644
+--- a/include/z64object.h
++++ b/include/z64object.h
+@@ -39,6 +39,7 @@ typedef enum ObjectId {
+
+ void Object_InitContext(struct PlayState* play, ObjectContext* objectCtx);
+ void Object_UpdateEntries(ObjectContext* objectCtx);
++s32 Object_SpawnTemporary(ObjectContext* objectCtx, s16 objectId);
+ s32 Object_GetSlot(ObjectContext* objectCtx, s16 objectId);
+ s32 Object_IsLoaded(ObjectContext* objectCtx, s32 slot);
+ void func_800981B8(ObjectContext* objectCtx);

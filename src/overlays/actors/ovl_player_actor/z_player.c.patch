@@ -1,0 +1,13 @@
+diff --git a/src/overlays/actors/ovl_player_actor/z_player.c b/src/overlays/actors/ovl_player_actor/z_player.c
+index e8b942802..b897a62af 100644
+--- a/src/overlays/actors/ovl_player_actor/z_player.c
++++ b/src/overlays/actors/ovl_player_actor/z_player.c
+@@ -13718,7 +13718,7 @@ s32 func_8084DFF4(PlayState* play, Player* this) {
+         }
+     } else {
+         if (Message_GetState(&play->msgCtx) == TEXT_STATE_CLOSING) {
+-            if (this->getItemId == GI_SILVER_GAUNTLETS) {
++            if (play->sceneId == SCENE_DESERT_COLOSSUS && Flags_GetTreasure(play, 0x0B) && !GET_EVENTCHKINF(EVENTCHKINF_95)) {
+                 play->nextEntranceIndex = ENTR_DESERT_COLOSSUS_0;
+                 play->transitionTrigger = TRANS_TRIGGER_START;
+                 gSaveContext.nextCutsceneIndex = 0xFFF1;

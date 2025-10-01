@@ -1,0 +1,16 @@
+diff --git a/.gitignore b/.gitignore
+index 4ccab8104..ea27ca413 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -16,9 +16,11 @@ extracted/
+ build/
+ expected/
+ docs/doxygen/
++*.bin
+ *.z64
+ *.n64
+ *.v64
++*.wad
+
+ # Tools
+ .venv/

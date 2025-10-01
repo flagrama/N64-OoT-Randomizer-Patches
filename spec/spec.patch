@@ -1,0 +1,78 @@
+diff --git a/spec/spec b/spec/spec
+index 60437c4bf..af2dea42c 100644
+--- a/spec/spec
++++ b/spec/spec
+@@ -117,8 +117,8 @@ beginseg
+     // Functions that GCC-compiled code may depend on, placed in boot so they will always be loaded
+ #ifdef COMPILER_GCC
+     include "$(BUILD_DIR)/src/libultra/libc/string.o"
+-    include "$(BUILD_DIR)/src/libc/memset.o"
+     include "$(BUILD_DIR)/src/libc/memmove.o"
++    include "$(BUILD_DIR)/src/libultra/bb/sa/common.o"
+     include "$(BUILD_DIR)/src/gcc_fix/missing_gcc_functions.o"
+ #endif
+
+@@ -521,6 +521,7 @@ beginseg
+ #if PLATFORM_IQUE
+     include "*$(BUILD_DIR)/code_bss_1.o"
+ #endif
++    include "$(BUILD_DIR)/src/code/randomizer_play.o"
+     include "$(BUILD_DIR)/src/code/z_en_a_keep.o"
+     include "$(BUILD_DIR)/src/code/z_en_item00.o"
+     include "$(BUILD_DIR)/src/code/z_eff_blure.o"
+@@ -635,6 +636,8 @@ beginseg
+     include "$(BUILD_DIR)/src/code/graph.o"
+     include "$(BUILD_DIR)/src/code/gfxalloc.o"
+     include "$(BUILD_DIR)/src/code/listalloc.o"
++    include "$(BUILD_DIR)/src/code/vector.o"
++    include "$(BUILD_DIR)/src/code/hashtable.o"
+     include "$(BUILD_DIR)/src/code/main.o"
+     include "$(BUILD_DIR)/src/code/padmgr.o"
+     include "$(BUILD_DIR)/src/code/sched.o"
+@@ -781,13 +784,11 @@ beginseg
+ #if PLATFORM_N64
+     include "$(BUILD_DIR)/src/libc/sqrt.o"
+     include "$(BUILD_DIR)/src/libc/fmodf.o"
+-    include "$(BUILD_DIR)/src/libc/memset.o"
+     include "$(BUILD_DIR)/src/libc/memmove.o"
+ #elif PLATFORM_GC
+     include "$(BUILD_DIR)/src/libc/sqrt.o"
+     include "$(BUILD_DIR)/src/libc/fabsf.o"
+     include "$(BUILD_DIR)/src/libc/fmodf.o"
+-    include "$(BUILD_DIR)/src/libc/memset.o"
+     include "$(BUILD_DIR)/src/libc/memmove.o"
+ #elif PLATFORM_IQUE
+     include "$(BUILD_DIR)/src/libc/fmodf.o"
+@@ -934,12 +935,32 @@ beginseg
+     name "ovl_file_choose"
+     compress
+     include "$(BUILD_DIR)/src/overlays/gamestates/ovl_file_choose/z_file_nameset_data.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_file_choose/z_file_randomizer.o"
+     include "$(BUILD_DIR)/src/overlays/gamestates/ovl_file_choose/z_file_copy_erase.o"
+     include "$(BUILD_DIR)/src/overlays/gamestates/ovl_file_choose/z_file_nameset.o"
+     include "$(BUILD_DIR)/src/overlays/gamestates/ovl_file_choose/z_file_choose.o"
+     include "$(BUILD_DIR)/src/overlays/gamestates/ovl_file_choose/ovl_file_choose_reloc.o"
+ endseg
+
++beginseg
++    name "ovl_randomizer"
++    compress
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_ast.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_fill.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_entrance.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_graph.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_item.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_item_info.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_location.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_region.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_search.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_state.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_tables.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_thread.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_world.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/ovl_randomizer_reloc.o"
++endseg
++
+ beginseg
+     name "ovl_kaleido_scope"
+     compress

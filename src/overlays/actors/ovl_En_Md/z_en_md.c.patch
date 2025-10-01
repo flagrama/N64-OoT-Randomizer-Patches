@@ -1,0 +1,42 @@
+diff --git a/src/overlays/actors/ovl_En_Md/z_en_md.c b/src/overlays/actors/ovl_En_Md/z_en_md.c
+index 296f4d42a..1dda52a81 100644
+--- a/src/overlays/actors/ovl_En_Md/z_en_md.c
++++ b/src/overlays/actors/ovl_En_Md/z_en_md.c
+@@ -536,26 +536,30 @@ s16 EnMd_UpdateTalkState(PlayState* play, Actor* thisx) {
+     }
+ }
+
+-u8 EnMd_ShouldSpawn(EnMd* this, PlayState* play) {
++bool EnMd_ShouldSpawn(EnMd* this, PlayState* play) {
+     if (play->sceneId == SCENE_KOKIRI_FOREST) {
+-        if (!GET_EVENTCHKINF(EVENTCHKINF_1C) && !GET_EVENTCHKINF(EVENTCHKINF_40)) {
+-            return 1;
++        if ((gSaveContext.save.randomizer.shuffleChests
++                && (!GET_EVENTCHKINF(EVENTCHKINF_1C) || !GET_EVENTCHKINF(EVENTCHKINF_04)))
++                || (!GET_EVENTCHKINF(EVENTCHKINF_1C) && !GET_EVENTCHKINF(EVENTCHKINF_40))) {
++            return true;
+         }
+     }
+
+     if (play->sceneId == SCENE_MIDOS_HOUSE) {
+-        if (GET_EVENTCHKINF(EVENTCHKINF_1C) || GET_EVENTCHKINF(EVENTCHKINF_40)) {
++        if ((gSaveContext.save.randomizer.shuffleChests
++                && (GET_EVENTCHKINF(EVENTCHKINF_1C) || GET_EVENTCHKINF(EVENTCHKINF_40)) && GET_EVENTCHKINF(EVENTCHKINF_04))
++                || GET_EVENTCHKINF(EVENTCHKINF_1C) || GET_EVENTCHKINF(EVENTCHKINF_40)) {
+             if (!LINK_IS_ADULT) {
+-                return 1;
++                return true;
+             }
+         }
+     }
+
+     if (play->sceneId == SCENE_LOST_WOODS) {
+-        return 1;
++        return true;
+     }
+
+-    return 0;
++    return false;
+ }
+
+ void EnMd_UpdateEyes(EnMd* this) {

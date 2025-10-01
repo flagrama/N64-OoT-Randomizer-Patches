@@ -1,0 +1,38 @@
+diff --git a/src/code/z_scene.c b/src/code/z_scene.c
+index feef5ffc6..f55e68173 100644
+--- a/src/code/z_scene.c
++++ b/src/code/z_scene.c
+@@ -61,6 +61,33 @@ s32 Object_SpawnPersistent(ObjectContext* objectCtx, s16 objectId) {
+     return objectCtx->numEntries - 1;
+ }
+
++s32 Object_SpawnTemporary(ObjectContext* objectCtx, s16 objectId) {
++    objectCtx->slots[objectCtx->numEntries].id = objectId;
++    u32 size = gObjectTable[objectId].vromEnd - gObjectTable[objectId].vromStart;
++
++    PRINTF("OBJECT[%d] SIZE %fK SEG=%x\n", objectId, size / 1024.0f, objectCtx->slots[objectCtx->numEntries].segment);
++
++    PRINTF("num=%d adrs=%x end=%x\n", objectCtx->numEntries,
++           (uintptr_t)objectCtx->slots[objectCtx->numEntries].segment + size, objectCtx->spaceEnd);
++
++    ASSERT(((objectCtx->numEntries < ARRAY_COUNT(objectCtx->slots)) &&
++            (((uintptr_t)objectCtx->slots[objectCtx->numEntries].segment + size) < (uintptr_t)objectCtx->spaceEnd)),
++           "this->num < OBJECT_EXCHANGE_BANK_MAX && (this->status[this->num].Segment + size) < this->endSegment",
++           __FILE_NAME__, __LINE__);
++
++    DMA_REQUEST_SYNC(objectCtx->slots[objectCtx->numEntries].segment, gObjectTable[objectId].vromStart, size,
++                     __FILE_NAME__, __LINE__);
++
++    if (objectCtx->numEntries < (ARRAY_COUNT(objectCtx->slots) - 1)) {
++        objectCtx->slots[objectCtx->numEntries + 1].segment =
++            (void*)ALIGN16((uintptr_t)objectCtx->slots[objectCtx->numEntries].segment + size);
++    }
++
++    objectCtx->numEntries++;
++
++    return objectCtx->numEntries - 1;
++}
++
+ // PAL N64 versions reduce the size of object space by 4 KiB in order to give some space back to
+ // the Zelda arena, which can help prevent an issue where actors fail to spawn in specific areas
+ // (sometimes referred to as the "Hyrule Field Glitch" although it can happen in more places than Hyrule Field).

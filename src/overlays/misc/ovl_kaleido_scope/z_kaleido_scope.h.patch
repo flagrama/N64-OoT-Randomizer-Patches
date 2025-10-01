@@ -1,0 +1,14 @@
+diff --git a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.h b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.h
+index 27454ee1f..c20dbb77d 100644
+--- a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.h
++++ b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.h
+@@ -141,6 +141,9 @@ typedef enum PromptQuad {
+ #define ITEM_AMMO_ONES_QUAD_OFFSET_X 6
+ #define ITEM_AMMO_ONES_QUAD_OFFSET_Y 0
+
++#define EQUIP_GRID_ROWS 4
++#define EQUIP_GRID_COLS 4
++
+ typedef enum ItemQuad {
+     // 0 to 23 are the ITEM_GRID_ROWS*ITEM_GRID_COLS item grid
+     // The values follow the `InventorySlot` enum

@@ -1,0 +1,12 @@
+diff --git a/src/code/z_kankyo.c b/src/code/z_kankyo.c
+index c78fc5de8..d3a52d79c 100644
+--- a/src/code/z_kankyo.c
++++ b/src/code/z_kankyo.c
+@@ -285,6 +285,7 @@ void Environment_Init(PlayState* play2, EnvironmentContext* envCtx, s32 unused)
+     PlayState* play = play2;
+
+     gSaveContext.sunsSongState = SUNSSONG_INACTIVE;
++    envCtx->windSpeed = 0;
+
+     //! FAKE: (void)0 on CLOCK_TIME(18, 0)
+     if (((void)0, gSaveContext.save.dayTime) > ((void)0, CLOCK_TIME(18, 0)) ||

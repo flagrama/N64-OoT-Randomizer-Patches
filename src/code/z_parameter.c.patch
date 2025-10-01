@@ -1,0 +1,190 @@
+diff --git a/src/code/z_parameter.c b/src/code/z_parameter.c
+index 1498db0fb..62b874f2b 100644
+--- a/src/code/z_parameter.c
++++ b/src/code/z_parameter.c
+@@ -1489,7 +1489,11 @@ u8 Item_Give(PlayState* play, u8 item) {
+         gSaveContext.save.info.inventory.equipment |= OWNED_EQUIP_FLAG(EQUIP_TYPE_BOOTS, item - ITEM_BOOTS_KOKIRI);
+         return ITEM_NONE;
+     } else if ((item == ITEM_DUNGEON_BOSS_KEY) || (item == ITEM_DUNGEON_COMPASS) || (item == ITEM_DUNGEON_MAP)) {
+-        gSaveContext.save.info.inventory.dungeonItems[gSaveContext.mapIndex] |= gBitFlags[item - ITEM_DUNGEON_BOSS_KEY];
++        if (gSaveContext.mapIndex == SCENE_INSIDE_GANONS_CASTLE) {
++            gSaveContext.save.info.inventory.dungeonItems[SCENE_GANONS_TOWER] |= gBitFlags[item - ITEM_DUNGEON_BOSS_KEY];
++        } else {
++            gSaveContext.save.info.inventory.dungeonItems[gSaveContext.mapIndex] |= gBitFlags[item - ITEM_DUNGEON_BOSS_KEY];
++        }
+         return ITEM_NONE;
+     } else if (item == ITEM_SMALL_KEY) {
+         if (gSaveContext.save.info.inventory.dungeonKeys[gSaveContext.mapIndex] < 0) {
+@@ -1512,7 +1516,9 @@ u8 Item_Give(PlayState* play, u8 item) {
+             }
+         }
+     } else if (item == ITEM_QUIVER_40) {
+-        Inventory_ChangeUpgrade(UPG_QUIVER, 2);
++        if (CUR_UPG_VALUE(UPG_QUIVER) < 2 || !gSaveContext.save.randomizer.shuffleChests) {
++            Inventory_ChangeUpgrade(UPG_QUIVER, 2);
++        }
+         AMMO(ITEM_BOW) = CAPACITY(UPG_QUIVER, 2);
+         return ITEM_NONE;
+     } else if (item == ITEM_QUIVER_50) {
+@@ -1520,7 +1526,9 @@ u8 Item_Give(PlayState* play, u8 item) {
+         AMMO(ITEM_BOW) = CAPACITY(UPG_QUIVER, 3);
+         return ITEM_NONE;
+     } else if (item == ITEM_BULLET_BAG_40) {
+-        Inventory_ChangeUpgrade(UPG_BULLET_BAG, 2);
++        if (CUR_UPG_VALUE(UPG_BULLET_BAG) < 2 || !gSaveContext.save.randomizer.shuffleChests) {
++            Inventory_ChangeUpgrade(UPG_BULLET_BAG, 2);
++        }
+         AMMO(ITEM_SLINGSHOT) = CAPACITY(UPG_BULLET_BAG, 2);
+         return ITEM_NONE;
+     } else if (item == ITEM_BULLET_BAG_50) {
+@@ -1540,7 +1548,9 @@ u8 Item_Give(PlayState* play, u8 item) {
+             }
+         }
+     } else if (item == ITEM_BOMB_BAG_30) {
+-        Inventory_ChangeUpgrade(UPG_BOMB_BAG, 2);
++        if (CUR_UPG_VALUE(UPG_BOMB_BAG) < 2 || !gSaveContext.save.randomizer.shuffleChests) {
++            Inventory_ChangeUpgrade(UPG_BOMB_BAG, 2);
++        }
+         AMMO(ITEM_BOMB) = CAPACITY(UPG_BOMB_BAG, 2);
+         return ITEM_NONE;
+     } else if (item == ITEM_BOMB_BAG_40) {
+@@ -1548,22 +1558,30 @@ u8 Item_Give(PlayState* play, u8 item) {
+         AMMO(ITEM_BOMB) = CAPACITY(UPG_BOMB_BAG, 3);
+         return ITEM_NONE;
+     } else if (item == ITEM_STRENGTH_GORONS_BRACELET) {
+-        Inventory_ChangeUpgrade(UPG_STRENGTH, 1);
++        if (CUR_UPG_VALUE(UPG_STRENGTH) < 1 || !gSaveContext.save.randomizer.shuffleChests) {
++            Inventory_ChangeUpgrade(UPG_STRENGTH, 1);
++        }
+         return ITEM_NONE;
+     } else if (item == ITEM_STRENGTH_SILVER_GAUNTLETS) {
+-        Inventory_ChangeUpgrade(UPG_STRENGTH, 2);
++        if (CUR_UPG_VALUE(UPG_STRENGTH) < 2 || !gSaveContext.save.randomizer.shuffleChests) {
++            Inventory_ChangeUpgrade(UPG_STRENGTH, 2);
++        }
+         return ITEM_NONE;
+     } else if (item == ITEM_STRENGTH_GOLD_GAUNTLETS) {
+         Inventory_ChangeUpgrade(UPG_STRENGTH, 3);
+         return ITEM_NONE;
+     } else if (item == ITEM_SCALE_SILVER) {
+-        Inventory_ChangeUpgrade(UPG_SCALE, 1);
++        if (CUR_UPG_VALUE(UPG_SCALE) < 1 || !gSaveContext.save.randomizer.shuffleChests) {
++            Inventory_ChangeUpgrade(UPG_SCALE, 1);
++        }
+         return ITEM_NONE;
+     } else if (item == ITEM_SCALE_GOLDEN) {
+         Inventory_ChangeUpgrade(UPG_SCALE, 2);
+         return ITEM_NONE;
+     } else if (item == ITEM_ADULTS_WALLET) {
+-        Inventory_ChangeUpgrade(UPG_WALLET, 1);
++        if (CUR_UPG_VALUE(UPG_WALLET) < 1 || !gSaveContext.save.randomizer.shuffleChests) {
++            Inventory_ChangeUpgrade(UPG_WALLET, 1);
++        }
+         return ITEM_NONE;
+     } else if (item == ITEM_GIANTS_WALLET) {
+         Inventory_ChangeUpgrade(UPG_WALLET, 2);
+@@ -1596,6 +1614,11 @@ u8 Item_Give(PlayState* play, u8 item) {
+         Inventory_ChangeUpgrade(UPG_DEKU_NUTS, 3);
+         AMMO(ITEM_DEKU_NUT) = CAPACITY(UPG_DEKU_NUTS, 3);
+         return ITEM_NONE;
++    } else if (gSaveContext.save.randomizer.shuffleChests && item == ITEM_HOOKSHOT) {
++        if (INV_CONTENT(ITEM_LONGSHOT) != ITEM_LONGSHOT || !gSaveContext.save.randomizer.shuffleChests) {
++            INV_CONTENT(ITEM_HOOKSHOT) = ITEM_HOOKSHOT;
++        }
++        return ITEM_NONE;
+     } else if (item == ITEM_LONGSHOT) {
+         INV_CONTENT(item) = item;
+         for (i = 1; i < 4; i++) {
+@@ -1693,9 +1716,11 @@ u8 Item_Give(PlayState* play, u8 item) {
+
+         return ITEM_BOW;
+     } else if (item == ITEM_SLINGSHOT) {
+-        Inventory_ChangeUpgrade(UPG_BULLET_BAG, 1);
++        if (CUR_UPG_VALUE(UPG_BULLET_BAG) == 0 || !gSaveContext.save.randomizer.shuffleChests) {
++            Inventory_ChangeUpgrade(UPG_BULLET_BAG, 1);
++        }
+         INV_CONTENT(ITEM_SLINGSHOT) = ITEM_SLINGSHOT;
+-        AMMO(ITEM_SLINGSHOT) = 30;
++        AMMO(ITEM_SLINGSHOT) = CUR_CAPACITY(UPG_BULLET_BAG);
+         return ITEM_NONE;
+     } else if (item == ITEM_DEKU_SEEDS) {
+         AMMO(ITEM_SLINGSHOT) += 5;
+@@ -1724,7 +1749,9 @@ u8 Item_Give(PlayState* play, u8 item) {
+
+         return ITEM_DEKU_SEEDS;
+     } else if (item == ITEM_OCARINA_FAIRY) {
+-        INV_CONTENT(ITEM_OCARINA_FAIRY) = ITEM_OCARINA_FAIRY;
++        if (INV_CONTENT(ITEM_OCARINA_OF_TIME) != ITEM_OCARINA_OF_TIME || !gSaveContext.save.randomizer.shuffleChests) {
++            INV_CONTENT(ITEM_OCARINA_FAIRY) = ITEM_OCARINA_FAIRY;
++        }
+         return ITEM_NONE;
+     } else if (item == ITEM_OCARINA_OF_TIME) {
+         INV_CONTENT(ITEM_OCARINA_OF_TIME) = ITEM_OCARINA_OF_TIME;
+@@ -1851,7 +1878,7 @@ u8 Item_Give(PlayState* play, u8 item) {
+             }
+         }
+     } else if ((item >= ITEM_WEIRD_EGG) && (item <= ITEM_CLAIM_CHECK)) {
+-        if (item == ITEM_POACHERS_SAW) {
++        if (item == ITEM_POACHERS_SAW && !gSaveContext.save.randomizer.shuffleChests) {
+             //! @bug Setting this shared flag makes getting the Deku Nut upgrade impossible
+             SET_ITEMGETINF(ITEMGETINF_FOREST_STAGE_NUT_UPGRADE);
+         }
+@@ -3058,6 +3085,27 @@ void Interface_DrawAmmoCount(PlayState* play, s16 button, s16 alpha) {
+     CLOSE_DISPS(play->state.gfxCtx, "../z_parameter.c", 3158);
+ }
+
++void Interface_DrawSkipButton(PlayState* play) {
++    InterfaceContext* interfaceCtx = &play->interfaceCtx;
++
++    OPEN_DISPS(play->state.gfxCtx, __FILE_NAME__, __LINE__);
++
++    Matrix_Translate(0.0f, 0.0f, XREG(18) / 10.0f, MTXMODE_NEW);
++    Matrix_Scale(1.0f, 1.0f, 1.0f, MTXMODE_APPLY);
++    Matrix_RotateX(interfaceCtx->unk_1F4 / 10000.0f, MTXMODE_APPLY);
++
++    MATRIX_FINALIZE_AND_LOAD(OVERLAY_DISP++, play->state.gfxCtx, __FILE_NAME__, __LINE__);
++    gSPVertex(OVERLAY_DISP++, &interfaceCtx->actionVtx[0], 4, 0);
++
++    gDPLoadTextureBlock(OVERLAY_DISP++, gButtonBackgroundTex, G_IM_FMT_IA, G_IM_SIZ_8b, 32, 32, 0,
++                        G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD,
++                        G_TX_NOLOD);
++
++    gSP1Quadrangle(OVERLAY_DISP++, 0, 2, 3, 1, 0);
++
++    CLOSE_DISPS(play->state.gfxCtx, __FILE_NAME__, __LINE__);
++}
++
+ void Interface_DrawActionButton(PlayState* play) {
+     InterfaceContext* interfaceCtx = &play->interfaceCtx;
+
+@@ -3416,6 +3464,30 @@ void Interface_Draw(PlayState* play) {
+             Interface_DrawAmmoCount(play, 3, interfaceCtx->cRightAlpha);
+         }
+
++        if (play->csCtx.state > CS_STATE_IDLE && play->csCtx.skippable) {
++            Gfx_SetupDL_42Overlay(play->state.gfxCtx);
++            func_8008A8B8(play, 200, 200 + 35, 143, 143 + 35);
++            gSPClearGeometryMode(OVERLAY_DISP++, G_CULL_BOTH);
++            gDPSetCombineMode(OVERLAY_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
++            gDPSetPrimColor(OVERLAY_DISP++, 0, 0, START_BUTTON_R, START_BUTTON_G, START_BUTTON_B, 255);
++            Interface_DrawSkipButton(play);
++            gDPPipeSync(OVERLAY_DISP++);
++            Interface_LoadActionLabel(interfaceCtx, DO_ACTION_SKIP, 2);
++            func_8008A8B8(play, 200, 200 + 35, 144, 144 + 35);
++            gSPSetGeometryMode(OVERLAY_DISP++, G_CULL_BACK);
++            gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
++                              PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
++            gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, 255);
++            gDPSetEnvColor(OVERLAY_DISP++, 0, 0, 0, 0);
++            Matrix_Translate(0.0f, 0.0f, R_A_LABEL_Z(gSaveContext.language) / 10.0f, MTXMODE_NEW);
++            Matrix_Scale(1.0f, 1.0f, 1.0f, MTXMODE_APPLY);
++            Matrix_RotateX(interfaceCtx->unk_1F4 / 10000.0f, MTXMODE_APPLY);
++            MATRIX_FINALIZE_AND_LOAD(OVERLAY_DISP++, play->state.gfxCtx, "../z_parameter.c", 3701);
++            gSPVertex(OVERLAY_DISP++, &interfaceCtx->actionVtx[4], 4, 0);
++            Interface_DrawActionLabel(play->state.gfxCtx, interfaceCtx->doActionSegment + DO_ACTION_TEX_SIZE * 2);
++            gDPPipeSync(OVERLAY_DISP++);
++        }
++
+         // A Button
+         Gfx_SetupDL_42Overlay(play->state.gfxCtx);
+         func_8008A8B8(play, R_A_BTN_Y, R_A_BTN_Y + 45, R_A_BTN_X, R_A_BTN_X + 45);
