@@ -61,7 +61,21 @@ make compress
 
 If all goes well, a new ROM should be built at `build/randomizer/oot-randomizer-compressed.z64`
 
-## Emulators
+## Usage
+
+bsdiff patches are available on the [latest release page](https://github.com/flagrama/N64-OoT-Randomizer-Patches/releases/latest).
+Most people should choose the `ntsc.bsdiff` file to download.
+If you are going to run the ROM directly on a PAL console, or have other reasons for wanting it, download the `pal.bsdiff` file.
+
+You can use [this online patcher](https://kairi003.github.io/bsdiff-wasm/) to apply the patches.
+Use the `bspatch` section.
+For `OldFile` you want an NTSC 1.0 U version of Ocarina of Time with an extension of `.z64`.
+Select the `.bsdiff` file you downloaded above into the `PatchFile` box and click run.
+
+The resulting ROM file should be playable on stock Nintendo 64 consoles.
+You don't even need the RAM expansion.
+
+### Emulators
 
 This project will not run properly on the Wii Virtual Console emulator at present.
 It will also not work properly on graphics plugins other than Angrylion or ParaLLEl-RDP.
