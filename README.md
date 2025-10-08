@@ -5,20 +5,49 @@ This repository houses the code and binary patches and original assets necessary
 The patches are available both in a single massive patch file for applying to a branch of the [decompilation of Ocarina of Time](https://github.com/zeldaret/oot), and separate individual file patches in the same folder structure as the decompilation.
 Use commit 1e556e3a3de0a485837a1277d82d765c1be690f7 as the base from decomp for best results currently.
 
-## Setup
+## Usage
+
+bsdiff patches are available on the [latest release page](https://github.com/flagrama/N64-OoT-Randomizer-Patches/releases/latest).
+Most people should choose the `ntsc.bsdiff` file to download.
+If you are going to run the ROM directly on a PAL console, or have other reasons for wanting it, download the `pal.bsdiff` file.
+
+You can use [this online patcher](https://kairi003.github.io/bsdiff-wasm/) to apply the patches.
+Use the `bspatch` section.
+For `OldFile` you want an NTSC 1.0 U version of Ocarina of Time with an extension of `.z64`.
+Select the `.bsdiff` file you downloaded above into the `PatchFile` box and click run.
+
+The resulting ROM file should be playable on stock Nintendo 64 consoles.
+You don't even need the RAM expansion.
+
+### Emulators
+
+This project will not run properly on the Wii Virtual Console emulator at present.
+It will also not work properly on graphics plugins other than Angrylion or ParaLLEl-RDP.
+Other emulator inaccuracies may also impact your experience.
+The only supported emulator is [Ares](https://ares-emu.net/).
+
+## Contributing
+
+Contributions are limited.
+There are various factors at work causing this.
+If you wish to try and contribute still, start a discussion on the Discord channel.
+
+## Building
 
 Building has only been tested on native Linux. WSL and Docker should work just as well but are untested. macOS may require additional setup not supported here.
 
 ### Linux
 #### 1. Install build dependencies and clone the repository
 
-Follow the installation instructions on the decompilation readme for these two steps.
-
-After cloning the repository and changing into the new directory checkout the commit the patch file was made against using git again.
+Follow the installation instructions on [the decompilation readme](https://github.com/zeldaret/oot?tab=readme-ov-file#the-legend-of-zelda-ocarina-of-time) with the additional step after cloning the repository and changing into the new directory checkout the commit the patch file was made against using git again.
 
 ```bash
 git checkout 1e556e3a3de0a485837a1277d82d765c1be690f7
 ```
+
+Continue to follow the README there until you build a working ROM to ensure the build environment is working.
+To shortcut some of the setup for randomizer, use pal-1.1 as the base version.
+This is not required though, as step the remainder of these build instructions will explain to do so too.
 
 #### 2. Download the patch file
 
@@ -60,30 +89,3 @@ make compress
 ```
 
 If all goes well, a new ROM should be built at `build/randomizer/oot-randomizer-compressed.z64`
-
-## Usage
-
-bsdiff patches are available on the [latest release page](https://github.com/flagrama/N64-OoT-Randomizer-Patches/releases/latest).
-Most people should choose the `ntsc.bsdiff` file to download.
-If you are going to run the ROM directly on a PAL console, or have other reasons for wanting it, download the `pal.bsdiff` file.
-
-You can use [this online patcher](https://kairi003.github.io/bsdiff-wasm/) to apply the patches.
-Use the `bspatch` section.
-For `OldFile` you want an NTSC 1.0 U version of Ocarina of Time with an extension of `.z64`.
-Select the `.bsdiff` file you downloaded above into the `PatchFile` box and click run.
-
-The resulting ROM file should be playable on stock Nintendo 64 consoles.
-You don't even need the RAM expansion.
-
-### Emulators
-
-This project will not run properly on the Wii Virtual Console emulator at present.
-It will also not work properly on graphics plugins other than Angrylion or ParaLLEl-RDP.
-Other emulator inaccuracies may also impact your experience.
-The only supported emulator is [Ares](https://ares-emu.net/).
-
-## Contributing
-
-Contributions are limited.
-There are various factors at work causing this.
-If you wish to try and contribute still, start a discussion on the Discord channel.
