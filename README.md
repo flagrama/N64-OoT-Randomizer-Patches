@@ -47,7 +47,7 @@ git checkout 1e556e3a3de0a485837a1277d82d765c1be690f7
 
 Continue to follow the README there until you build a working ROM to ensure the build environment is working.
 To shortcut some of the setup for randomizer, use pal-1.1 as the base version.
-This is not required though, as step the remainder of these build instructions will explain to do so too.
+This is not required though, as the remainder of these build instructions will explain to do so too.
 
 #### 2. Download the patch file
 
