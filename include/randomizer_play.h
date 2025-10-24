@@ -1,7 +1,7 @@
 #ifndef RANDOMIZER_PLAY_H
 #define RANDOMIZER_PLAY_H 1
-#include "z64item.h"
-#include "z64scene.h"
+#include "item.h"
+#include "scene.h"
 
 typedef enum {
     CHEST_MIDO_0,

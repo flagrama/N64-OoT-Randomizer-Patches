@@ -1,5 +1,5 @@
 diff --git a/src/code/z_demo.c b/src/code/z_demo.c
-index d5135b99d..9f48a88f5 100644
+index 358edd32e..c39e1f8e9 100644
 --- a/src/code/z_demo.c
 +++ b/src/code/z_demo.c
 @@ -188,6 +188,7 @@ void Cutscene_DrawDebugInfo(PlayState* play, Gfx** dlist, CutsceneContext* csCtx
@@ -8,12 +8,12 @@ index d5135b99d..9f48a88f5 100644
      csCtx->timer = 0.0f;
 +    csCtx->skippable = false;
  }
-
+ 
  void Cutscene_StartManual(PlayState* play, CutsceneContext* csCtx) {
-@@ -589,6 +590,10 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
+@@ -590,6 +591,10 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
      Player* player = GET_PLAYER(play);
      s32 titleDemoSkipped = false;
-
+ 
 +    if (!csCtx->skippable && ((csCtx->curFrame > 30) && (gSaveContext.fileNum != 0xFEDC) && (gSaveContext.fileNum != 0xFF))) {
 +        csCtx->skippable = true;
 +    }
@@ -23,7 +23,7 @@ index d5135b99d..9f48a88f5 100644
          (CHECK_BTN_ALL(play->state.input[0].press.button, BTN_A) ||
 @@ -601,8 +606,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
      }
-
+ 
      if ((csCtx->curFrame == cmd->startFrame) || titleDemoSkipped ||
 -        (DEBUG_FEATURES && (csCtx->curFrame > 20) && CHECK_BTN_ALL(play->state.input[0].press.button, BTN_START) &&
 -         (gSaveContext.fileNum != 0xFEDC))) {
@@ -33,7 +33,7 @@ index d5135b99d..9f48a88f5 100644
          gSaveContext.cutsceneTransitionControl = 1;
 @@ -902,6 +906,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
                  break;
-
+ 
              case CS_DEST_LAKE_HYLIA_FROM_LAKE_RESTORED:
 +                SET_EVENTCHKINF(EVENTCHKINF_RESTORED_LAKE_HYLIA);
                  play->nextEntranceIndex = ENTR_LAKE_HYLIA_5;
@@ -41,7 +41,7 @@ index d5135b99d..9f48a88f5 100644
                  play->transitionType = TRANS_TYPE_FADE_BLACK;
 @@ -915,6 +920,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
                  break;
-
+ 
              case CS_DEST_WINDMILL_FROM_WELL_DRAINED:
 +                SET_EVENTCHKINF(EVENTCHKINF_DRAINED_WELL);
                  play->nextEntranceIndex = ENTR_WINDMILL_AND_DAMPES_GRAVE_2;
@@ -49,16 +49,16 @@ index d5135b99d..9f48a88f5 100644
                  play->transitionType = TRANS_TYPE_FADE_BLACK_FAST;
 @@ -945,6 +951,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
                  break;
-
+ 
              case CS_DEST_DESERT_COLOSSUS_FROM_REQUIEM:
 +                Item_Give(play, ITEM_SONG_REQUIEM);
                  play->nextEntranceIndex = ENTR_DESERT_COLOSSUS_4;
                  play->transitionTrigger = TRANS_TRIGGER_START;
                  play->transitionType = TRANS_TYPE_SANDSTORM_END;
-@@ -2401,15 +2408,20 @@ void Cutscene_HandleEntranceTriggers(PlayState* play) {
+@@ -2405,15 +2412,20 @@ void Cutscene_HandleEntranceTriggers(PlayState* play) {
              requiredAge = gSaveContext.save.linkAge;
          }
-
+ 
 -        if ((gSaveContext.save.entranceIndex == entranceCutscene->entrance) &&
 -            (!Flags_GetEventChkInf(entranceCutscene->flag) || (entranceCutscene->flag == EVENTCHKINF_EPONA_OBTAINED)) &&
 +        if ((gSaveContext.save.entranceIndex == entranceCutscene->entrance)) {
@@ -67,7 +67,7 @@ index d5135b99d..9f48a88f5 100644
 +            }
 +
 +            if ((!Flags_GetEventChkInf(entranceCutscene->flag) || (entranceCutscene->flag == EVENTCHKINF_EPONA_OBTAINED)) &&
-             (gSaveContext.save.cutsceneIndex < 0xFFF0) && ((u8)gSaveContext.save.linkAge == requiredAge) &&
+             (gSaveContext.save.cutsceneIndex < CS_INDEX_0) && ((u8)gSaveContext.save.linkAge == requiredAge) &&
              (gSaveContext.respawnFlag <= 0)) {
 -            Flags_SetEventChkInf(entranceCutscene->flag);
 -            Cutscene_SetScript(play, entranceCutscene->script);
@@ -83,11 +83,11 @@ index d5135b99d..9f48a88f5 100644
          }
      }
  }
-@@ -2437,6 +2449,7 @@ void Cutscene_HandleConditionalTriggers(PlayState* play) {
+@@ -2441,6 +2453,7 @@ void Cutscene_HandleConditionalTriggers(PlayState* play) {
                     LINK_IS_ADULT && !Flags_GetEventChkInf(EVENTCHKINF_C4) &&
                     (gEntranceTable[((void)0, gSaveContext.save.entranceIndex)].sceneId == SCENE_TEMPLE_OF_TIME)) {
              Flags_SetEventChkInf(EVENTCHKINF_C4);
 +            Item_Give(play, ITEM_ARROW_LIGHT);
              gSaveContext.save.entranceIndex = ENTR_TEMPLE_OF_TIME_0;
-             gSaveContext.save.cutsceneIndex = 0xFFF8;
+             gSaveContext.save.cutsceneIndex = CS_INDEX_8;
          } else if (!Flags_GetEventChkInf(EVENTCHKINF_C7) &&

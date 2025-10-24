@@ -1,0 +1,12 @@
+diff --git a/include/thread.h b/include/thread.h
+index c3e52a407..6d9b10b12 100644
+--- a/include/thread.h
++++ b/include/thread.h
+@@ -14,6 +14,7 @@
+ #define THREAD_ID_AUDIOMGR   10
+ #define THREAD_ID_DMAMGR     18
+ #define THREAD_ID_IRQMGR     19
++#define THREAD_ID_RANDOMIZER 20
+ 
+ #define THREAD_PRI_IDLE_INIT    10
+ #define THREAD_PRI_MAIN_INIT    10

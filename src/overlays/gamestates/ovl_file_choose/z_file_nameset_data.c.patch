@@ -1,0 +1,20 @@
+diff --git a/src/overlays/gamestates/ovl_file_choose/z_file_nameset_data.c b/src/overlays/gamestates/ovl_file_choose/z_file_nameset_data.c
+index b51fd2ece..1169d99f3 100644
+--- a/src/overlays/gamestates/ovl_file_choose/z_file_nameset_data.c
++++ b/src/overlays/gamestates/ovl_file_choose/z_file_nameset_data.c
+@@ -81,3 +81,15 @@ s16 gCharPageEng[] = {
+ #include "assets/overlays/ovl_file_choose/gCharPageEng.inc.c"
+ };
+ #endif
++
++Vtx gRandoMenuHeadersVtx[] = {
++#include "assets//overlays/ovl_file_choose/gRandoMenuHeadersVtx.inc.c"
++};
++
++Vtx gRandoMenuSettingsVtx[] = {
++#include "assets/overlays/ovl_file_choose/gRandoMenuSettingsVtx.inc.c"
++};
++
++Vtx gRandoFileInfoVtx[] = {
++#include "assets/overlays/ovl_file_choose/gRandoFileInfoVtx.inc.c"
++};

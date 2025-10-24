@@ -1,5 +1,5 @@
 diff --git a/src/overlays/actors/ovl_En_Box/z_en_box.c b/src/overlays/actors/ovl_En_Box/z_en_box.c
-index c4ef15919..eb1e4a94a 100644
+index c3e37e868..be50e321b 100644
 --- a/src/overlays/actors/ovl_En_Box/z_en_box.c
 +++ b/src/overlays/actors/ovl_En_Box/z_en_box.c
 @@ -7,6 +7,7 @@
@@ -13,7 +13,7 @@ index c4ef15919..eb1e4a94a 100644
 @@ -109,6 +110,14 @@ void EnBox_ClipToGround(EnBox* this, PlayState* play) {
      }
  }
-
+ 
 +GetItemID EnBox_GetContentsGetItemID(EnBox* this, PlayState* play) {
 +    unsigned flag = PARAMS_GET_U(this->dyna.actor.params, 0, 5);
 +    if (gSaveContext.save.randomizer.shuffleChests && !(play->sceneId == SCENE_TREASURE_BOX_SHOP && flag < 0x0A)) {
@@ -25,21 +25,29 @@ index c4ef15919..eb1e4a94a 100644
  void EnBox_Init(Actor* thisx, PlayState* play2) {
      PlayState* play = play2;
      EnBox* this = (EnBox*)thisx;
-@@ -195,6 +204,13 @@ void EnBox_Init(Actor* thisx, PlayState* play2) {
-                    this->morphTable, 5);
-     Animation_Change(&this->skelanime, anim, 1.5f, animFrameStart, endFrame, ANIMMODE_ONCE, 0.0f);
-
-+    if (EnBox_GetContentsGetItemID(this, play) == GI_ICE_TRAP) {
-+        // Spawn the object for the ice trap wind effect if the scene has not loaded it
-+        if (Object_GetSlot(&play->objectCtx, OBJECT_FZ) == -1) {
-+            Object_SpawnTemporary(&play->objectCtx, OBJECT_FZ);
+@@ -131,6 +140,7 @@ void EnBox_Init(Actor* thisx, PlayState* play2) {
+     this->movementFlags = 0;
+     this->type = PARAMS_GET_U(thisx->params, 12, 4);
+     this->iceSmokeTimer = 0;
++    this->manuallyLoadedIceSmokeObject = false;
+     this->unk_1FB = ENBOX_STATE_0;
+     this->dyna.actor.gravity = -5.5f;
+     this->switchFlag = this->dyna.actor.world.rot.z;
+@@ -212,6 +222,13 @@ void EnBox_Init(Actor* thisx, PlayState* play2) {
+ void EnBox_Destroy(Actor* thisx, PlayState* play) {
+     EnBox* this = (EnBox*)thisx;
+ 
++    // Unload the manually loaded ice smoke effect
++    if (this->manuallyLoadedIceSmokeObject) {
++        if (Object_GetSlot(&play->objectCtx, OBJECT_FZ) != -1) {
++            play->objectCtx.numEntries--;
 +        }
 +    }
 +
-     switch (this->type) {
-         case ENBOX_TYPE_SMALL:
-         case ENBOX_TYPE_6:
-@@ -446,7 +462,7 @@ void EnBox_WaitOpen(EnBox* this, PlayState* play) {
+     DynaPoly_DeleteBgActor(play, &play->colCtx.dyna, this->dyna.bgId);
+ }
+ 
+@@ -444,7 +461,7 @@ void EnBox_WaitOpen(EnBox* this, PlayState* play) {
          Actor_WorldToActorCoords(&this->dyna.actor, &sp4C, &player->actor.world.pos);
          if (sp4C.z > -50.0f && sp4C.z < 0.0f && fabsf(sp4C.y) < 10.0f && fabsf(sp4C.x) < 20.0f &&
              Player_IsFacingActor(&this->dyna.actor, 0x3000, play)) {
@@ -48,11 +56,19 @@ index c4ef15919..eb1e4a94a 100644
          }
          if (Flags_GetTreasure(play, PARAMS_GET_U(this->dyna.actor.params, 0, 5))) {
              EnBox_SetupAction(this, EnBox_Open);
-@@ -559,7 +575,7 @@ void EnBox_Update(Actor* thisx, PlayState* play) {
+@@ -556,7 +573,15 @@ void EnBox_Update(Actor* thisx, PlayState* play) {
              Actor_SetFocus(&this->dyna.actor, 40.0f);
      }
-
+ 
 -    if (PARAMS_GET_U(this->dyna.actor.params, 5, 7) == GI_ICE_TRAP && this->actionFunc == EnBox_Open &&
++    if (EnBox_GetContentsGetItemID(this, play) == GI_ICE_TRAP) {
++        // Spawn the object for the ice trap wind effect if the scene has not loaded it
++        if (Object_GetSlot(&play->objectCtx, OBJECT_FZ) == -1) {
++            Object_SpawnTemporary(&play->objectCtx, OBJECT_FZ);
++            this->manuallyLoadedIceSmokeObject = true;
++        }
++    }
++
 +    if (EnBox_GetContentsGetItemID(this, play) == GI_ICE_TRAP && this->actionFunc == EnBox_Open &&
          this->skelanime.curFrame > 45 && this->iceSmokeTimer < 100) {
          EnBox_SpawnIceSmoke(this, play);

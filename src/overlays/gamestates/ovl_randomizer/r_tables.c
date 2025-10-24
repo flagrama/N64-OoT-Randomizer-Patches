@@ -5,7 +5,7 @@
 #include "r_tables.h"
 
 #include "array_count.h"
-#include "z64item.h"
+#include "item.h"
 
 LocationTableRow locationTable[] = {
     { KOKIRI_FOREST, "KF Mido's Top Left Chest",                                 CHEST_LOCATION,          SCENE_MIDOS_HOUSE,                  0x00, ITEM_RUPEE_BLUE, {

@@ -1,0 +1,12 @@
+diff --git a/assets/textures/do_action_static/do_action_static.h b/assets/textures/do_action_static/do_action_static.h
+index dcbed3786..a4afd3f5d 100644
+--- a/assets/textures/do_action_static/do_action_static.h
++++ b/assets/textures/do_action_static/do_action_static.h
+@@ -72,6 +72,7 @@ extern u64 gNum5DoActionENGTex[TEX_LEN(u64, DO_ACTION_TEX_WIDTH, DO_ACTION_TEX_H
+ extern u64 gNum6DoActionENGTex[TEX_LEN(u64, DO_ACTION_TEX_WIDTH, DO_ACTION_TEX_HEIGHT, 4)];
+ extern u64 gNum7DoActionENGTex[TEX_LEN(u64, DO_ACTION_TEX_WIDTH, DO_ACTION_TEX_HEIGHT, 4)];
+ extern u64 gNum8DoActionENGTex[TEX_LEN(u64, DO_ACTION_TEX_WIDTH, DO_ACTION_TEX_HEIGHT, 4)];
++extern u64 gSkipDoActionENGTex[TEX_LEN(u64, DO_ACTION_TEX_WIDTH, DO_ACTION_TEX_HEIGHT, 4)];
+ 
+ #if OOT_PAL
+ 

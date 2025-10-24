@@ -1,12 +1,13 @@
 diff --git a/include/translation.h b/include/translation.h
-index 658332670..506b7a5b6 100644
+index 51fb34f84..c02bba0ef 100644
 --- a/include/translation.h
 +++ b/include/translation.h
-@@ -11,6 +11,6 @@
+@@ -13,7 +13,7 @@
   * Note: This translation macro exists for quality of life purposes.
   *       The original game would not have had a macro like this.
   */
 -#define T(jp, en) jp
 +#define T(jp, en) en
-
- #endif
+ 
+ #define LOG_STRING_T(stringJP, stringEN, file, line) LOG(#stringJP, stringJP, "%s", file, line)
+ 

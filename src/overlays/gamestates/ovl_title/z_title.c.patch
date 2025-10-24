@@ -1,11 +1,11 @@
 diff --git a/src/overlays/gamestates/ovl_title/z_title.c b/src/overlays/gamestates/ovl_title/z_title.c
-index 588588b24..fdd6beba4 100644
+index 907fdb886..9200a4264 100644
 --- a/src/overlays/gamestates/ovl_title/z_title.c
 +++ b/src/overlays/gamestates/ovl_title/z_title.c
 @@ -31,7 +31,6 @@
-
+ 
  #include "assets/textures/nintendo_rogo_static/nintendo_rogo_static.h"
-
+ 
 -#if DEBUG_FEATURES
  void ConsoleLogo_PrintBuildInfo(Gfx** gfxP) {
      Gfx* gfx;
@@ -31,24 +31,24 @@ index 588588b24..fdd6beba4 100644
      *gfxP = gfx;
  }
 -#endif
-
+ 
  void ConsoleLogo_Calc(ConsoleLogoState* this) {
  #if !PLATFORM_GC
 @@ -173,14 +175,10 @@ void ConsoleLogo_Main(GameState* thisx) {
      ConsoleLogo_Calc(this);
      ConsoleLogo_Draw(this);
-
+ 
 -#if DEBUG_FEATURES
 -    if (gIsCtrlr2Valid) {
 -        Gfx* gfx = POLY_OPA_DISP;
 +    Gfx* gfx = POLY_OPA_DISP;
-
+ 
 -        ConsoleLogo_PrintBuildInfo(&gfx);
 -        POLY_OPA_DISP = gfx;
 -    }
 -#endif
 +    ConsoleLogo_PrintBuildInfo(&gfx);
 +    POLY_OPA_DISP = gfx;
-
+ 
  #if PLATFORM_IQUE
      this->exit = true;

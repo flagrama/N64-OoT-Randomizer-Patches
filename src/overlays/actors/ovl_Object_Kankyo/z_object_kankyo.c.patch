@@ -1,5 +1,5 @@
 diff --git a/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c b/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c
-index c17027975..3563f9b21 100644
+index 5f8f580e4..16ad01074 100644
 --- a/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c
 +++ b/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c
 @@ -918,8 +918,48 @@ void ObjectKankyo_Beams(ObjectKankyo* this, PlayState* play) {
@@ -50,3 +50,4 @@ index c17027975..3563f9b21 100644
 +        }
      }
  }
+ 

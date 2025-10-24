@@ -57,7 +57,7 @@ TARGET ?=
 
 ifeq ($(COMPILER),gcc)
 ifneq ($(TARGET),)
-CFLAGS += -fno-reorder-blocks -fno-optimize-sibling-calls -fno-toplevel-reorder -n64-wiivc
+CFLAGS += -fno-reorder-blocks -fno-optimize-sibling-calls -fno-toplevel-reorder
 CPPFLAGS += -fno-reorder-blocks -fno-optimize-sibling-calls -fno-toplevel-reorder
 
 # Disables `.set gp=64` in exceptasm.s

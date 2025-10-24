@@ -1,10 +1,10 @@
 diff --git a/src/overlays/actors/ovl_En_Ru2/z_en_ru2.c b/src/overlays/actors/ovl_En_Ru2/z_en_ru2.c
-index db44d32ed..fd7acf863 100644
+index ff5e3518a..eacc4b4d6 100644
 --- a/src/overlays/actors/ovl_En_Ru2/z_en_ru2.c
 +++ b/src/overlays/actors/ovl_En_Ru2/z_en_ru2.c
-@@ -867,6 +867,8 @@ void EnRu2_StartSwimmingUp(EnRu2* this, PlayState* play) {
+@@ -872,6 +872,8 @@ void EnRu2_StartSwimmingUp(EnRu2* this, PlayState* play) {
  }
-
+ 
  void EnRu2_EndSwimmingUp(EnRu2* this, PlayState* play) {
 +    /* TODO: See if this line should be part of the quicktext setting instead of always on */
 +    Camera_SetFinishedFlag(GET_ACTIVE_CAM(play));

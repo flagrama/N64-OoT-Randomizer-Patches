@@ -1,5 +1,5 @@
 diff --git a/src/overlays/actors/ovl_Demo_Kekkai/z_demo_kekkai.c b/src/overlays/actors/ovl_Demo_Kekkai/z_demo_kekkai.c
-index 2a79aef45..032b44354 100644
+index d5c1faa67..779666126 100644
 --- a/src/overlays/actors/ovl_Demo_Kekkai/z_demo_kekkai.c
 +++ b/src/overlays/actors/ovl_Demo_Kekkai/z_demo_kekkai.c
 @@ -175,6 +175,7 @@ void DemoKekkai_SpawnParticles(DemoKekkai* this, PlayState* play) {

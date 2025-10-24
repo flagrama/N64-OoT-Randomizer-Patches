@@ -1,12 +1,9 @@
 diff --git a/docker-compose.yml b/docker-compose.yml
-index bca75f474..d8e3ffe2b 100644
+index 8f0a30b13..d8e3ffe2b 100644
 --- a/docker-compose.yml
 +++ b/docker-compose.yml
-@@ -1,8 +1,9 @@
- services:
-   oot:
-     build:
-+      context: .
+@@ -4,6 +4,6 @@ services:
+       context: .
        dockerfile: Dockerfile
      volumes:
 -      - ./:/oot

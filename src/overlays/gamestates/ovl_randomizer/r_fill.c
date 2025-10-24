@@ -12,7 +12,7 @@
 #include "fault.h"
 #include "printf.h"
 #include "randomizer_state.h"
-#include "z64game.h"
+#include "game.h"
 #include "zelda_arena.h"
 #include "libc64/sprintf.h"
 

@@ -1,11 +1,11 @@
 diff --git a/src/overlays/actors/ovl_En_Xc/z_en_xc.c b/src/overlays/actors/ovl_En_Xc/z_en_xc.c
-index 9d2ec1376..31ea89975 100644
+index e28d8f584..973230677 100644
 --- a/src/overlays/actors/ovl_En_Xc/z_en_xc.c
 +++ b/src/overlays/actors/ovl_En_Xc/z_en_xc.c
 @@ -388,8 +388,12 @@ s32 EnXc_SerenadeCS(EnXc* this, PlayState* play) {
          Player* player = GET_PLAYER(play);
          s32 stateFlags = player->stateFlags1;
-
+ 
 -        if (CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON) && !GET_EVENTCHKINF(EVENTCHKINF_52) &&
 -            !(stateFlags & PLAYER_STATE1_29) && !Play_InCsMode(play)) {
 +        bool shouldSpawn = CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON) && !GET_EVENTCHKINF(EVENTCHKINF_52);
@@ -15,9 +15,9 @@ index 9d2ec1376..31ea89975 100644
 +
 +        if (shouldSpawn && !(stateFlags & PLAYER_STATE1_29) && !Play_InCsMode(play)) {
              s32 pad;
-
+ 
              Cutscene_SetScript(play, gIceCavernSerenadeCs);
-@@ -2213,6 +2217,10 @@ void EnXc_InitTempleOfTime(EnXc* this, PlayState* play) {
+@@ -2214,6 +2218,10 @@ void EnXc_InitTempleOfTime(EnXc* this, PlayState* play) {
              gSaveContext.cutsceneTrigger = 1;
              this->action = SHEIK_ACTION_30;
          } else if (!GET_EVENTCHKINF(EVENTCHKINF_55)) {

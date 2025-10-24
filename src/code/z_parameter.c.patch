@@ -1,8 +1,8 @@
 diff --git a/src/code/z_parameter.c b/src/code/z_parameter.c
-index 1498db0fb..62b874f2b 100644
+index 1eb2b08ab..63ef0232a 100644
 --- a/src/code/z_parameter.c
 +++ b/src/code/z_parameter.c
-@@ -1489,7 +1489,11 @@ u8 Item_Give(PlayState* play, u8 item) {
+@@ -1492,7 +1492,11 @@ u8 Item_Give(PlayState* play, u8 item) {
          gSaveContext.save.info.inventory.equipment |= OWNED_EQUIP_FLAG(EQUIP_TYPE_BOOTS, item - ITEM_BOOTS_KOKIRI);
          return ITEM_NONE;
      } else if ((item == ITEM_DUNGEON_BOSS_KEY) || (item == ITEM_DUNGEON_COMPASS) || (item == ITEM_DUNGEON_MAP)) {
@@ -15,7 +15,7 @@ index 1498db0fb..62b874f2b 100644
          return ITEM_NONE;
      } else if (item == ITEM_SMALL_KEY) {
          if (gSaveContext.save.info.inventory.dungeonKeys[gSaveContext.mapIndex] < 0) {
-@@ -1512,7 +1516,9 @@ u8 Item_Give(PlayState* play, u8 item) {
+@@ -1515,7 +1519,9 @@ u8 Item_Give(PlayState* play, u8 item) {
              }
          }
      } else if (item == ITEM_QUIVER_40) {
@@ -26,7 +26,7 @@ index 1498db0fb..62b874f2b 100644
          AMMO(ITEM_BOW) = CAPACITY(UPG_QUIVER, 2);
          return ITEM_NONE;
      } else if (item == ITEM_QUIVER_50) {
-@@ -1520,7 +1526,9 @@ u8 Item_Give(PlayState* play, u8 item) {
+@@ -1523,7 +1529,9 @@ u8 Item_Give(PlayState* play, u8 item) {
          AMMO(ITEM_BOW) = CAPACITY(UPG_QUIVER, 3);
          return ITEM_NONE;
      } else if (item == ITEM_BULLET_BAG_40) {
@@ -37,7 +37,7 @@ index 1498db0fb..62b874f2b 100644
          AMMO(ITEM_SLINGSHOT) = CAPACITY(UPG_BULLET_BAG, 2);
          return ITEM_NONE;
      } else if (item == ITEM_BULLET_BAG_50) {
-@@ -1540,7 +1548,9 @@ u8 Item_Give(PlayState* play, u8 item) {
+@@ -1543,7 +1551,9 @@ u8 Item_Give(PlayState* play, u8 item) {
              }
          }
      } else if (item == ITEM_BOMB_BAG_30) {
@@ -48,7 +48,7 @@ index 1498db0fb..62b874f2b 100644
          AMMO(ITEM_BOMB) = CAPACITY(UPG_BOMB_BAG, 2);
          return ITEM_NONE;
      } else if (item == ITEM_BOMB_BAG_40) {
-@@ -1548,22 +1558,30 @@ u8 Item_Give(PlayState* play, u8 item) {
+@@ -1551,22 +1561,30 @@ u8 Item_Give(PlayState* play, u8 item) {
          AMMO(ITEM_BOMB) = CAPACITY(UPG_BOMB_BAG, 3);
          return ITEM_NONE;
      } else if (item == ITEM_STRENGTH_GORONS_BRACELET) {
@@ -83,7 +83,7 @@ index 1498db0fb..62b874f2b 100644
          return ITEM_NONE;
      } else if (item == ITEM_GIANTS_WALLET) {
          Inventory_ChangeUpgrade(UPG_WALLET, 2);
-@@ -1596,6 +1614,11 @@ u8 Item_Give(PlayState* play, u8 item) {
+@@ -1599,6 +1617,11 @@ u8 Item_Give(PlayState* play, u8 item) {
          Inventory_ChangeUpgrade(UPG_DEKU_NUTS, 3);
          AMMO(ITEM_DEKU_NUT) = CAPACITY(UPG_DEKU_NUTS, 3);
          return ITEM_NONE;
@@ -95,8 +95,8 @@ index 1498db0fb..62b874f2b 100644
      } else if (item == ITEM_LONGSHOT) {
          INV_CONTENT(item) = item;
          for (i = 1; i < 4; i++) {
-@@ -1693,9 +1716,11 @@ u8 Item_Give(PlayState* play, u8 item) {
-
+@@ -1696,9 +1719,11 @@ u8 Item_Give(PlayState* play, u8 item) {
+ 
          return ITEM_BOW;
      } else if (item == ITEM_SLINGSHOT) {
 -        Inventory_ChangeUpgrade(UPG_BULLET_BAG, 1);
@@ -109,8 +109,8 @@ index 1498db0fb..62b874f2b 100644
          return ITEM_NONE;
      } else if (item == ITEM_DEKU_SEEDS) {
          AMMO(ITEM_SLINGSHOT) += 5;
-@@ -1724,7 +1749,9 @@ u8 Item_Give(PlayState* play, u8 item) {
-
+@@ -1727,7 +1752,9 @@ u8 Item_Give(PlayState* play, u8 item) {
+ 
          return ITEM_DEKU_SEEDS;
      } else if (item == ITEM_OCARINA_FAIRY) {
 -        INV_CONTENT(ITEM_OCARINA_FAIRY) = ITEM_OCARINA_FAIRY;
@@ -120,7 +120,7 @@ index 1498db0fb..62b874f2b 100644
          return ITEM_NONE;
      } else if (item == ITEM_OCARINA_OF_TIME) {
          INV_CONTENT(ITEM_OCARINA_OF_TIME) = ITEM_OCARINA_OF_TIME;
-@@ -1851,7 +1878,7 @@ u8 Item_Give(PlayState* play, u8 item) {
+@@ -1854,7 +1881,7 @@ u8 Item_Give(PlayState* play, u8 item) {
              }
          }
      } else if ((item >= ITEM_WEIRD_EGG) && (item <= ITEM_CLAIM_CHECK)) {
@@ -129,10 +129,10 @@ index 1498db0fb..62b874f2b 100644
              //! @bug Setting this shared flag makes getting the Deku Nut upgrade impossible
              SET_ITEMGETINF(ITEMGETINF_FOREST_STAGE_NUT_UPGRADE);
          }
-@@ -3058,6 +3085,27 @@ void Interface_DrawAmmoCount(PlayState* play, s16 button, s16 alpha) {
+@@ -3051,6 +3078,27 @@ void Interface_DrawAmmoCount(PlayState* play, s16 button, s16 alpha) {
      CLOSE_DISPS(play->state.gfxCtx, "../z_parameter.c", 3158);
  }
-
+ 
 +void Interface_DrawSkipButton(PlayState* play) {
 +    InterfaceContext* interfaceCtx = &play->interfaceCtx;
 +
@@ -156,11 +156,11 @@ index 1498db0fb..62b874f2b 100644
 +
  void Interface_DrawActionButton(PlayState* play) {
      InterfaceContext* interfaceCtx = &play->interfaceCtx;
-
-@@ -3416,6 +3464,30 @@ void Interface_Draw(PlayState* play) {
+ 
+@@ -3409,6 +3457,30 @@ void Interface_Draw(PlayState* play) {
              Interface_DrawAmmoCount(play, 3, interfaceCtx->cRightAlpha);
          }
-
+ 
 +        if (play->csCtx.state > CS_STATE_IDLE && play->csCtx.skippable) {
 +            Gfx_SetupDL_42Overlay(play->state.gfxCtx);
 +            func_8008A8B8(play, 200, 200 + 35, 143, 143 + 35);
@@ -188,3 +188,14 @@ index 1498db0fb..62b874f2b 100644
          // A Button
          Gfx_SetupDL_42Overlay(play->state.gfxCtx);
          func_8008A8B8(play, R_A_BTN_Y, R_A_BTN_Y + 45, R_A_BTN_X, R_A_BTN_X + 45);
+@@ -3431,6 +3503,10 @@ void Interface_Draw(PlayState* play) {
+         gSPVertex(OVERLAY_DISP++, &interfaceCtx->actionVtx[4], 4, 0);
+ 
+         if ((interfaceCtx->unk_1EC < 2) || (interfaceCtx->unk_1EC == 3)) {
++            if (interfaceCtx->unk_1EC == 3) {
++                // Ensure start button has Return action in pause menu
++                Interface_LoadActionLabel(interfaceCtx, DO_ACTION_RETURN, 2);
++            }
+             Interface_DrawActionLabel(play->state.gfxCtx, interfaceCtx->doActionSegment);
+         } else {
+             Interface_DrawActionLabel(play->state.gfxCtx, interfaceCtx->doActionSegment + DO_ACTION_TEX_SIZE);

@@ -1,13 +1,13 @@
 diff --git a/src/audio/internal/load.c b/src/audio/internal/load.c
-index f723e5b83..d5b4ad0ae 100644
+index 9989d1407..986b98b93 100644
 --- a/src/audio/internal/load.c
 +++ b/src/audio/internal/load.c
-@@ -1295,7 +1295,7 @@ void AudioLoad_Init(void* heap, u32 heapSize) {
+@@ -1296,7 +1296,7 @@ void AudioLoad_Init(void* heap, u32 heapSize) {
      }
-
+ 
      // 1000 is a conversion from seconds to milliseconds
 -#if !OOT_PAL_N64
-+#if !OOT_PAL_N64 || OOT_REGION != REGION_EU
++#if OOT_REGION != REGION_EU
      switch (osTvType) {
          case OS_TV_PAL:
              gAudioCtx.maxTempoTvTypeFactors = 1000 * REFRESH_RATE_DEVIATION_PAL / REFRESH_RATE_PAL;

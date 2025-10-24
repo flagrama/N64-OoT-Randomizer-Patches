@@ -1,10 +1,10 @@
 diff --git a/include/file_select_state.h b/include/file_select_state.h
-index 0a831caa0..9ed9d3757 100644
+index 6dc7cfadc..a8a21711b 100644
 --- a/include/file_select_state.h
 +++ b/include/file_select_state.h
-@@ -10,86 +10,87 @@
- #include "z64view.h"
-
+@@ -10,86 +10,90 @@
+ #include "view.h"
+ 
  typedef struct FileSelectState {
 -    /* 0x00000 */ GameState state;
 -    /* 0x000A4 */ Vtx* windowVtx;
@@ -50,7 +50,7 @@ index 0a831caa0..9ed9d3757 100644
 +    Vtx* nameEntryVtx;
 +    u8 n64ddFlag;
 +    u16 deaths[2];
-+    u8 fileNames[2][8];
++    u8 fileNames[2][10];
 +    u16 healthCapacities[2];
 +    u32 questItems[2];
 +    s16 n64ddFlags[2];
@@ -111,6 +111,8 @@ index 0a831caa0..9ed9d3757 100644
 -    /* 0x1CAD4 */ s16 newFileNameCharCount;
 -    /* 0x1CAD6 */ s16 unk_1CAD6[5];
 -} FileSelectState; // size = 0x1CAE0
++    u32 seed[2];
++    u8 seedChars[2][10];
 +    s16 buttonIndex;
 +    s16 confirmButtonIndex; // 0: yes, 1: quit
 +    s16 menuMode;
@@ -141,6 +143,7 @@ index 0a831caa0..9ed9d3757 100644
 +    s16 nameEntryBoxAlpha;
 +    s16 controlsAlpha;
 +    s16 emptyFileTextAlpha;
++    s16 randomizerAlpha;
 +    s16 highlightColor[4];
 +    s16 highlightPulseDir; // 0 fade out, 1 fade in
 +    s16 unk_1CAAC; // initialized but never used
@@ -163,6 +166,6 @@ index 0a831caa0..9ed9d3757 100644
 +    s16 newFileNameCharCount;
 +    s16 unk_1CAD6[5];
 +} FileSelectState;
-
+ 
  void FileSelect_Init(GameState* thisx);
  void FileSelect_Destroy(GameState* thisx);

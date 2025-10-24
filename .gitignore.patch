@@ -11,6 +11,6 @@ index 4ccab8104..ea27ca413 100644
  *.n64
  *.v64
 +*.wad
-
+ 
  # Tools
  .venv/

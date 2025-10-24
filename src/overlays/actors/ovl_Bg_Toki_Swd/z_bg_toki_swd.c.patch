@@ -1,5 +1,5 @@
 diff --git a/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c b/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c
-index a3a385696..1f7b931c2 100644
+index 5a2fe183e..6ae529d72 100644
 --- a/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c
 +++ b/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c
 @@ -112,10 +112,11 @@ void func_808BAF40(BgTokiSwd* this, PlayState* play) {

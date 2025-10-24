@@ -1,5 +1,5 @@
 diff --git a/src/code/z_game_dlftbls.c b/src/code/z_game_dlftbls.c
-index 57efe90df..f0d4c1a86 100644
+index 84fca6ba6..533bda612 100644
 --- a/src/code/z_game_dlftbls.c
 +++ b/src/code/z_game_dlftbls.c
 @@ -2,6 +2,7 @@

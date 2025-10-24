@@ -1,11 +1,11 @@
 diff --git a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.h b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.h
-index 27454ee1f..c20dbb77d 100644
+index d19b5757a..8cb98469a 100644
 --- a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.h
 +++ b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.h
-@@ -141,6 +141,9 @@ typedef enum PromptQuad {
+@@ -190,6 +190,9 @@ typedef enum PromptQuad {
  #define ITEM_AMMO_ONES_QUAD_OFFSET_X 6
  #define ITEM_AMMO_ONES_QUAD_OFFSET_Y 0
-
+ 
 +#define EQUIP_GRID_ROWS 4
 +#define EQUIP_GRID_COLS 4
 +

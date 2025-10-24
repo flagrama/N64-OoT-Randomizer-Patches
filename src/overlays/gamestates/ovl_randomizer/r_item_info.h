@@ -4,7 +4,7 @@
 
 #include "r_containers.h"
 
-#include "z64item.h"
+#include "item.h"
 #include "ultra64/ultratypes.h"
 
 extern u32 itemIdToSolverId[ITEM_NONE];

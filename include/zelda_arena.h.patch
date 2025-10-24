@@ -7,6 +7,6 @@ index cf6740657..9c08874de 100644
  void ZeldaArena_Cleanup(void);
  s32 ZeldaArena_IsInitialized(void);
 +size_t ZeldaArena_MaxAllocated(void);
-
+ 
  #if DEBUG_FEATURES
  void ZeldaArena_CheckPointer(void* ptr, u32 size, const char* name, const char* action);

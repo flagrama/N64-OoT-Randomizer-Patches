@@ -11,7 +11,7 @@
 #include "r_region.h"
 #include "r_tables.h"
 #include "vector.h"
-#include "z64scene.h"
+#include "scene.h"
 #include "zelda_arena.h"
 #include "libc64/sprintf.h"
 

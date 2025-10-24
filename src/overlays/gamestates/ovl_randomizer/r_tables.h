@@ -3,7 +3,7 @@
 #include "randomizer.h"
 
 #include "r_ast.h"
-#include "z64item.h"
+#include "item.h"
 
 typedef struct LocationTableRow {
     RegionEnum regionKey;

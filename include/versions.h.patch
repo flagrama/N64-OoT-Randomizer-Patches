@@ -5,7 +5,7 @@ index 620b27999..b5e786798 100644
 @@ -1,6 +1,8 @@
  #ifndef VERSIONS_H
  #define VERSIONS_H
-
+ 
 +#include "region.h"
 +
  // OOT versions in build order
@@ -13,7 +13,7 @@ index 620b27999..b5e786798 100644
  #define NTSC_1_1       2
 @@ -41,7 +43,7 @@
  #endif
-
+ 
  // Macro for constants that change in 50 Hz N64 PAL versions.
 -#if !OOT_PAL_N64
 +#if OOT_REGION != REGION_EU

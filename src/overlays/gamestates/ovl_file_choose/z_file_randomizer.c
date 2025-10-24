@@ -1,3 +1,4 @@
+#include "array_count.h"
 #include "file_select.h"
 #include "file_select_state.h"
 
@@ -7,9 +8,9 @@
 #include "rumble.h"
 #include "sfx.h"
 #include "sys_matrix.h"
-#include "z64audio.h"
-#include "z64save.h"
-#include "assets/overlays/ovl_file_choose/ovl_file_choose.h"
+#include "audio.h"
+#include "save.h"
+#include "z_lib.h"
 
 #include "assets/textures/title_static/title_static.h"
 #include "libc64/qrand.h"
@@ -38,47 +39,81 @@ void FileSelect_RotateToRandomizerSettings(GameState* thisx) {
 
     this->windowRot += VREG(16);
 
-    if (this->windowRot >= 314.0f) {
-        this->windowRot = 314.0f;
-        this->configMode = CM_START_RANDOMIZER_OPTIONS;
+    if (this->configMode == CM_SEED_ENTRY_TO_RANDOMIZER) {
+        if (this->windowRot >= 942.0f) {
+            this->windowRot = 314.0f;
+            this->configMode = CM_START_RANDOMIZER_OPTIONS;
+        }
+    } else {
+        if (this->windowRot >= 314.0f) {
+            this->windowRot = 314.0f;
+            this->configMode = CM_START_RANDOMIZER_OPTIONS;
+        }
     }
 }
 
 void FileSelect_StartRandomizerOptions(GameState* thisx) {
     FileSelectState* this = (FileSelectState*)thisx;
 
-    this->nameEntryBoxAlpha += 25;
+    this->randomizerAlpha += 25;
 
-    if (this->nameEntryBoxAlpha >= 255) {
-        this->nameEntryBoxAlpha = 255;
-    }
-
-    this->nameEntryBoxPosX -= 30;
-
-    if (this->nameEntryBoxPosX <= 0) {
-        this->nameEntryBoxPosX = 0;
-        this->nameEntryBoxAlpha = 255;
+    if (this->randomizerAlpha >= 255) {
+        this->randomizerAlpha = 255;
         this->configMode = CM_RANDOMIZER_MENU;
     }
 }
+
+enum RandomizerSettingType {
+    BOOLEAN,
+    STRING,
+};
+
+enum RandomizerSetting {
+    SETTING_SEED,
+    SETTING_CHEST
+};
+
+typedef struct RandomizerSettingInfo {
+    enum RandomizerSetting setting;
+    enum RandomizerSettingType type;
+} RandomizerSettingInfo;
+
+static RandomizerSettingInfo sRandomizerSettings[] = {
+    { SETTING_SEED, STRING }, // Seed
+    { SETTING_CHEST, BOOLEAN }, // Chests
+};
+
+static int sSelectedRandomizerSetting = 0;
 
 void FileSelect_UpdateRandomizerOptionsMenu(GameState* thisx) {
     FileSelectState* this = (FileSelectState*)thisx;
     SramContext* sramCtx = &this->sramCtx;
     Input* input = &this->state.input[0];
 
+    if (CHECK_BTN_ALL(input->press.button, BTN_A)) {
+        if (sSelectedRandomizerSetting == SETTING_SEED) {
+            SFX_PLAY_CENTERED(NA_SE_SY_FSEL_DECIDE_L);
+            this->configMode = CM_RANDOMIZER_TO_SEED_ENTRY;
+            this->charPage = FS_CHAR_PAGE_ENG;
+            this->charIndex = 0;
+            this->charBgAlpha = 0;
+            if (this->newFileNameCharCount > 9) {
+                this->newFileNameCharCount = 0;
+            }
+            this->nameEntryBoxPosX = 120;
+            this->nameEntryBoxAlpha = 0;
+        }
+    }
+
     if (CHECK_BTN_ALL(input->press.button, BTN_B)) {
-        Audio_PlaySfxGeneral(NA_SE_SY_FSEL_CLOSE, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                             &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
+        SFX_PLAY_CENTERED(NA_SE_SY_FSEL_CLOSE);
         this->configMode = CM_RANDOMIZER_TO_MAIN;
         return;
     }
 
     if (CHECK_BTN_ALL(input->press.button, BTN_START)) {
-        Audio_PlaySfxGeneral(NA_SE_SY_FSEL_DECIDE_L, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                             &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
+        SFX_PLAY_CENTERED(NA_SE_SY_FSEL_DECIDE_L);
         Rumble_Request(300.0f, 180, 20, 100);
-        gSaveContext.save.randomizer.seed = Rand_Next();
         gSaveContext.save.randomizer.initialized = true;
         Sram_WriteSave(sramCtx);
         this->menuMode = FS_MENU_MODE_SELECT;
@@ -88,13 +123,33 @@ void FileSelect_UpdateRandomizerOptionsMenu(GameState* thisx) {
     }
 
     if (this->stickAdjX < -30) {
-        Audio_PlaySfxGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                             &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-        gSaveContext.save.randomizer.shuffleChests ^= 1;
+        if (sRandomizerSettings[sSelectedRandomizerSetting].type != STRING) {
+            SFX_PLAY_CENTERED(NA_SE_SY_FSEL_CURSOR);
+        }
+        if (sRandomizerSettings[sSelectedRandomizerSetting].setting == SETTING_CHEST) {
+            gSaveContext.save.randomizer.shuffleChests ^= 1;
+        }
     } else if (this->stickAdjX > 30) {
-        Audio_PlaySfxGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                             &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-        gSaveContext.save.randomizer.shuffleChests ^= 1;
+        if (sRandomizerSettings[sSelectedRandomizerSetting].type != STRING) {
+            SFX_PLAY_CENTERED(NA_SE_SY_FSEL_CURSOR);
+        }
+        if (sRandomizerSettings[sSelectedRandomizerSetting].setting == SETTING_CHEST) {
+            gSaveContext.save.randomizer.shuffleChests ^= 1;
+        }
+    }
+
+    if (this->stickAdjY < -30) {
+        SFX_PLAY_CENTERED(NA_SE_SY_FSEL_CURSOR);
+        sSelectedRandomizerSetting++;
+        if (sSelectedRandomizerSetting > ARRAY_COUNT(sRandomizerSettings) - 1) {
+            sSelectedRandomizerSetting = 0;
+        }
+    } else if (this->stickAdjY > 30) {
+        SFX_PLAY_CENTERED(NA_SE_SY_FSEL_CURSOR);
+        sSelectedRandomizerSetting--;
+        if (sSelectedRandomizerSetting < 0) {
+            sSelectedRandomizerSetting = ARRAY_COUNT(sRandomizerSettings) - 1;
+        }
     }
 }
 
@@ -103,11 +158,18 @@ void FileSelect_RotateToMainFromRandomizer(GameState* thisx) {
 
     this->windowRot += VREG(16);
 
+    if (this->windowRot > 500) {
+        this->newFileNameCharCount = 0;
+        this->seed[this->selectedFileIndex] = 0;
+        Lib_MemSet(this->seedChars[this->selectedFileIndex], sizeof(this->seedChars[0]), FILENAME_SPACE);
+    }
+
     if (this->windowRot >= 628.0f) {
         this->windowRot = 0.0f;
+        this->randomizerAlpha = 0;
         this->configMode = CM_MAIN_MENU;
         this->menuMode = FS_MENU_MODE_SELECT;
-        this->selectMode = SM_FADE_OUT_FILE_INFO;
+        this->selectMode = SM_CONFIRM_FILE;
     }
 }
 
@@ -130,6 +192,10 @@ typedef struct RandomizerMenuTextureInfo {
 static RandomizerMenuTextureInfo sRandomizerMenuHeaders[] = {
     { gRandoSettingsENGTex, 64, 16 },
     { gRandoShuffleENGTex, 64, 16 },
+};
+
+void* sRandomizerSettingButtonTextures[] = {
+    gRandoSeedButtonENGTex,
 };
 
 static RandomizerMenuTextureInfo sRandomizerToggleOptions[] = {
@@ -228,7 +294,7 @@ void FileSelect_DrawRandomizerSettings(GameState* thisx) {
 
     gDPSetCombineLERP(POLY_OPA_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, PRIMITIVE,
                       ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, this->titleAlpha[1]);
+    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, 255);
     gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 255);
 
     for (int i = 0, vtx = 0; i < 2; i++, vtx += 4) {
@@ -239,7 +305,7 @@ void FileSelect_DrawRandomizerSettings(GameState* thisx) {
 
         if (i > 0) {
             // Divider lines
-            gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 0, 255, 255, this->titleAlpha[1]);
+            gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 0, 255, 255, 255);
             gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 0);
 
             gDPLoadTextureBlock_4b(POLY_OPA_DISP++, gFileSelOptionsDividerTex, G_IM_FMT_IA, 256, 2, 0,
@@ -256,38 +322,84 @@ void FileSelect_DrawRandomizerSettings(GameState* thisx) {
         }
     }
 
-    // Settings
-    gSPVertex(POLY_OPA_DISP++, gRandoMenuSettingsVtx, 12, 0);
-
-    gDPPipeSync(POLY_OPA_DISP++);
+    gSPVertex(POLY_OPA_DISP++, &gRandoMenuHeadersVtx[12], 4, 0);
 
     gDPSetCombineLERP(POLY_OPA_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, PRIMITIVE,
-                      ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, this->titleAlpha[1]);
+                                  ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
+    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, 255);
     gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 255);
 
     gDPLoadTextureBlock(POLY_OPA_DISP++, gRandoChestsENGTex, G_IM_FMT_IA,
-                            G_IM_SIZ_8b, 64, 16,
+                            G_IM_SIZ_8b, 48, 16,
                             0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
     gSP1Quadrangle(POLY_OPA_DISP++, 0, 2, 3, 1, 0);
 
-    // Settings choices
-    for (int i = 0, vtx = 4; i < 2; i++, vtx += 4) {
-        gDPPipeSync(POLY_OPA_DISP++);
-        if (i == gSaveContext.save.randomizer.shuffleChests) {
-            gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, cursorPrimRed, cursorPrimGreen, cursorPrimBlue,
-                                this->titleAlpha[1]);
-            gDPSetEnvColor(POLY_OPA_DISP++, cursorEnvRed, cursorEnvGreen, cursorEnvBlue, 255);
-        } else {
-            gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, this->titleAlpha[1]);
-            gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 255);
+    // Settings
+    for (int i = 0, vtx = 0; i < ARRAY_COUNT(sRandomizerSettings); i++) {
+        switch (sRandomizerSettings[i].type) {
+            case BOOLEAN:
+                gDPPipeSync(POLY_OPA_DISP++);
+                gDPSetCombineLERP(POLY_OPA_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, PRIMITIVE,
+                      ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
+                // Settings choices
+                gSPVertex(POLY_OPA_DISP++, &gRandoMenuSettingsVtx[vtx], 8, 0);
+                for (int j = 0, vtxOffset = 0; j < 2; j++, vtx += 4, vtxOffset += 4) {
+                    gDPPipeSync(POLY_OPA_DISP++);
+                    bool currentChoice = false;
+                    switch (sRandomizerSettings[i].setting) {
+                        case SETTING_CHEST:
+                            currentChoice = gSaveContext.save.randomizer.shuffleChests;
+                            break;
+                        default:
+                            ASSERT(false, "No variable for randomizer setting", __FILE_NAME__, __LINE__);
+                    }
+                    if (j == currentChoice) {
+                        if (i == sSelectedRandomizerSetting) {
+                            gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, cursorPrimRed, cursorPrimGreen, cursorPrimBlue,
+                                                255);
+                            gDPSetEnvColor(POLY_OPA_DISP++, cursorEnvRed, cursorEnvGreen, cursorEnvBlue, 255);
+                        } else {
+                            gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, 255);
+                            gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 255);
+                        }
+                    } else {
+                        gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 120, 120, 120, 255);
+                        gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 255);
+                    }
+
+                    gDPLoadTextureBlock(POLY_OPA_DISP++, sRandomizerToggleOptions[j].texture, G_IM_FMT_IA,
+                                                G_IM_SIZ_8b, 32, 16,
+                                                0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
+
+                    gSP1Quadrangle(POLY_OPA_DISP++, vtxOffset, 2 + vtxOffset, 3 + vtxOffset, 1 + vtxOffset, 0);
+                }
+                break;
+            case STRING:
+                gDPPipeSync(POLY_OPA_DISP++);
+                gDPSetCombineLERP(POLY_OPA_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, PRIMITIVE,
+                      ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
+
+                // draw seed button, textbox, and text
+                FileSelect_DrawFileSeedInfo(thisx, gRandoMenuSettingsVtx, this->selectedFileIndex);
+                vtx += 52;
+
+                gSPVertex(POLY_OPA_DISP++, &gRandoMenuSettingsVtx[vtx], 4, 0);
+
+                if (i == sSelectedRandomizerSetting) {
+                    gDPPipeSync(POLY_OPA_DISP++);
+                    gDPSetCombineLERP(POLY_OPA_DISP++, 1, 0, PRIMITIVE, 0, TEXEL0, 0, PRIMITIVE, 0, 1, 0, PRIMITIVE, 0, TEXEL0, 0,
+                                      PRIMITIVE, 0);
+                    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, this->highlightColor[0], this->highlightColor[1],
+                                    this->highlightColor[2], this->randomizerAlpha == 255 ? this->highlightColor[3] : 0);
+                    gDPLoadTextureBlock(POLY_OPA_DISP++, gFileSelBigButtonHighlightTex, G_IM_FMT_I, G_IM_SIZ_8b, 72, 24, 0,
+                                        G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD,
+                                        G_TX_NOLOD);
+                    gSP1Quadrangle(POLY_OPA_DISP++, 0, 2, 3, 1, 0);
+                }
+                vtx += 4;
+                break;
+            default:
         }
-
-        gDPLoadTextureBlock(POLY_OPA_DISP++, sRandomizerToggleOptions[i].texture, G_IM_FMT_IA,
-                                    G_IM_SIZ_8b, 32, 16,
-                                    0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
-
-        gSP1Quadrangle(POLY_OPA_DISP++, vtx, vtx + 2, vtx + 3, vtx + 1, 0);
     }
 
     CLOSE_DISPS(this->state.gfxCtx, __FILE_NAME__, __LINE__);;
@@ -298,44 +410,23 @@ void FileSelect_DrawRandomizerMenu(GameState* thisx) {
 
     OPEN_DISPS(this->state.gfxCtx, __FILE_NAME__, __LINE__);
 
-    gDPPipeSync(POLY_OPA_DISP++);
-    gDPSetCombineMode(POLY_OPA_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
-    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, this->windowColor[0], this->windowColor[1], this->windowColor[2],
-                    this->windowAlpha);
-    gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 0);
-
-    Matrix_Translate(0.0f, 0.0f, -93.6f, MTXMODE_NEW);
-    Matrix_Scale(0.78f, 0.78f, 0.78f, MTXMODE_APPLY);
-    Matrix_RotateX((this->windowRot - 314.0f) / 100.0f, MTXMODE_APPLY);
-
-    MATRIX_FINALIZE_AND_LOAD(POLY_OPA_DISP++, this->state.gfxCtx, "../z_file_choose.c", 2337);
-
-    gSPVertex(POLY_OPA_DISP++, &this->windowVtx[0], 32, 0);
-    gSPDisplayList(POLY_OPA_DISP++, gFileSelWindow1DL);
-
-    gSPVertex(POLY_OPA_DISP++, &this->windowVtx[32], 32, 0);
-    gSPDisplayList(POLY_OPA_DISP++, gFileSelWindow2DL);
-
-    gSPVertex(POLY_OPA_DISP++, &this->windowVtx[64], 16, 0);
-    gSPDisplayList(POLY_OPA_DISP++, gFileSelWindow3DL);
-
-    gDPPipeSync(POLY_OPA_DISP++);
-
     FileSelect_DrawRandomizerSettings(&this->state);
 
     gDPPipeSync(POLY_OPA_DISP++);
 
-    Gfx_SetupDL_39Opa(this->state.gfxCtx);
+    if (this->configMode >= CM_RANDOMIZER_MENU && this->configMode <= CM_START_RANDOMIZER_OPTIONS) {
+        Gfx_SetupDL_39Opa(this->state.gfxCtx);
 
-    gDPSetCombineLERP(POLY_OPA_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
-                      PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 100, 255, 255, this->controlsAlpha);
-    gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 0);
-    gDPLoadTextureBlock(POLY_OPA_DISP++, gRandoControlsENGTex, G_IM_FMT_IA, G_IM_SIZ_8b, 144, 16,
-                        0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
-                        G_TX_NOLOD, G_TX_NOLOD);
-    gSPTextureRectangle(POLY_OPA_DISP++, 90 << 2, 204 << 2, 234 << 2, 220 << 2, G_TX_RENDERTILE, 0, 0, 1 << 10,
-                        1 << 10);
+        gDPSetCombineLERP(POLY_OPA_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
+                          PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
+        gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 100, 255, 255, this->controlsAlpha);
+        gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 0);
+        gDPLoadTextureBlock(POLY_OPA_DISP++, gRandoControlsENGTex, G_IM_FMT_IA, G_IM_SIZ_8b, 144, 16,
+                            0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
+                            G_TX_NOLOD, G_TX_NOLOD);
+        gSPTextureRectangle(POLY_OPA_DISP++, 90 << 2, 204 << 2, 234 << 2, 220 << 2, G_TX_RENDERTILE, 0, 0, 1 << 10,
+                            1 << 10);
+    }
 
     CLOSE_DISPS(this->state.gfxCtx, __FILE_NAME__, __LINE__);
 }

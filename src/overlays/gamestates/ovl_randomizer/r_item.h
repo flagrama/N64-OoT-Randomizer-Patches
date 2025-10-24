@@ -2,7 +2,7 @@
 #define R_ITEM_H 1
 #include "r_containers.h"
 
-#include "z64scene.h"
+#include "scene.h"
 
 typedef struct ItemInfo ItemInfo;
 

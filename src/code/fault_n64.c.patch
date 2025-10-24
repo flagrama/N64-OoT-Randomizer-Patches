@@ -1,5 +1,5 @@
 diff --git a/src/code/fault_n64.c b/src/code/fault_n64.c
-index 75fc704b9..0b05a1117 100644
+index 2d31b0f32..17c2c5ca0 100644
 --- a/src/code/fault_n64.c
 +++ b/src/code/fault_n64.c
 @@ -753,6 +753,7 @@ void Fault_ProcessClients(void) {
@@ -7,7 +7,7 @@ index 75fc704b9..0b05a1117 100644
      OSMesg msg;
      OSThread* faultedThread;
 +    gFaultMsgId = 0;
-
+ 
      osSetEventMesg(OS_EVENT_CPU_BREAK, &gFaultMgr.queue, FAULT_MSG_CPU_BREAK);
      osSetEventMesg(OS_EVENT_FAULT, &gFaultMgr.queue, FAULT_MSG_FAULT);
 @@ -788,7 +789,7 @@ void Fault_ThreadEntry(void* arg0) {

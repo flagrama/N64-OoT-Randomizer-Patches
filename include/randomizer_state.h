@@ -1,8 +1,9 @@
 #ifndef RANDOMIZER_STATE_H
 #define RANDOMIZER_STATE_H
 
-#include "z64game.h"
-#include "z64play.h"
+#include "game.h"
+#include "sram.h"
+#include "view.h"
 
 typedef enum {
     RM_RUNNING,

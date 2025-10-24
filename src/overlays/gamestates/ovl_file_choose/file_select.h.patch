@@ -1,8 +1,8 @@
 diff --git a/src/overlays/gamestates/ovl_file_choose/file_select.h b/src/overlays/gamestates/ovl_file_choose/file_select.h
-index ae41c4dce..96f837a93 100644
+index 016c04dce..2e87e4270 100644
 --- a/src/overlays/gamestates/ovl_file_choose/file_select.h
 +++ b/src/overlays/gamestates/ovl_file_choose/file_select.h
-@@ -68,7 +68,11 @@ typedef enum ConfigMode {
+@@ -68,7 +68,15 @@ typedef enum ConfigMode {
      /* 37 */ CM_OPTIONS_MENU,
      /* 38 */ CM_START_OPTIONS,
      /* 39 */ CM_OPTIONS_TO_MAIN,
@@ -11,11 +11,15 @@ index ae41c4dce..96f837a93 100644
 +    /* 41 */ CM_RANDOMIZER_MENU,
 +    /* 42 */ CM_START_RANDOMIZER_OPTIONS,
 +    /* 43 */ CM_RANDOMIZER_TO_MAIN,
++             CM_RANDOMIZER_TO_SEED_ENTRY,
++             CM_SEED_ENTRY,
++             CM_START_SEED_ENTRY,
++             CM_SEED_ENTRY_TO_RANDOMIZER,
 +    /* 44 */ CM_UNUSED_DELAY
  } ConfigMode;
-
+ 
  typedef enum SelectMode {
-@@ -78,8 +82,10 @@ typedef enum SelectMode {
+@@ -78,8 +86,10 @@ typedef enum SelectMode {
      /* 3 */ SM_CONFIRM_FILE,
      /* 4 */ SM_FADE_OUT_FILE_INFO,
      /* 5 */ SM_MOVE_FILE_TO_SLOT,
@@ -26,9 +30,9 @@ index ae41c4dce..96f837a93 100644
 +    /* 8 */ SM_FADE_OUT,
 +    /* 9 */ SM_LOAD_GAME
  } SelectMode;
-
+ 
  typedef enum TitleLabel {
-@@ -106,7 +112,6 @@ typedef enum WarningLabel {
+@@ -106,7 +116,6 @@ typedef enum WarningLabel {
  typedef enum MainMenuButtonIndex {
      /* 0 */ FS_BTN_MAIN_FILE_1,
      /* 1 */ FS_BTN_MAIN_FILE_2,
@@ -36,21 +40,21 @@ index ae41c4dce..96f837a93 100644
      /* 3 */ FS_BTN_MAIN_COPY,
      /* 4 */ FS_BTN_MAIN_ERASE,
      /* 5 */ FS_BTN_MAIN_OPTIONS
-@@ -115,21 +120,18 @@ typedef enum MainMenuButtonIndex {
+@@ -115,21 +124,18 @@ typedef enum MainMenuButtonIndex {
  typedef enum CopyMenuButtonIndex {
      /* 0 */ FS_BTN_COPY_FILE_1,
      /* 1 */ FS_BTN_COPY_FILE_2,
 -    /* 2 */ FS_BTN_COPY_FILE_3,
      /* 3 */ FS_BTN_COPY_QUIT
  } CopyMenuButtonIndex;
-
+ 
  typedef enum EraseMenuButtonIndex {
      /* 0 */ FS_BTN_ERASE_FILE_1,
      /* 1 */ FS_BTN_ERASE_FILE_2,
 -    /* 2 */ FS_BTN_ERASE_FILE_3,
      /* 3 */ FS_BTN_ERASE_QUIT
  } EraseMenuButtonIndex;
-
+ 
  typedef enum SelectMenuButtonIndex {
      /* 0 */ FS_BTN_SELECT_FILE_1,
      /* 1 */ FS_BTN_SELECT_FILE_2,
@@ -58,7 +62,7 @@ index ae41c4dce..96f837a93 100644
      /* 3 */ FS_BTN_SELECT_YES,
      /* 4 */ FS_BTN_SELECT_QUIT
  } SelectMenuButtonIndex;
-@@ -149,10 +151,8 @@ typedef enum ActionButtonIndex {
+@@ -149,10 +155,8 @@ typedef enum ActionButtonIndex {
  typedef enum SettingIndex {
      /* 0 */ FS_SETTING_AUDIO,
      /* 1 */ FS_SETTING_TARGET,
@@ -69,20 +73,23 @@ index ae41c4dce..96f837a93 100644
 +    FS_SETTING_QUICKTEXT,
 +    /* 2  */ FS_SETTING_MAX
  } SettingIndex;
-
+ 
  typedef enum CharPage {
-@@ -211,7 +211,6 @@ void FileSelect_StartNameEntry(GameState* thisx);
+@@ -211,7 +215,6 @@ void FileSelect_StartNameEntry(GameState* thisx);
  void FileSelect_UpdateOptionsMenu(GameState* thisx);
  void FileSelect_StartOptions(GameState* thisx);
-
+ 
 -void FileSelect_InitModeDraw(GameState* thisx);
  void FileSelect_ConfigModeDraw(GameState* thisx);
  void FileSelect_SelectModeDraw(GameState* thisx);
-
-@@ -221,8 +220,16 @@ void FileSelect_DrawOptions(GameState* thisx);
+ 
+@@ -221,8 +224,19 @@ void FileSelect_DrawOptions(GameState* thisx);
  void FileSelect_DrawNameEntry(GameState* thisx);
  void FileSelect_DrawCharacter(GraphicsContext* gfxCtx, void* texture, s16 vtx);
-
+ 
++void FileSelect_SeedToSeedChars(GameState* thisx, s16 fileIndex);
++void FileSelect_DrawFileSeedInfo(GameState* thisx, Vtx* gRandoFileInfoVtx, s16 fileIndex);
++
 +void FileSelect_LoadSave(GameState* thisx);
 +void FileSelect_RotateToRandomizerSettings(GameState* thisx);
 +void FileSelect_StartRandomizerOptions(GameState* thisx);
@@ -95,5 +102,19 @@ index ae41c4dce..96f837a93 100644
 -extern s16 D_808124C0[];
 +extern s16 fileNameCharWidth[];
  #endif
-
- #endif
+ 
+ extern Vtx gNameEntryVtx[];
+@@ -232,6 +246,13 @@ extern Vtx gOptionsDividerSoundVtx[];
+ extern Vtx gOptionsDividerZTargetVtx[];
+ extern Vtx gOptionsDividerBrightnessVtx[];
+ extern s16 gCharPageEng[];
++extern s16 sWindowContentColors[2][3];
++// Start rando
++extern void* sRandomizerSettingButtonTextures[];
++extern Vtx gRandoFileInfoVtx[];
++extern Vtx gRandoMenuHeadersVtx[];
++extern Vtx gRandoMenuSettingsVtx[];
++// End rando
+ #if OOT_NTSC
+ extern s16 gCharPageHira[];
+ extern s16 gCharPageKata[];

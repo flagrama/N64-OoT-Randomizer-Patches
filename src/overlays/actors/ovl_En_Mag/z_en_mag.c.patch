@@ -1,17 +1,17 @@
 diff --git a/src/overlays/actors/ovl_En_Mag/z_en_mag.c b/src/overlays/actors/ovl_En_Mag/z_en_mag.c
-index 5c1e68f77..be0a87742 100644
+index e52a54d5e..c22d1af65 100644
 --- a/src/overlays/actors/ovl_En_Mag/z_en_mag.c
 +++ b/src/overlays/actors/ovl_En_Mag/z_en_mag.c
 @@ -74,7 +74,7 @@ void EnMag_ResetSram(void) {
      SsSram_ReadWrite(OS_K1_TO_PHYSICAL(0xA8007000), buffer, 0x800, 1);
      SsSram_ReadWrite(OS_K1_TO_PHYSICAL(0xA8007800), buffer, 0x800, 1);
-
+ 
 -    gSaveContext.soundSetting = gSaveContext.zTargetSetting = 0; // SOUND_SETTING_STEREO/Z_TARGET_SETTING_SWITCH
 +    gSaveContext.quicktextSetting = gSaveContext.soundSetting = gSaveContext.zTargetSetting = 0; // QUICKTEXT_SETTING_OFF/SOUND_SETTING_STEREO/Z_TARGET_SETTING_SWITCH
      Audio_SetSoundOutputMode(gSaveContext.soundSetting);
  }
  #endif
-@@ -571,6 +571,18 @@ void EnMag_DrawInner(Actor* thisx, PlayState* play, Gfx** gfxP) {
+@@ -569,6 +569,18 @@ void EnMag_DrawInner(Actor* thisx, PlayState* play, Gfx** gfxP) {
          FILENAME_UPPERCASE('R'),
          FILENAME_UPPERCASE('T'),
      };
@@ -30,10 +30,10 @@ index 5c1e68f77..be0a87742 100644
      static void* effectMaskTextures[] = {
          gTitleEffectMask00Tex, gTitleEffectMask01Tex, gTitleEffectMask02Tex,
          gTitleEffectMask10Tex, gTitleEffectMask11Tex, gTitleEffectMask12Tex,
-@@ -657,6 +669,49 @@ void EnMag_DrawInner(Actor* thisx, PlayState* play, Gfx** gfxP) {
+@@ -655,6 +667,49 @@ void EnMag_DrawInner(Actor* thisx, PlayState* play, Gfx** gfxP) {
          EnMag_DrawTextureI8(&gfx, gTitleTheLegendOfTextTex, 72, 8, 153 + LOGO_X_SHIFT, 72, 72, 8, 1024, 1024);
          EnMag_DrawTextureI8(&gfx, gTitleOcarinaOfTimeTMTextTex, 96, 8, 151 + LOGO_X_SHIFT, 126, 96, 8, 1024, 1024);
-
+ 
 +        // Draw "RANDOMIZER" Text
 +        // Shadow
 +        gDPPipeSync(gfx++);

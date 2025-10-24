@@ -655,12 +655,20 @@ u64 gOptionQuicktextENGTex[] = {
 #include "assets/textures/title_static/quicktext_eng.ia8.inc.c"
 };
 
+u64 gRandoSeedButtonENGTex[] = {
+#include "assets/textures/title_static/seed_eng.ia16.inc.c"
+};
+
 u64 gOptionOnENGTex[] = {
 #include "assets/textures/title_static/on_eng.ia8.inc.c"
 };
 
 u64 gOptionOffENGTex[] = {
 #include "assets/textures/title_static/off_eng.ia8.inc.c"
+};
+
+u64 gRandoSeedPromptENGTex[] = {
+#include "assets/textures/title_static/seed_prompt_eng.ia8.inc.c"
 };
 
 Gfx gFileSelWindow1DL[] = {

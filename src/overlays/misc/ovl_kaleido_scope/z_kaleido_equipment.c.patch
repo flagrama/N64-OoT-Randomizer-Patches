@@ -1,18 +1,19 @@
 diff --git a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_equipment.c b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_equipment.c
-index 75c942820..b4210c0f7 100644
+index 1ac323712..4333d5f0f 100644
 --- a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_equipment.c
 +++ b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_equipment.c
-@@ -184,86 +184,103 @@ void KaleidoScope_DrawEquipment(PlayState* play) {
-
+@@ -231,87 +231,103 @@ void KaleidoScope_DrawEquipment(PlayState* play) {
+ 
              cursorMoveResult = 0;
              do {
 -                if (pauseCtx->stickAdjX < -30) {
--                    if (pauseCtx->cursorX[PAUSE_EQUIP] != 0) {
+-                    if (pauseCtx->cursorX[PAUSE_EQUIP] != EQUIP_CURSOR_X_UPG) {
 -                        pauseCtx->cursorX[PAUSE_EQUIP]--;
 -                        pauseCtx->cursorPoint[PAUSE_EQUIP] -= 1;
 -
--                        if (pauseCtx->cursorX[PAUSE_EQUIP] == 0) {
--                            if (pauseCtx->cursorY[PAUSE_EQUIP] == 0) {
+-                        if (pauseCtx->cursorX[PAUSE_EQUIP] == EQUIP_CURSOR_X_UPG) {
+-                            if (pauseCtx->cursorY[PAUSE_EQUIP] == EQUIP_CURSOR_Y_BULLETBAG_QUIVER) {
+-                                //! @bug Assumes adult always has bullet bag (as adult this should rely on `UPG_QUIVER`)
 -                                if (CUR_UPG_VALUE(UPG_BULLET_BAG) != 0) {
 -                                    cursorMoveResult = 1;
 -                                }
@@ -23,10 +24,10 @@ index 75c942820..b4210c0f7 100644
 +                    cursorX--;
 +                    cursorPoint -= 1; // move left
 +
-+                    while (cursorX >= 0) {
++                    while (cursorX >= EQUIP_CURSOR_X_UPG) {
 +                        // If now on the leftmost column, check if current row upgrade obtained
-+                        if (cursorX == 0) {
-+                            if (cursorY == 0) { // if in top row
++                        if (cursorX == EQUIP_CURSOR_X_UPG) {
++                            if (cursorY == EQUIP_CURSOR_Y_BULLETBAG_QUIVER) { // if in top row
 +                                if (CUR_UPG_VALUE(UPG_BULLET_BAG) != 0) { // if bullet bag obtained (normally middle of array)
 +                                    cursorMoveResult = 1; // allow movement to cursor point
 +                                    break;
@@ -46,7 +47,7 @@ index 75c942820..b4210c0f7 100644
 -                    } else {
 -                        pauseCtx->cursorX[PAUSE_EQUIP] = cursorX;
 -                        pauseCtx->cursorY[PAUSE_EQUIP]++;
-
+ 
 -                        if (pauseCtx->cursorY[PAUSE_EQUIP] >= 4) {
 -                            pauseCtx->cursorY[PAUSE_EQUIP] = 0;
 +                        // In other columns check if current row equipment obtained
@@ -55,13 +56,13 @@ index 75c942820..b4210c0f7 100644
 +                            cursorMoveResult = 2;
 +                            break;
                          }
-
+ 
 -                        pauseCtx->cursorPoint[PAUSE_EQUIP] =
 -                            pauseCtx->cursorX[PAUSE_EQUIP] + (pauseCtx->cursorY[PAUSE_EQUIP] * 4);
 +                        // Move cursor towards the bottom row
 +                        cursorY += 1;
 +                        cursorPoint += EQUIP_GRID_COLS;
-
+ 
 -                        if (pauseCtx->cursorPoint[PAUSE_EQUIP] >= 16) {
 -                            pauseCtx->cursorPoint[PAUSE_EQUIP] = pauseCtx->cursorX[PAUSE_EQUIP];
 +                        // If trying to go below last row, loop back to the first row
@@ -71,7 +72,7 @@ index 75c942820..b4210c0f7 100644
 +                        if (cursorPoint >= EQUIP_GRID_ROWS * EQUIP_GRID_COLS) {
 +                            cursorPoint = cursorX;
                          }
-
+ 
 +                        // Looped over all rows in the column, move on to the next column
                          if (cursorY == pauseCtx->cursorY[PAUSE_EQUIP]) {
 -                            pauseCtx->cursorX[PAUSE_EQUIP] = cursorX;
@@ -97,8 +98,8 @@ index 75c942820..b4210c0f7 100644
 -                        pauseCtx->cursorPoint[PAUSE_EQUIP] += 1;
 +                    pauseCtx->cursorX[PAUSE_EQUIP]++;
 +                    pauseCtx->cursorPoint[PAUSE_EQUIP] += 1;
-
--                        if (pauseCtx->cursorX[PAUSE_EQUIP] == 0) {
+ 
+-                        if (pauseCtx->cursorX[PAUSE_EQUIP] == EQUIP_CURSOR_X_UPG) {
 -                            if (CUR_UPG_VALUE(pauseCtx->cursorY[PAUSE_EQUIP]) != 0) {
 -                                cursorMoveResult = 1;
 -                            }
@@ -114,7 +115,7 @@ index 75c942820..b4210c0f7 100644
 +                    cursorX = pauseCtx->cursorX[PAUSE_EQUIP];
 +                    cursorY = pauseCtx->cursorY[PAUSE_EQUIP];
 +                    cursorPoint = pauseCtx->cursorPoint[PAUSE_EQUIP];
-
+ 
 -                        if (pauseCtx->cursorY[PAUSE_EQUIP] >= 4) {
 -                            pauseCtx->cursorY[PAUSE_EQUIP] = 0;
 +                    while (cursorX < EQUIP_GRID_COLS) {
@@ -123,13 +124,13 @@ index 75c942820..b4210c0f7 100644
 +                            cursorMoveResult = 2;
 +                            break;
                          }
-
+ 
 -                        pauseCtx->cursorPoint[PAUSE_EQUIP] =
 -                            pauseCtx->cursorX[PAUSE_EQUIP] + (pauseCtx->cursorY[PAUSE_EQUIP] * 4);
 +                        // Move cursor towards the bottom row
 +                        cursorY += 1;
 +                        cursorPoint += EQUIP_GRID_COLS;
-
+ 
 -                        if (pauseCtx->cursorPoint[PAUSE_EQUIP] >= 16) {
 -                            pauseCtx->cursorPoint[PAUSE_EQUIP] = pauseCtx->cursorX[PAUSE_EQUIP];
 +                        // If trying to go below last row, loop back to the first row
@@ -139,7 +140,7 @@ index 75c942820..b4210c0f7 100644
 +                        if (cursorPoint >= EQUIP_GRID_ROWS * EQUIP_GRID_COLS) {
 +                            cursorPoint = cursorX;
                          }
-
+ 
 +                        // Looped over all rows in the column, move on to the next column
                          if (cursorY == pauseCtx->cursorY[PAUSE_EQUIP]) {
 -                            pauseCtx->cursorX[PAUSE_EQUIP] = cursorX;

@@ -2,8 +2,8 @@
 #define R_AST_H 1
 #include "r_containers.h"
 #include "r_search.h"
-#include "z64item.h"
-#include "z64save.h"
+#include "item.h"
+#include "save.h"
 
 typedef struct Location Location;
 typedef struct Entrance Entrance;

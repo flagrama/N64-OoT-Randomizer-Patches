@@ -2,7 +2,9 @@
 #include "fault.h"
 #include "gfx.h"
 #include "gfx_setupdl.h"
+#include "play_state.h"
 #include "printf.h"
+#include "libc64/qrand.h"
 #if DEBUG_FEATURES
 #include "map_select_state.h"
 #endif
@@ -12,10 +14,9 @@
 #include "sfx.h"
 #include "stack.h"
 #include "stackcheck.h"
-#include "z64game.h"
-#include "z64play.h"
-#include "z64save.h"
-#include "z64thread.h"
+#include "game.h"
+#include "save.h"
+#include "thread.h"
 #include "libu64/gfxprint.h"
 
 OSThread sRandomizerThread;
@@ -176,6 +177,12 @@ void Randomizer_Init(GameState *gameState) {
     }
 
     Sram_Alloc(&this->state, &this->sramCtx);
+
+    if (!gSaveContext.save.randomizer.seed) {
+        gSaveContext.save.randomizer.seed = Rand_Next();
+    }
+    Sram_WriteSave(&this->sramCtx);
+    PRINTF("Seed set: %u\n", gSaveContext.save.randomizer.seed);
 
     /* Remove locked door to Boss Key Chest in Fire Temple */
     gSaveContext.save.info.sceneFlags[SCENE_FIRE_TEMPLE].swch |= (1 << 0x17);

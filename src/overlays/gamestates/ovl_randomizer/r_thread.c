@@ -13,7 +13,7 @@
 #include "r_world.h"
 
 #include "translation.h"
-#include "z64save.h"
+#include "save.h"
 #include "zelda_arena.h"
 #include "libc64/qrand.h"
 

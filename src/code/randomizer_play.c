@@ -1,7 +1,7 @@
 #include "randomizer_play.h"
 
 #include "fault.h"
-#include "z64scene.h"
+#include "scene.h"
 
 RandomizerChestID Randomizer_GetRandomizedChestContents(SceneID scene, u8 flag) {
     switch (scene) {

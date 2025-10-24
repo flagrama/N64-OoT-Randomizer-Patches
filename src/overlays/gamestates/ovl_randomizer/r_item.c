@@ -4,7 +4,7 @@
 
 #include "fault.h"
 #include "printf.h"
-#include "z64item.h"
+#include "item.h"
 #include "zelda_arena.h"
 #include "libc64/sprintf.h"
 

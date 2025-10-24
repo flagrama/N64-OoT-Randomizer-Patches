@@ -1,0 +1,12 @@
+diff --git a/src/overlays/actors/ovl_En_Box/z_en_box.h b/src/overlays/actors/ovl_En_Box/z_en_box.h
+index 7bea0c478..3d77d7ce4 100644
+--- a/src/overlays/actors/ovl_En_Box/z_en_box.h
++++ b/src/overlays/actors/ovl_En_Box/z_en_box.h
+@@ -44,6 +44,7 @@ typedef struct EnBox {
+     /* 0x01F8 */ u8 switchFlag;
+     /* 0x01F9 */ u8 type;
+     /* 0x01FA */ u8 iceSmokeTimer;
++    bool manuallyLoadedIceSmokeObject;
+     /* 0x01FB */ u8 unk_1FB;
+ } EnBox; // size = 0x01FC
+ 

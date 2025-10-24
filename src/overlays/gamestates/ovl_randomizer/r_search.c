@@ -11,7 +11,7 @@
 #include "r_world.h"
 #include "string.h"
 #include "vector.h"
-#include "z64save.h"
+#include "save.h"
 #include "zelda_arena.h"
 
 void NextSphere(Search* search);

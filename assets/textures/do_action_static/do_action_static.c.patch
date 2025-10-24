@@ -1,0 +1,15 @@
+diff --git a/assets/textures/do_action_static/do_action_static.c b/assets/textures/do_action_static/do_action_static.c
+index 646a3edb6..85e332102 100644
+--- a/assets/textures/do_action_static/do_action_static.c
++++ b/assets/textures/do_action_static/do_action_static.c
+@@ -240,6 +240,10 @@ u64 gNum8DoActionENGTex[TEX_LEN(u64, DO_ACTION_TEX_WIDTH, DO_ACTION_TEX_HEIGHT,
+ #include "assets/textures/do_action_static/gNum8DoActionENGTex.ia4.inc.c"
+ };
+ 
++u64 gSkipDoActionENGTex[TEX_LEN(u64, DO_ACTION_TEX_WIDTH, DO_ACTION_TEX_HEIGHT, 4)] = {
++#include "assets/textures/do_action_static/skip_eng.ia4.inc.c"
++};
++
+ #if OOT_PAL
+ 
+ // German

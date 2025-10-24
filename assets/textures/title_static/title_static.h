@@ -474,8 +474,12 @@ extern u64 gRandoSettingsENGTex[];
 extern u64 gRandoShuffleENGTex[];
 extern u64 gRandoChestsENGTex[];
 extern u64 gOptionQuicktextENGTex[];
+extern u64 gRandoSeedButtonENGTex[];
 extern u64 gOptionOnENGTex[];
 extern u64 gOptionOffENGTex[];
+#define gRandoSeedPromptENGTex_WIDTH 100
+#define gRandoSeedPromptENGTex_HEIGHT 16
+extern u64 gRandoSeedPromptENGTex[];
 extern Gfx gFileSelWindow1DL[];
 extern Gfx gFileSelWindow2DL[];
 extern Gfx gFileSelWindow3DL[];

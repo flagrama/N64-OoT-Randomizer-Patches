@@ -1,8 +1,8 @@
 diff --git a/src/overlays/actors/ovl_En_Okarina_Tag/z_en_okarina_tag.c b/src/overlays/actors/ovl_En_Okarina_Tag/z_en_okarina_tag.c
-index 2ec4c8f08..889c6e5ce 100644
+index 13bba29d0..ddec5a5a7 100644
 --- a/src/overlays/actors/ovl_En_Okarina_Tag/z_en_okarina_tag.c
 +++ b/src/overlays/actors/ovl_En_Okarina_Tag/z_en_okarina_tag.c
-@@ -326,6 +326,7 @@ void func_80ABF7CC(EnOkarinaTag* this, PlayState* play) {
+@@ -327,6 +327,7 @@ void func_80ABF7CC(EnOkarinaTag* this, PlayState* play) {
      if ((Message_GetState(&play->msgCtx) == TEXT_STATE_EVENT) && Message_ShouldAdvance(play)) {
          Message_CloseTextbox(play);
          if (!CHECK_QUEST_ITEM(QUEST_SONG_SUN)) {

@@ -3,15 +3,15 @@ index 3e2e6be59..24ef8656e 100644
 --- a/include/libc/string.h
 +++ b/include/libc/string.h
 @@ -5,9 +5,12 @@
-
+ 
  char* strchr(const char*, int);
  size_t strlen(const char*);
 +extern int strcmp(const char *s1, const char *s2);
 +extern char* strcpy (char *dst, const char *src);
-
+ 
  void* memcpy(void*, const void*, size_t);
  void* memmove(void* dest, const void* src, size_t len);
  void* memset(void* dest, int val, size_t len);
 +extern int memcmp(const void* s1, const void* s2, size_t n);
-
+ 
  #endif

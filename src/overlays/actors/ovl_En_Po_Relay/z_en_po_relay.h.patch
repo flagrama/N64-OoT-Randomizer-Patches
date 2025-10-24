@@ -1,0 +1,12 @@
+diff --git a/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.h b/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.h
+index 2fa053688..ccc276535 100644
+--- a/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.h
++++ b/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.h
+@@ -15,6 +15,7 @@ typedef struct EnPoRelay {
+     /* 0x014C */ SkelAnime skelAnime;
+     /* 0x0190 */ EnPoRelayActionFunc actionFunc;
+     /* 0x0194 */ u8 hookshotSlotFull;
++                 u8 flagCleared;
+     /* 0x0195 */ u8 bobTimer; // used for the up & down bobbing
+     /* 0x0196 */ s16 actionTimer;
+     /* 0x0198 */ s16 pathPoint; // current (upcoming) path point

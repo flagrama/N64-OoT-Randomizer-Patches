@@ -5,7 +5,7 @@
 #include "r_state.h"
 #include "r_world.h"
 
-#include "z64save.h"
+#include "save.h"
 
 typedef struct World World;
 typedef struct Region Region;

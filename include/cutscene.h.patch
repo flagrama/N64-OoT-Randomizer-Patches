@@ -1,0 +1,21 @@
+diff --git a/include/cutscene.h b/include/cutscene.h
+index fb96ccbbf..00762a2f8 100644
+--- a/include/cutscene.h
++++ b/include/cutscene.h
+@@ -498,7 +498,7 @@ typedef struct CutsceneCameraMove {
+ } CutsceneCameraMove; // size = 0xC
+ 
+ typedef struct CutsceneContext {
+-    /* 0x00 */ char  unk_00[0x4];
++    /* 0x00 */ char  unk_00[0x3];
+     /* 0x04 */ void* script;
+     /* 0x08 */ u8 state;
+     /* 0x0C */ f32 timer;
+@@ -512,6 +512,7 @@ typedef struct CutsceneContext {
+     /* 0x20 */ CutsceneCameraPoint* camEyePoints;
+     /* 0x24 */ CsCmdActorCue* playerCue;
+     /* 0x28 */ CsCmdActorCue* actorCues[10]; // "npcdemopnt"
++    bool skippable;
+ } CutsceneContext; // size = 0x50
+ 
+ extern u8 gUseCutsceneCam;

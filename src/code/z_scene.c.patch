@@ -1,11 +1,11 @@
 diff --git a/src/code/z_scene.c b/src/code/z_scene.c
-index feef5ffc6..f55e68173 100644
+index 38323e6c7..69ba5d7bf 100644
 --- a/src/code/z_scene.c
 +++ b/src/code/z_scene.c
 @@ -61,6 +61,33 @@ s32 Object_SpawnPersistent(ObjectContext* objectCtx, s16 objectId) {
      return objectCtx->numEntries - 1;
  }
-
+ 
 +s32 Object_SpawnTemporary(ObjectContext* objectCtx, s16 objectId) {
 +    objectCtx->slots[objectCtx->numEntries].id = objectId;
 +    u32 size = gObjectTable[objectId].vromEnd - gObjectTable[objectId].vromStart;

@@ -3,10 +3,10 @@ index 25afaaa81..d08af1500 100644
 --- a/include/build.h
 +++ b/include/build.h
 @@ -3,6 +3,7 @@
-
+ 
  extern const char gBuildCreator[];
  extern const char gBuildDate[];
 +extern const char gBuildVersion[];
  extern const char gBuildMakeOption[];
-
+ 
  #endif

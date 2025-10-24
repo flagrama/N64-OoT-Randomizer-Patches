@@ -1,8 +1,22 @@
 diff --git a/src/overlays/actors/ovl_player_actor/z_player.c b/src/overlays/actors/ovl_player_actor/z_player.c
-index e8b942802..b897a62af 100644
+index 0fe5048f2..073a5407d 100644
 --- a/src/overlays/actors/ovl_player_actor/z_player.c
 +++ b/src/overlays/actors/ovl_player_actor/z_player.c
-@@ -13718,7 +13718,7 @@ s32 func_8084DFF4(PlayState* play, Player* this) {
+@@ -11686,6 +11686,13 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
+ 
+     sControlInput = input;
+ 
++#if DEBUG_FEATURES
++    // Press L to levitate
++    if (CHECK_BTN_ALL(input->cur.button, BTN_L)) {
++        this->actor.velocity.y = 6.34375f;
++    }
++#endif
++
+     if (this->unk_A86 < 0) {
+         this->unk_A86++;
+         if (this->unk_A86 == 0) {
+@@ -13718,7 +13725,7 @@ s32 func_8084DFF4(PlayState* play, Player* this) {
          }
      } else {
          if (Message_GetState(&play->msgCtx) == TEXT_STATE_CLOSING) {
@@ -10,4 +24,4 @@ index e8b942802..b897a62af 100644
 +            if (play->sceneId == SCENE_DESERT_COLOSSUS && Flags_GetTreasure(play, 0x0B) && !GET_EVENTCHKINF(EVENTCHKINF_95)) {
                  play->nextEntranceIndex = ENTR_DESERT_COLOSSUS_0;
                  play->transitionTrigger = TRANS_TRIGGER_START;
-                 gSaveContext.nextCutsceneIndex = 0xFFF1;
+                 gSaveContext.nextCutsceneIndex = CS_INDEX_1;

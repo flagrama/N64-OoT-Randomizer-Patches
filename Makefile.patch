@@ -1,5 +1,5 @@
 diff --git a/Makefile b/Makefile
-index 56134bd7f..c91d73d13 100644
+index 5103d5869..4a62e4714 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -16,28 +16,16 @@ SHELL = /usr/bin/env bash
@@ -36,7 +36,7 @@ index 56134bd7f..c91d73d13 100644
  N_THREADS ?= $(shell nproc)
  # If DEBUG_OBJECTS is 1, produce additional debugging files such as objdump output or raw binaries for assets
 @@ -58,41 +46,16 @@ N64_EMULATOR ?=
-
+ 
  # Version-specific settings
  REGIONAL_CHECKSUM := 0
 -ifeq ($(VERSION),ntsc-1.0)
@@ -166,22 +166,24 @@ index 56134bd7f..c91d73d13 100644
  else
  $(error Unsupported version $(VERSION))
  endif
-@@ -197,8 +89,10 @@ endif
+@@ -197,8 +89,12 @@ endif
  PROJECT_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
  BUILD_DIR := build/$(VERSION)
  EXPECTED_DIR := expected/$(BUILD_DIR)
 -BASEROM_DIR := baseroms/$(VERSION)
 -EXTRACTED_DIR := extracted/$(VERSION)
-+# randomizer will be based on pal-1.1
-+BASEROM_DIR := baseroms/pal-1.1
-+# randomizer will be based on pal-1.1 so can use its extracted assets
-+EXTRACTED_DIR := extracted/pal-1.1
++PAL_BASEROM_DIR := baseroms/pal-1.1
++NTSC_BASEROM_DIR := baseroms/ntsc-1.2
++BASEROM_DIR := $(PAL_BASEROM_DIR)
++PAL_EXTRACTED_DIR := extracted/pal-1.1
++NTSC_EXTRACTED_DIR := extracted/ntsc-1.2
++EXTRACTED_DIR := $(PAL_EXTRACTED_DIR)
  VENV := .venv
-
+ 
  MAKE = make
-@@ -220,8 +114,8 @@ $(error Unsupported platform $(PLATFORM))
+@@ -220,8 +116,8 @@ $(error Unsupported platform $(PLATFORM))
  endif
-
+ 
  # Converts e.g. ntsc-1.0 to NTSC_1_0
 -VERSION_MACRO := $(shell echo $(VERSION) | tr a-z-. A-Z__)
 -CPP_DEFINES += -DOOT_VERSION=$(VERSION_MACRO) -DOOT_REVISION=$(REVISION)
@@ -190,35 +192,58 @@ index 56134bd7f..c91d73d13 100644
  CPP_DEFINES += -DOOT_REGION=REGION_$(REGION)
  CPP_DEFINES += -DLIBULTRA_VERSION=LIBULTRA_VERSION_$(LIBULTRA_VERSION)
  CPP_DEFINES += -DLIBULTRA_PATCH=$(LIBULTRA_PATCH)
-@@ -534,7 +428,7 @@ $(shell mkdir -p $(foreach dir, \
+@@ -352,6 +248,9 @@ endif
+ 
+ ifeq ($(COMPILER),gcc)
+   OPTFLAGS := -Os -ffast-math -fno-unsafe-math-optimizations
++    ifeq ($(DEBUG_FEATURES_SYMBOLS),1)
++    	OPTFLAGS += -ggdb -Og
++	endif
+ endif
+ 
+ GBI_DEFINES := -DF3DEX_GBI_2
+@@ -495,7 +394,7 @@ ASSET_FILES_OUT := $(foreach f,$(ASSET_FILES_BIN_EXTRACTED:.bin=.bin.inc.c),$(f:
+ SPEC_O_FILES := $(shell $(CPP) $(CPPFLAGS) -I. $(SPEC) | $(BUILD_DIR_REPLACE) | sed -n -E 's/^[ \t]*include[ \t]*"([a-zA-Z0-9/_.-]+\.o)"/\1/p')
+ 
+ # Split out reloc files
+-O_FILES := $(filter-out %_reloc.o,$(SPEC_O_FILES))
++O_FILES := $(filter-out %_reloc.o $(BUILD_DIR)/src/boot/build.o,$(SPEC_O_FILES))
+ OVL_RELOC_FILES := $(filter %_reloc.o,$(SPEC_O_FILES))
+ 
+ # Automatic dependency files
+@@ -534,7 +433,8 @@ $(shell mkdir -p $(foreach dir, \
                      $(dir:$(EXTRACTED_DIR)/%=$(BUILD_DIR)/%)))
  endif
-
+ 
 -$(BUILD_DIR)/src/boot/build.o: CPP_DEFINES += -DBUILD_CREATOR="\"$(BUILD_CREATOR)\"" -DBUILD_DATE="\"$(BUILD_DATE)\"" -DBUILD_TIME="\"$(BUILD_TIME)\""
-+$(BUILD_DIR)/src/boot/build.o: CPP_DEFINES += -DBUILD_CREATOR="\"$(BUILD_CREATOR)\"" -DBUILD_DATE="\"$(BUILD_DATE)\"" -DBUILD_TIME="\"$(BUILD_TIME)\"" -DBUILD_VERSION="\"$(BUILD_VERSION)\""
-
++$(BUILD_DIR)/src/boot/build.o $(BUILD_DIR)/src/boot/build.d: $(O_FILES)
++ CPP_DEFINES += -DBUILD_CREATOR="\"$(BUILD_CREATOR)\"" -DBUILD_DATE="\"$(BUILD_DATE)\"" -DBUILD_TIME="\"$(BUILD_TIME)\"" -DBUILD_VERSION="\"$(BUILD_VERSION)\""
+ 
  $(BUILD_DIR)/src/audio/internal/seqplayer.o: CPP_DEFINES += -DMML_VERSION=MML_VERSION_OOT
-
-@@ -734,7 +628,7 @@ endif
-
+ 
+@@ -734,7 +634,7 @@ endif
+ 
  ifeq ($(PERMUTER),)  # permuter + preprocess.py misbehaves, permuter doesn't care about rodata diffs or bss ordering so just don't use it in that case
  # Handle encoding (UTF-8 -> EUC-JP) and custom pragmas
 -$(BUILD_DIR)/src/%.o: PREPROCESS := ./tools/preprocess.sh -v $(VERSION) -i $(ICONV) --
 +$(BUILD_DIR)/src/%.o: PREPROCESS := ./tools/preprocess.sh -v pal-1.1 -i $(ICONV) --
  endif
-
+ 
  else
-@@ -745,6 +639,8 @@ $(BUILD_DIR)/src/libultra/libc/ll.o: OPTFLAGS := -Ofast
+@@ -743,8 +643,11 @@ $(BUILD_DIR)/assets/%.o: CFLAGS += -fno-zero-initialized-in-bss -fno-toplevel-re
+ $(BUILD_DIR)/src/%.o: CFLAGS += -fexec-charset=euc-jp
+ $(BUILD_DIR)/src/libultra/libc/ll.o: OPTFLAGS := -Ofast
  $(BUILD_DIR)/src/overlays/%.o: CFLAGS += -fno-merge-constants -mno-explicit-relocs -mno-split-addresses
++$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/%.o: OPTFLAGS := -O2
  endif
-
+ 
 +-include .make_wii-vc.mk
 +
  #### Main Targets ###
-
+ 
  all: rom compress
-@@ -789,12 +685,12 @@ venv:
-
+@@ -789,18 +692,26 @@ venv:
+ 
  setup: venv
  	$(MAKE) -C tools
 -	$(PYTHON) tools/decompress_baserom.py $(VERSION)
@@ -227,12 +252,58 @@ index 56134bd7f..c91d73d13 100644
 -	$(PYTHON) tools/extract_incbins.py $(EXTRACTED_DIR)/baserom $(EXTRACTED_DIR)/incbin -v $(VERSION)
 -	$(PYTHON) tools/extract_text.py $(EXTRACTED_DIR)/baserom $(EXTRACTED_DIR)/text -v $(VERSION)
 -	$(PYTHON) tools/extract_audio.py -b $(EXTRACTED_DIR)/baserom -o $(EXTRACTED_DIR) -v $(VERSION) --read-xml
++#PAL
 +	$(PYTHON) tools/decompress_baserom.py pal-1.1
-+	$(PYTHON) tools/extract_baserom.py $(BASEROM_DIR)/baserom-decompressed.z64 $(EXTRACTED_DIR)/baserom -v pal-1.1
-+	$(PYTHON) -m tools.assets.extract $(EXTRACTED_DIR)/baserom $(EXTRACTED_DIR) -v pal-1.1 -j$(N_THREADS)
-+	$(PYTHON) tools/extract_incbins.py $(EXTRACTED_DIR)/baserom $(EXTRACTED_DIR)/incbin -v pal-1.1
-+	$(PYTHON) tools/extract_text.py $(EXTRACTED_DIR)/baserom $(EXTRACTED_DIR)/text -v pal-1.1
-+	$(PYTHON) tools/extract_audio.py -b $(EXTRACTED_DIR)/baserom -o $(EXTRACTED_DIR) -v pal-1.1 --read-xml
-
++	$(PYTHON) tools/extract_baserom.py $(PAL_BASEROM_DIR)/baserom-decompressed.z64 $(PAL_EXTRACTED_DIR)/baserom -v pal-1.1
++	$(PYTHON) -m tools.assets.extract $(PAL_EXTRACTED_DIR)/baserom $(PAL_EXTRACTED_DIR) -v pal-1.1 -j$(N_THREADS)
++	$(PYTHON) tools/extract_incbins.py $(PAL_EXTRACTED_DIR)/baserom $(PAL_EXTRACTED_DIR)/incbin -v pal-1.1
++	$(PYTHON) tools/extract_text.py $(PAL_EXTRACTED_DIR)/baserom $(PAL_EXTRACTED_DIR)/text -v pal-1.1
++	$(PYTHON) tools/extract_audio.py -b $(PAL_EXTRACTED_DIR)/baserom -o $(PAL_EXTRACTED_DIR) -v pal-1.1 --read-xml
++#NTSC
++	$(PYTHON) tools/decompress_baserom.py ntsc-1.2
++	$(PYTHON) tools/extract_baserom.py $(NTSC_BASEROM_DIR)/baserom-decompressed.z64 $(NTSC_EXTRACTED_DIR)/baserom -v ntsc-1.2
++	$(PYTHON) -m tools.assets.extract $(NTSC_EXTRACTED_DIR)/baserom $(NTSC_EXTRACTED_DIR) -v ntsc-1.2 -j$(N_THREADS)
++	$(PYTHON) tools/extract_incbins.py $(NTSC_EXTRACTED_DIR)/baserom $(NTSC_EXTRACTED_DIR)/incbin -v ntsc-1.2
++	$(PYTHON) tools/extract_text.py $(NTSC_EXTRACTED_DIR)/baserom $(NTSC_EXTRACTED_DIR)/text -v ntsc-1.2
++	$(PYTHON) tools/extract_audio.py -b $(NTSC_EXTRACTED_DIR)/baserom -o $(NTSC_EXTRACTED_DIR) -v ntsc-1.2 --read-xml
+ 
  disasm:
  	$(RM) -r $(EXPECTED_DIR)
+ 	VERSION=$(VERSION) DISASM_BASEROM=$(BASEROM_DIR)/baserom-decompressed.z64 DISASM_DIR=$(EXPECTED_DIR) PYTHON=$(PYTHON) AS_CMD='$(AS) $(ASFLAGS)' LD=$(LD) ./tools/disasm/do_disasm.sh
+ 
+-run: $(ROM)
++run: $(ROMC)
+ ifeq ($(N64_EMULATOR),)
+ 	$(error Emulator path not set. Set N64_EMULATOR in the Makefile or define it as an environment variable)
+ endif
+@@ -837,7 +748,7 @@ ifeq ($(PLATFORM),IQUE)
+   endif
+ endif
+ 
+-$(ELF): $(TEXTURE_FILES_OUT) $(ASSET_FILES_OUT) $(O_FILES) $(OVL_RELOC_FILES) $(LDSCRIPT) $(BUILD_DIR)/linker_scripts/makerom.ld $(BUILD_DIR)/undefined_syms.txt \
++$(ELF): $(TEXTURE_FILES_OUT) $(ASSET_FILES_OUT) $(O_FILES) $(BUILD_DIR)/src/boot/build.o $(OVL_RELOC_FILES) $(LDSCRIPT) $(BUILD_DIR)/linker_scripts/makerom.ld $(BUILD_DIR)/undefined_syms.txt \
+         $(SAMPLEBANK_O_FILES) $(SOUNDFONT_O_FILES) $(SEQUENCE_O_FILES) \
+         $(BUILD_DIR)/assets/audio/sequence_font_table.o $(BUILD_DIR)/assets/audio/audiobank_padding.o
+ 	$(LD) $(LDFLAGS) -o $@
+@@ -878,11 +789,19 @@ else
+   NES_CHARMAP := assets/text/charmap.nes.txt
+ endif
+ 
+-$(BUILD_DIR)/assets/text/%.enc.nes.h: assets/text/%.h $(EXTRACTED_DIR)/text/%.h $(NES_CHARMAP)
++ifeq ($(REGION),EU)
++  $(BUILD_DIR)/assets/text/%.enc.nes.h: assets/text/%.h $(EXTRACTED_DIR)/text/%.h $(NES_CHARMAP)
+ 	$(CPP) $(CPPFLAGS) -I$(EXTRACTED_DIR) -MD -MP -MF $(@:.o=.d) -MT $@ $< | $(PYTHON) tools/msgenc.py --encoding utf-8 --charmap $(NES_CHARMAP) - $@
+ 
+-$(BUILD_DIR)/assets/text/%.enc.jpn.h: assets/text/%.h $(EXTRACTED_DIR)/text/%.h assets/text/charmap.jpn.txt
++  $(BUILD_DIR)/assets/text/%.enc.jpn.h: assets/text/%.h $(EXTRACTED_DIR)/text/%.h assets/text/charmap.jpn.txt
+ 	$(CPP) $(CPPFLAGS) -I$(EXTRACTED_DIR) -MD -MP -MF $(@:.o=.d) -MT $@ $< | $(PYTHON) tools/msgenc.py --encoding SHIFT-JIS --wchar --charmap assets/text/charmap.jpn.txt - $@
++else
++  $(BUILD_DIR)/assets/text/%.enc.nes.h: assets/text/%.h $(NTSC_EXTRACTED_DIR)/text/%.h $(NES_CHARMAP)
++	$(CPP) $(CPPFLAGS) -I$(NTSC_EXTRACTED_DIR) -MD -MP -MF $(@:.o=.d) -MT $@ $< | $(PYTHON) tools/msgenc.py --encoding utf-8 --charmap $(NES_CHARMAP) - $@
++
++  $(BUILD_DIR)/assets/text/%.enc.jpn.h: assets/text/%.h $(NTSC_EXTRACTED_DIR)/text/%.h assets/text/charmap.jpn.txt
++	$(CPP) $(CPPFLAGS) -I$(NTSC_EXTRACTED_DIR) -MD -MP -MF $(@:.o=.d) -MT $@ $< | $(PYTHON) tools/msgenc.py --encoding SHIFT-JIS --wchar --charmap assets/text/charmap.jpn.txt - $@
++endif
+ 
+ # Dependencies for encoded message headers. These dependencies are not automatic as these headers are generated
+ # as part of the build. A clean build must know to generate them before the relevant .d files are created.
