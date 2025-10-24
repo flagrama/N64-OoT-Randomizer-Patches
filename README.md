@@ -3,7 +3,6 @@
 This repository houses the code and binary patches and original assets necessary to recreate the Ocarina of Time Randomizer that runs directly on the Nintendo 64 console.
 
 The patches are available both in a single massive patch file for applying to a branch of the [decompilation of Ocarina of Time](https://github.com/zeldaret/oot), and separate individual file patches in the same folder structure as the decompilation.
-Use commit 1e556e3a3de0a485837a1277d82d765c1be690f7 as the base from decomp for best results currently.
 
 ## Usage
 
@@ -42,7 +41,7 @@ Building has only been tested on native Linux. WSL and Docker should work just a
 Follow the installation instructions on [the decompilation readme](https://github.com/zeldaret/oot?tab=readme-ov-file#the-legend-of-zelda-ocarina-of-time) with the additional step after cloning the repository and changing into the new directory checkout the commit the patch file was made against using git again.
 
 ```bash
-git checkout 1e556e3a3de0a485837a1277d82d765c1be690f7
+git checkout b204d6c089a0c8c64c180f40436682be3848f0e9
 ```
 
 Continue to follow the README there until you build a working ROM to ensure the build environment is working.
