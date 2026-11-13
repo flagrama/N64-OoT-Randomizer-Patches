@@ -1,8 +1,8 @@
 diff --git a/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c b/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c
-index 5a2fe183e..6ae529d72 100644
+index 1985fb401..3656b521e 100644
 --- a/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c
 +++ b/src/overlays/actors/ovl_Bg_Toki_Swd/z_bg_toki_swd.c
-@@ -112,10 +112,11 @@ void func_808BAF40(BgTokiSwd* this, PlayState* play) {
+@@ -113,10 +113,11 @@ void func_808BAF40(BgTokiSwd* this, PlayState* play) {
          play->csCtx.script = gRevealMasterSwordCs;
          gSaveContext.cutsceneTrigger = 1;
      }

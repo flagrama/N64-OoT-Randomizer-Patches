@@ -1,8 +1,8 @@
 diff --git a/src/code/z_kankyo.c b/src/code/z_kankyo.c
-index 5da43b4c2..d9ff9e234 100644
+index 5f1ff092c..a53358825 100644
 --- a/src/code/z_kankyo.c
 +++ b/src/code/z_kankyo.c
-@@ -285,6 +285,7 @@ void Environment_Init(PlayState* play2, EnvironmentContext* envCtx, s32 unused)
+@@ -292,6 +292,7 @@ void Environment_Init(PlayState* play2, EnvironmentContext* envCtx, UNUSED s32 a
      PlayState* play = play2;
  
      gSaveContext.sunsSongState = SUNSSONG_INACTIVE;

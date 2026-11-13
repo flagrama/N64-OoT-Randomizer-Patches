@@ -1,16 +1,16 @@
 diff --git a/src/code/fault_n64.c b/src/code/fault_n64.c
-index 2d31b0f32..17c2c5ca0 100644
+index d09c43196..618014095 100644
 --- a/src/code/fault_n64.c
 +++ b/src/code/fault_n64.c
-@@ -753,6 +753,7 @@ void Fault_ProcessClients(void) {
- void Fault_ThreadEntry(void* arg0) {
+@@ -754,6 +754,7 @@ void Fault_ProcessClients(void) {
+ void Fault_ThreadEntry(UNUSED void* arg0) {
      OSMesg msg;
      OSThread* faultedThread;
 +    gFaultMsgId = 0;
  
      osSetEventMesg(OS_EVENT_CPU_BREAK, &gFaultMgr.queue, FAULT_MSG_CPU_BREAK);
      osSetEventMesg(OS_EVENT_FAULT, &gFaultMgr.queue, FAULT_MSG_FAULT);
-@@ -788,7 +789,7 @@ void Fault_ThreadEntry(void* arg0) {
+@@ -789,7 +790,7 @@ void Fault_ThreadEntry(UNUSED void* arg0) {
          }
          Fault_SleepImpl(500);
          Fault_DrawCornerRecRed();
@@ -19,7 +19,7 @@ index 2d31b0f32..17c2c5ca0 100644
          do {
              func_800AF558();
              Fault_PrintThreadContext(faultedThread);
-@@ -836,7 +837,7 @@ NORETURN void Fault_AddHungupAndCrashImpl(const char* exp1, const char* exp2) {
+@@ -837,7 +838,7 @@ NORETURN void Fault_AddHungupAndCrashImpl(const char* exp1, const char* exp2) {
          Fault_SleepImpl(1000);
      }
      Fault_SleepImpl(500);

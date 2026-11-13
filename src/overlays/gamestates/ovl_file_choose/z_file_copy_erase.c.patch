@@ -1,8 +1,8 @@
 diff --git a/src/overlays/gamestates/ovl_file_choose/z_file_copy_erase.c b/src/overlays/gamestates/ovl_file_choose/z_file_copy_erase.c
-index e230ab56f..91eb140ad 100644
+index f8a81cc4f..45eea199e 100644
 --- a/src/overlays/gamestates/ovl_file_choose/z_file_copy_erase.c
 +++ b/src/overlays/gamestates/ovl_file_choose/z_file_copy_erase.c
-@@ -13,12 +13,11 @@
+@@ -14,12 +14,11 @@
  // compiler errors (see docs/compilers.md)
  
  // when choosing a file to copy or erase, the 6 main menu buttons are placed at these offsets
@@ -18,7 +18,7 @@ index e230ab56f..91eb140ad 100644
  };
  
  static s16 sEraseDelayTimer = 15;
-@@ -36,7 +35,7 @@ void FileSelect_SetupCopySource(GameState* thisx) {
+@@ -37,7 +36,7 @@ void FileSelect_SetupCopySource(GameState* thisx) {
  #endif
  
  #if !PLATFORM_IQUE
@@ -27,7 +27,7 @@ index e230ab56f..91eb140ad 100644
          yStep = (ABS(this->buttonYOffsets[i] - sChooseFileYOffsets[i])) / this->actionTimer;
  
          if (this->buttonYOffsets[i] >= sChooseFileYOffsets[i]) {
-@@ -153,7 +152,7 @@ void FileSelect_SetupCopyDest1(GameState* thisx) {
+@@ -154,7 +153,7 @@ void FileSelect_SetupCopyDest1(GameState* thisx) {
  #endif
  
  #if !PLATFORM_IQUE
@@ -36,7 +36,7 @@ index e230ab56f..91eb140ad 100644
          yStep = ABS(this->buttonYOffsets[i] - D_8081248C[this->buttonIndex][i]) / this->actionTimer;
  
          if (this->buttonYOffsets[i] <= D_8081248C[this->buttonIndex][i]) {
-@@ -375,7 +374,7 @@ void FileSelect_ExitToCopySource2(GameState* thisx) {
+@@ -376,7 +375,7 @@ void FileSelect_ExitToCopySource2(GameState* thisx) {
  #endif
  
  #if !PLATFORM_IQUE
@@ -45,7 +45,7 @@ index e230ab56f..91eb140ad 100644
          yStep = ABS(this->buttonYOffsets[i] - sChooseFileYOffsets[i]) / this->actionTimer;
  
          if (this->buttonYOffsets[i] >= sChooseFileYOffsets[i]) {
-@@ -430,7 +429,7 @@ void FileSelect_ExitToCopySource2(GameState* thisx) {
+@@ -431,7 +430,7 @@ void FileSelect_ExitToCopySource2(GameState* thisx) {
   * Update function for `CM_SETUP_COPY_CONFIRM_1`
   */
  void FileSelect_SetupCopyConfirm1(GameState* thisx) {
@@ -54,7 +54,7 @@ index e230ab56f..91eb140ad 100644
      FileSelectState* this = (FileSelectState*)thisx;
      SramContext* sramCtx = &this->sramCtx;
      s16 i;
-@@ -449,7 +448,7 @@ void FileSelect_SetupCopyConfirm1(GameState* thisx) {
+@@ -450,7 +449,7 @@ void FileSelect_SetupCopyConfirm1(GameState* thisx) {
  #endif
  
  #if !PLATFORM_IQUE
@@ -63,7 +63,7 @@ index e230ab56f..91eb140ad 100644
          if ((i != this->copyDestFileIndex) && (i != this->selectedFileIndex)) {
              this->fileButtonAlpha[i] -= 25;
  
-@@ -588,7 +587,7 @@ void FileSelect_ReturnToCopyDest(GameState* thisx) {
+@@ -589,7 +588,7 @@ void FileSelect_ReturnToCopyDest(GameState* thisx) {
  #endif
  
  #if !PLATFORM_IQUE
@@ -72,7 +72,7 @@ index e230ab56f..91eb140ad 100644
          if ((i != this->copyDestFileIndex) && (i != this->selectedFileIndex)) {
              this->fileButtonAlpha[i] += 25;
  
-@@ -841,7 +840,7 @@ void FileSelect_CopyAnim5(GameState* thisx) {
+@@ -844,7 +843,7 @@ void FileSelect_CopyAnim5(GameState* thisx) {
  #endif
  
  #if !PLATFORM_IQUE
@@ -81,7 +81,7 @@ index e230ab56f..91eb140ad 100644
          if (i != this->buttonIndex) {
              this->fileButtonAlpha[i] += 25;
  
-@@ -889,7 +888,7 @@ void FileSelect_CopyAnim5(GameState* thisx) {
+@@ -892,7 +891,7 @@ void FileSelect_CopyAnim5(GameState* thisx) {
  
      if (this->actionTimer == 0) {
  #if !PLATFORM_IQUE
@@ -90,7 +90,7 @@ index e230ab56f..91eb140ad 100644
              this->fileButtonAlpha[i] = 200;
              this->nameBoxAlpha[i] = this->nameAlpha[i] = this->connectorAlpha[i] = 0;
  
-@@ -1198,7 +1197,7 @@ void FileSelect_SetupEraseConfirm1(GameState* thisx) {
+@@ -1201,7 +1200,7 @@ void FileSelect_SetupEraseConfirm1(GameState* thisx) {
  #endif
  
  #if !PLATFORM_IQUE
@@ -99,7 +99,7 @@ index e230ab56f..91eb140ad 100644
          if (i != this->buttonIndex) {
              this->fileButtonAlpha[i] -= 25;
  
-@@ -1265,7 +1264,7 @@ void FileSelect_SetupEraseConfirm1(GameState* thisx) {
+@@ -1268,7 +1267,7 @@ void FileSelect_SetupEraseConfirm1(GameState* thisx) {
  
      if (this->actionTimer == 0) {
  #if !PLATFORM_IQUE
@@ -108,7 +108,7 @@ index e230ab56f..91eb140ad 100644
              if (i != this->buttonIndex) {
                  this->fileButtonAlpha[i] = 0;
  
-@@ -1461,7 +1460,7 @@ void FileSelect_ExitToEraseSelect2(GameState* thisx) {
+@@ -1464,7 +1463,7 @@ void FileSelect_ExitToEraseSelect2(GameState* thisx) {
  #endif
  
  #if !PLATFORM_IQUE
@@ -117,7 +117,7 @@ index e230ab56f..91eb140ad 100644
          if (i != this->buttonIndex) {
              this->fileButtonAlpha[i] += 25;
  
-@@ -1661,7 +1660,7 @@ void FileSelect_EraseAnim3(GameState* thisx) {
+@@ -1664,7 +1663,7 @@ void FileSelect_EraseAnim3(GameState* thisx) {
  #endif
  
  #if !PLATFORM_IQUE

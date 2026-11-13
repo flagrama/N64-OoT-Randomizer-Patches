@@ -7,7 +7,7 @@
 #include "item.h"
 #include "ultra64/ultratypes.h"
 
-extern u32 itemIdToSolverId[ITEM_NONE];
+extern u32 itemIdToSolverId[ITEM_NONE + 1];
 extern IntHashTable allowedGlobals;
 extern IntHashTable ItemInfo_SolverIds;
 extern ItemInfoHashTable ItemInfo_Items;

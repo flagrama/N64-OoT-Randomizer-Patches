@@ -1,8 +1,8 @@
 diff --git a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_equipment.c b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_equipment.c
-index 1ac323712..4333d5f0f 100644
+index c67f59110..b030ba470 100644
 --- a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_equipment.c
 +++ b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_equipment.c
-@@ -231,87 +231,103 @@ void KaleidoScope_DrawEquipment(PlayState* play) {
+@@ -232,87 +232,103 @@ void KaleidoScope_DrawEquipment(PlayState* play) {
  
              cursorMoveResult = 0;
              do {

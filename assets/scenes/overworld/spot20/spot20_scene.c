@@ -14,6 +14,8 @@
 #include "stdbool.h"
 #include "ultra64.h"
 
+#include "src/overlays/actors/ovl_En_Door/z_en_door.h"
+
 SceneCmd spot20_scene[] = {
 #include "assets/scenes/overworld/spot20/spot20_scene.inc.c"
 };

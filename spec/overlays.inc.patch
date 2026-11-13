@@ -1,0 +1,36 @@
+diff --git a/spec/overlays.inc b/spec/overlays.inc
+index d368b96a0..22ce79b5f 100644
+--- a/spec/overlays.inc
++++ b/spec/overlays.inc
+@@ -25,11 +25,31 @@ beginseg
+     compress
+     flags OVERLAY
+     include "$(BUILD_DIR)/src/overlays/gamestates/ovl_file_choose/z_file_nameset_data.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_file_choose/z_file_randomizer.o"
+     include "$(BUILD_DIR)/src/overlays/gamestates/ovl_file_choose/z_file_copy_erase.o"
+     include "$(BUILD_DIR)/src/overlays/gamestates/ovl_file_choose/z_file_nameset.o"
+     include "$(BUILD_DIR)/src/overlays/gamestates/ovl_file_choose/z_file_choose.o"
+ endseg
+ 
++beginseg
++    name "ovl_randomizer"
++    compress
++    flags OVERLAY
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_ast.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_fill.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_entrance.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_graph.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_item.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_item_info.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_location.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_region.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_search.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_state.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_tables.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_thread.o"
++    include "$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/r_world.o"
++endseg
++
+ beginseg
+     name "ovl_kaleido_scope"
+     compress

@@ -2,6 +2,7 @@
 
 #include "fault.h"
 #include "printf.h"
+#include "string.h"
 #include "r_entrance.h"
 #include "r_item_info.h"
 #include "r_location.h"
@@ -71,14 +72,17 @@ bool canPlay(Search* search, LinkAge age, ItemID song)
 
 bool canUse(Search* search, LinkAge age, ItemID item)
 {
+    unsigned solverId = itemIdToSolverId[item];
+    if (solverId == UINT32_MAX) { return false; }
+
     if (isAdultItem(item)) {
-        return age == LINK_AGE_ADULT && search->state->solvItems[itemIdToSolverId[item]];
+        return age == LINK_AGE_ADULT && search->state->solvItems[solverId];
     }
     if (item == ITEM_LENS_OF_TRUTH) {
         // has magic && item
-        return canPlay(search, age, ITEM_SONG_LULLABY) && Search_CanReach(search, regionTable[DEATH_MOUNTAIN_CRATER_UPPER].name, LINK_AGE_EITHER) && search->state->solvItems[itemIdToSolverId[item]];
+        return canPlay(search, age, ITEM_SONG_LULLABY) && Search_CanReach(search, regionTable[DEATH_MOUNTAIN_CRATER_UPPER].name, LINK_AGE_EITHER) && search->state->solvItems[solverId];
     }
-    return age == LINK_AGE_CHILD && search->state->solvItems[itemIdToSolverId[item]];
+    return age == LINK_AGE_CHILD && search->state->solvItems[solverId];
 }
 
 bool evaluateGroup_Entrance(Ast** ptr, Search* search, Entrance spot, LinkAge age, size_t* offset) {

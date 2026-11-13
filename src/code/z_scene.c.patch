@@ -1,8 +1,8 @@
 diff --git a/src/code/z_scene.c b/src/code/z_scene.c
-index 38323e6c7..69ba5d7bf 100644
+index f514264b0..affc779ef 100644
 --- a/src/code/z_scene.c
 +++ b/src/code/z_scene.c
-@@ -61,6 +61,33 @@ s32 Object_SpawnPersistent(ObjectContext* objectCtx, s16 objectId) {
+@@ -80,6 +80,33 @@ s32 Object_LoadPersistent(ObjectContext* objectCtx, s16 objectId) {
      return objectCtx->numEntries - 1;
  }
  

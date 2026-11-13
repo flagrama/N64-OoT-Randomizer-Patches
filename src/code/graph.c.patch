@@ -1,8 +1,8 @@
 diff --git a/src/code/graph.c b/src/code/graph.c
-index 56fc7af60..c0706d090 100644
+index 439220b11..cb723b981 100644
 --- a/src/code/graph.c
 +++ b/src/code/graph.c
-@@ -10,6 +10,7 @@
+@@ -11,6 +11,7 @@
  #include "file_select_state.h"
  #include "line_numbers.h"
  #include "map_select_state.h"

@@ -1,5 +1,5 @@
 diff --git a/Dockerfile b/Dockerfile
-index 92a072996..5fc3a19ab 100644
+index 8f23b1df7..c49c2ec45 100644
 --- a/Dockerfile
 +++ b/Dockerfile
 @@ -7,6 +7,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
@@ -8,5 +8,5 @@ index 92a072996..5fc3a19ab 100644
          binutils-mips-linux-gnu \
 +        gcc-mips-linux-gnu \
          build-essential \
-         pkg-config \
          python3 \
+         python3-pip \

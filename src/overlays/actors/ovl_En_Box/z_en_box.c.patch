@@ -1,39 +1,39 @@
 diff --git a/src/overlays/actors/ovl_En_Box/z_en_box.c b/src/overlays/actors/ovl_En_Box/z_en_box.c
-index c3e37e868..be50e321b 100644
+index c0042e520..1e35a4293 100644
 --- a/src/overlays/actors/ovl_En_Box/z_en_box.c
 +++ b/src/overlays/actors/ovl_En_Box/z_en_box.c
-@@ -7,6 +7,7 @@
+@@ -8,6 +8,7 @@
  #include "ichain.h"
  #include "one_point_cutscene.h"
  #include "printf.h"
 +#include "randomizer_play.h"
  #include "sequence.h"
  #include "sfx.h"
- #include "sys_math3d.h"
-@@ -109,6 +110,14 @@ void EnBox_ClipToGround(EnBox* this, PlayState* play) {
+ #include "stack_pad.h"
+@@ -111,6 +112,14 @@ void EnBox_ClipToGround(EnBox* this, PlayState* play) {
      }
  }
  
 +GetItemID EnBox_GetContentsGetItemID(EnBox* this, PlayState* play) {
-+    unsigned flag = PARAMS_GET_U(this->dyna.actor.params, 0, 5);
++    unsigned flag = ENBOX_GET_TREASURE_FLAG(&this->dyna.actor);
 +    if (gSaveContext.save.randomizer.shuffleChests && !(play->sceneId == SCENE_TREASURE_BOX_SHOP && flag < 0x0A)) {
 +        return gSaveContext.save.randomizer.chestContents[Randomizer_GetRandomizedChestContents(play->sceneId, flag)];
 +    }
-+    return PARAMS_GET_U(this->dyna.actor.params, 5, 7);
++    return ENBOX_GET_GET_ITEM_ID(&this->dyna.actor);
 +}
 +
  void EnBox_Init(Actor* thisx, PlayState* play2) {
      PlayState* play = play2;
      EnBox* this = (EnBox*)thisx;
-@@ -131,6 +140,7 @@ void EnBox_Init(Actor* thisx, PlayState* play2) {
+@@ -133,6 +142,7 @@ void EnBox_Init(Actor* thisx, PlayState* play2) {
      this->movementFlags = 0;
-     this->type = PARAMS_GET_U(thisx->params, 12, 4);
+     this->type = ENBOX_GET_TYPE(thisx);
      this->iceSmokeTimer = 0;
 +    this->manuallyLoadedIceSmokeObject = false;
-     this->unk_1FB = ENBOX_STATE_0;
+     this->ocarinaState = ENBOX_OCARINA_STATE_IDLE;
      this->dyna.actor.gravity = -5.5f;
      this->switchFlag = this->dyna.actor.world.rot.z;
-@@ -212,6 +222,13 @@ void EnBox_Init(Actor* thisx, PlayState* play2) {
+@@ -214,6 +224,13 @@ void EnBox_Init(Actor* thisx, PlayState* play2) {
  void EnBox_Destroy(Actor* thisx, PlayState* play) {
      EnBox* this = (EnBox*)thisx;
  
@@ -47,20 +47,20 @@ index c3e37e868..be50e321b 100644
      DynaPoly_DeleteBgActor(play, &play->colCtx.dyna, this->dyna.bgId);
  }
  
-@@ -444,7 +461,7 @@ void EnBox_WaitOpen(EnBox* this, PlayState* play) {
+@@ -446,7 +463,7 @@ void EnBox_WaitOpen(EnBox* this, PlayState* play) {
          Actor_WorldToActorCoords(&this->dyna.actor, &sp4C, &player->actor.world.pos);
          if (sp4C.z > -50.0f && sp4C.z < 0.0f && fabsf(sp4C.y) < 10.0f && fabsf(sp4C.x) < 20.0f &&
              Player_IsFacingActor(&this->dyna.actor, 0x3000, play)) {
--            Actor_OfferGetItemNearby(&this->dyna.actor, play, -PARAMS_GET_U(this->dyna.actor.params, 5, 7));
+-            Actor_OfferGetItemNearby(&this->dyna.actor, play, -ENBOX_GET_GET_ITEM_ID(&this->dyna.actor));
 +            Actor_OfferGetItemNearby(&this->dyna.actor, play, -EnBox_GetContentsGetItemID(this, play));
          }
-         if (Flags_GetTreasure(play, PARAMS_GET_U(this->dyna.actor.params, 0, 5))) {
+         if (Flags_GetTreasure(play, ENBOX_GET_TREASURE_FLAG(&this->dyna.actor))) {
              EnBox_SetupAction(this, EnBox_Open);
-@@ -556,7 +573,15 @@ void EnBox_Update(Actor* thisx, PlayState* play) {
+@@ -558,7 +575,15 @@ void EnBox_Update(Actor* thisx, PlayState* play) {
              Actor_SetFocus(&this->dyna.actor, 40.0f);
      }
  
--    if (PARAMS_GET_U(this->dyna.actor.params, 5, 7) == GI_ICE_TRAP && this->actionFunc == EnBox_Open &&
+-    if (ENBOX_GET_GET_ITEM_ID(&this->dyna.actor) == GI_ICE_TRAP && this->actionFunc == EnBox_Open &&
 +    if (EnBox_GetContentsGetItemID(this, play) == GI_ICE_TRAP) {
 +        // Spawn the object for the ice trap wind effect if the scene has not loaded it
 +        if (Object_GetSlot(&play->objectCtx, OBJECT_FZ) == -1) {

@@ -1,8 +1,8 @@
 diff --git a/src/overlays/gamestates/ovl_file_choose/file_select.h b/src/overlays/gamestates/ovl_file_choose/file_select.h
-index 016c04dce..2e87e4270 100644
+index 0ad6bfd19..a87ef3192 100644
 --- a/src/overlays/gamestates/ovl_file_choose/file_select.h
 +++ b/src/overlays/gamestates/ovl_file_choose/file_select.h
-@@ -68,7 +68,15 @@ typedef enum ConfigMode {
+@@ -69,7 +69,15 @@ typedef enum ConfigMode {
      /* 37 */ CM_OPTIONS_MENU,
      /* 38 */ CM_START_OPTIONS,
      /* 39 */ CM_OPTIONS_TO_MAIN,
@@ -19,7 +19,7 @@ index 016c04dce..2e87e4270 100644
  } ConfigMode;
  
  typedef enum SelectMode {
-@@ -78,8 +86,10 @@ typedef enum SelectMode {
+@@ -79,8 +87,10 @@ typedef enum SelectMode {
      /* 3 */ SM_CONFIRM_FILE,
      /* 4 */ SM_FADE_OUT_FILE_INFO,
      /* 5 */ SM_MOVE_FILE_TO_SLOT,
@@ -32,7 +32,7 @@ index 016c04dce..2e87e4270 100644
  } SelectMode;
  
  typedef enum TitleLabel {
-@@ -106,7 +116,6 @@ typedef enum WarningLabel {
+@@ -107,7 +117,6 @@ typedef enum WarningLabel {
  typedef enum MainMenuButtonIndex {
      /* 0 */ FS_BTN_MAIN_FILE_1,
      /* 1 */ FS_BTN_MAIN_FILE_2,
@@ -40,7 +40,7 @@ index 016c04dce..2e87e4270 100644
      /* 3 */ FS_BTN_MAIN_COPY,
      /* 4 */ FS_BTN_MAIN_ERASE,
      /* 5 */ FS_BTN_MAIN_OPTIONS
-@@ -115,21 +124,18 @@ typedef enum MainMenuButtonIndex {
+@@ -116,21 +125,18 @@ typedef enum MainMenuButtonIndex {
  typedef enum CopyMenuButtonIndex {
      /* 0 */ FS_BTN_COPY_FILE_1,
      /* 1 */ FS_BTN_COPY_FILE_2,
@@ -62,7 +62,7 @@ index 016c04dce..2e87e4270 100644
      /* 3 */ FS_BTN_SELECT_YES,
      /* 4 */ FS_BTN_SELECT_QUIT
  } SelectMenuButtonIndex;
-@@ -149,10 +155,8 @@ typedef enum ActionButtonIndex {
+@@ -150,10 +156,8 @@ typedef enum ActionButtonIndex {
  typedef enum SettingIndex {
      /* 0 */ FS_SETTING_AUDIO,
      /* 1 */ FS_SETTING_TARGET,
@@ -75,7 +75,7 @@ index 016c04dce..2e87e4270 100644
  } SettingIndex;
  
  typedef enum CharPage {
-@@ -211,7 +215,6 @@ void FileSelect_StartNameEntry(GameState* thisx);
+@@ -212,7 +216,6 @@ void FileSelect_StartNameEntry(GameState* thisx);
  void FileSelect_UpdateOptionsMenu(GameState* thisx);
  void FileSelect_StartOptions(GameState* thisx);
  
@@ -83,7 +83,7 @@ index 016c04dce..2e87e4270 100644
  void FileSelect_ConfigModeDraw(GameState* thisx);
  void FileSelect_SelectModeDraw(GameState* thisx);
  
-@@ -221,8 +224,19 @@ void FileSelect_DrawOptions(GameState* thisx);
+@@ -222,8 +225,19 @@ void FileSelect_DrawOptions(GameState* thisx);
  void FileSelect_DrawNameEntry(GameState* thisx);
  void FileSelect_DrawCharacter(GraphicsContext* gfxCtx, void* texture, s16 vtx);
  
@@ -104,7 +104,7 @@ index 016c04dce..2e87e4270 100644
  #endif
  
  extern Vtx gNameEntryVtx[];
-@@ -232,6 +246,13 @@ extern Vtx gOptionsDividerSoundVtx[];
+@@ -233,6 +247,13 @@ extern Vtx gOptionsDividerSoundVtx[];
  extern Vtx gOptionsDividerZTargetVtx[];
  extern Vtx gOptionsDividerBrightnessVtx[];
  extern s16 gCharPageEng[];

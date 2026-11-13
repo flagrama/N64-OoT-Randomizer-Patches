@@ -134,10 +134,14 @@ void ExpandRegions(Search* search, EntranceVector* failed, LinkAge age) {
                 continue;
             }
 
+            if (exit.connectedRegion == NULL) {
+                continue;
+            }
+
             memset(hashKeyBuffer, 0, sizeof(hashKeyBuffer));
             strcpy(hashKeyBuffer, exit.connectedRegion->name);
 
-            if (exit.connectedRegion != NULL && !ht_contains(regions, hashKeyBuffer)) {
+            if (!ht_contains(regions, hashKeyBuffer)) {
                 // PRINTF("Region %s is new!\n", hashKeyBuffer);
                 if (Ast_Eval_Entrance(exit.accessRule, search, exit, age)) {
                     Region_v regionContainer = { exit.connectedRegion };

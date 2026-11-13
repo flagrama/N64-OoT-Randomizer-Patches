@@ -7,7 +7,7 @@
 #include "r_tables.h"
 #include "zelda_arena.h"
 
-u32 itemIdToSolverId[ITEM_NONE];
+u32 itemIdToSolverId[ITEM_NONE + 1];
 IntHashTable allowedGlobals;
 ItemInfoHashTable ItemInfo_Items;
 ItemInfoHashTable ItemInfo_Events;

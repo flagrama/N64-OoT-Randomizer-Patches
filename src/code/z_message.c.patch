@@ -1,8 +1,8 @@
 diff --git a/src/code/z_message.c b/src/code/z_message.c
-index 08d4c7181..1d68ffcce 100644
+index bb7c7dbf4..304709fc9 100644
 --- a/src/code/z_message.c
 +++ b/src/code/z_message.c
-@@ -1497,9 +1497,9 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
+@@ -1500,9 +1500,9 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
                                                        msgCtx->msgMode < MSGMODE_SCARECROW_LONG_RECORDING_START))) {
                      for (j = i;; j++) {
                          character = MSG_BUF_DECODED[j];
@@ -14,7 +14,7 @@ index 08d4c7181..1d68ffcce 100644
                                     (character == MESSAGE_EVENT) || (character == MESSAGE_BOX_BREAK_DELAYED) ||
                                     (character == MESSAGE_AWAIT_BUTTON_PRESS) || (character == MESSAGE_BOX_BREAK) ||
                                     (character == MESSAGE_END)) {
-@@ -1615,7 +1615,9 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
+@@ -1620,7 +1620,9 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
                  msgCtx->textDelay = MSG_BUF_DECODED[++i];
                  break;
              case MESSAGE_UNSKIPPABLE:
@@ -25,7 +25,7 @@ index 08d4c7181..1d68ffcce 100644
                  break;
              case MESSAGE_TWO_CHOICE:
                  msgCtx->textboxEndType = TEXTBOX_ENDTYPE_2_CHOICE;
-@@ -2126,6 +2128,12 @@ void Message_Decode(PlayState* play) {
+@@ -2139,6 +2141,12 @@ void Message_Decode(PlayState* play) {
      } else
  #endif
      {

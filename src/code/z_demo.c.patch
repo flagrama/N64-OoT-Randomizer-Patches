@@ -1,16 +1,16 @@
 diff --git a/src/code/z_demo.c b/src/code/z_demo.c
-index 358edd32e..c39e1f8e9 100644
+index d9646fe32..9982e6719 100644
 --- a/src/code/z_demo.c
 +++ b/src/code/z_demo.c
-@@ -188,6 +188,7 @@ void Cutscene_DrawDebugInfo(PlayState* play, Gfx** dlist, CutsceneContext* csCtx
- void Cutscene_InitContext(PlayState* play, CutsceneContext* csCtx) {
+@@ -205,6 +205,7 @@ void Cutscene_DrawDebugInfo(UNUSED PlayState* play, Gfx** dlist, CutsceneContext
+ void Cutscene_InitContext(UNUSED PlayState* play, CutsceneContext* csCtx) {
      csCtx->state = CS_STATE_IDLE;
      csCtx->timer = 0.0f;
 +    csCtx->skippable = false;
  }
  
- void Cutscene_StartManual(PlayState* play, CutsceneContext* csCtx) {
-@@ -590,6 +591,10 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
+ void Cutscene_StartManual(UNUSED PlayState* play, CutsceneContext* csCtx) {
+@@ -607,6 +608,10 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
      Player* player = GET_PLAYER(play);
      s32 titleDemoSkipped = false;
  
@@ -21,7 +21,7 @@ index 358edd32e..c39e1f8e9 100644
      if ((gSaveContext.gameMode != GAMEMODE_NORMAL) && (gSaveContext.gameMode != GAMEMODE_END_CREDITS) &&
          (play->sceneId != SCENE_HYRULE_FIELD) && (csCtx->curFrame > 20) &&
          (CHECK_BTN_ALL(play->state.input[0].press.button, BTN_A) ||
-@@ -601,8 +606,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
+@@ -618,8 +623,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
      }
  
      if ((csCtx->curFrame == cmd->startFrame) || titleDemoSkipped ||
@@ -31,7 +31,7 @@ index 358edd32e..c39e1f8e9 100644
          csCtx->state = CS_STATE_RUN_UNSTOPPABLE;
          Audio_SetCutsceneFlag(0);
          gSaveContext.cutsceneTransitionControl = 1;
-@@ -902,6 +906,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
+@@ -919,6 +923,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
                  break;
  
              case CS_DEST_LAKE_HYLIA_FROM_LAKE_RESTORED:
@@ -39,7 +39,7 @@ index 358edd32e..c39e1f8e9 100644
                  play->nextEntranceIndex = ENTR_LAKE_HYLIA_5;
                  play->transitionTrigger = TRANS_TRIGGER_START;
                  play->transitionType = TRANS_TYPE_FADE_BLACK;
-@@ -915,6 +920,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
+@@ -932,6 +937,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
                  break;
  
              case CS_DEST_WINDMILL_FROM_WELL_DRAINED:
@@ -47,7 +47,7 @@ index 358edd32e..c39e1f8e9 100644
                  play->nextEntranceIndex = ENTR_WINDMILL_AND_DAMPES_GRAVE_2;
                  play->transitionTrigger = TRANS_TRIGGER_START;
                  play->transitionType = TRANS_TYPE_FADE_BLACK_FAST;
-@@ -945,6 +951,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
+@@ -962,6 +968,7 @@ void CutsceneCmd_Destination(PlayState* play, CutsceneContext* csCtx, CsCmdDesti
                  break;
  
              case CS_DEST_DESERT_COLOSSUS_FROM_REQUIEM:
@@ -55,7 +55,7 @@ index 358edd32e..c39e1f8e9 100644
                  play->nextEntranceIndex = ENTR_DESERT_COLOSSUS_4;
                  play->transitionTrigger = TRANS_TRIGGER_START;
                  play->transitionType = TRANS_TYPE_SANDSTORM_END;
-@@ -2405,15 +2412,20 @@ void Cutscene_HandleEntranceTriggers(PlayState* play) {
+@@ -2422,15 +2429,20 @@ void Cutscene_HandleEntranceTriggers(PlayState* play) {
              requiredAge = gSaveContext.save.linkAge;
          }
  
@@ -83,11 +83,11 @@ index 358edd32e..c39e1f8e9 100644
          }
      }
  }
-@@ -2441,6 +2453,7 @@ void Cutscene_HandleConditionalTriggers(PlayState* play) {
+@@ -2458,6 +2470,7 @@ void Cutscene_HandleConditionalTriggers(PlayState* play) {
                     LINK_IS_ADULT && !Flags_GetEventChkInf(EVENTCHKINF_C4) &&
                     (gEntranceTable[((void)0, gSaveContext.save.entranceIndex)].sceneId == SCENE_TEMPLE_OF_TIME)) {
              Flags_SetEventChkInf(EVENTCHKINF_C4);
 +            Item_Give(play, ITEM_ARROW_LIGHT);
              gSaveContext.save.entranceIndex = ENTR_TEMPLE_OF_TIME_0;
              gSaveContext.save.cutsceneIndex = CS_INDEX_8;
-         } else if (!Flags_GetEventChkInf(EVENTCHKINF_C7) &&
+         } else if (!Flags_GetEventChkInf(EVENTCHKINF_GERUDO_CAUGHT_TOWER_FALL) &&

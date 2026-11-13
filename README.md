@@ -41,7 +41,7 @@ Building has only been tested on native Linux. WSL and Docker should work just a
 Follow the installation instructions on [the decompilation readme](https://github.com/zeldaret/oot?tab=readme-ov-file#the-legend-of-zelda-ocarina-of-time) with the additional step after cloning the repository and changing into the new directory checkout the commit the patch file was made against using git again.
 
 ```bash
-git checkout b204d6c089a0c8c64c180f40436682be3848f0e9
+git checkout 14759abf9abb4295de142cdc1452998630ea70fb
 ```
 
 Continue to follow the README there until you build a working ROM to ensure the build environment is working.

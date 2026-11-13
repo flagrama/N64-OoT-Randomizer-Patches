@@ -1,8 +1,8 @@
 diff --git a/src/overlays/gamestates/ovl_file_choose/z_file_nameset.c b/src/overlays/gamestates/ovl_file_choose/z_file_nameset.c
-index d80dd7bc9..72802f8cc 100644
+index da9af027b..061310f64 100644
 --- a/src/overlays/gamestates/ovl_file_choose/z_file_nameset.c
 +++ b/src/overlays/gamestates/ovl_file_choose/z_file_nameset.c
-@@ -16,6 +16,7 @@
+@@ -17,6 +17,7 @@
  #include "versions.h"
  #include "audio.h"
  #include "save.h"
@@ -10,7 +10,7 @@ index d80dd7bc9..72802f8cc 100644
  
  #include "assets/textures/title_static/title_static.h"
  
-@@ -46,7 +47,7 @@ void FileSelect_DrawCharacterTransition(GraphicsContext* gfxCtx, void* texture1,
+@@ -47,7 +48,7 @@ void FileSelect_DrawCharacterTransition(GraphicsContext* gfxCtx, void* texture1,
  #if OOT_PAL
  
  #if OOT_VERSION >= PAL_1_1
@@ -19,7 +19,7 @@ index d80dd7bc9..72802f8cc 100644
      2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 0, 1, 1, 2, 1, 1, 4, 2, 2, 2, 1, 1, 0, 2, 0, 1, 1, 1, 1, 1, 0,
      1, 1, 1, 2, 2, 2, 2, 2, 3, 2, 2, 4, 3, 2, 4, 1, 2, 2, 1, 1, 2, 2, 3, 2, 2, 0, 2, 2, 2, 0, 3, 1, 0,
  };
-@@ -178,12 +179,16 @@ static void* sButtonTextures[][2] = {
+@@ -181,12 +182,16 @@ static void* sButtonTextures[][2] = {
  static u16 sButtonWidths[] = { 28, 44 };
  #endif
  
@@ -39,7 +39,7 @@ index d80dd7bc9..72802f8cc 100644
  };
  
  /**
-@@ -205,12 +210,19 @@ void FileSelect_SetNameEntryVtx(GameState* thisx) {
+@@ -208,12 +213,19 @@ void FileSelect_SetNameEntryVtx(GameState* thisx) {
      gDPPipeSync(POLY_OPA_DISP++);
      gDPSetCombineLERP(POLY_OPA_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, PRIMITIVE,
                        ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
@@ -63,7 +63,7 @@ index d80dd7bc9..72802f8cc 100644
      gSP1Quadrangle(POLY_OPA_DISP++, 0, 2, 3, 1, 0);
      gDPPipeSync(POLY_OPA_DISP++);
  
-@@ -253,32 +265,39 @@ void FileSelect_SetNameEntryVtx(GameState* thisx) {
+@@ -256,32 +268,39 @@ void FileSelect_SetNameEntryVtx(GameState* thisx) {
      }
  #endif
  
@@ -111,7 +111,7 @@ index d80dd7bc9..72802f8cc 100644
  
              this->nameEntryVtx[phi_t1 + 1].v.ob[0] = this->nameEntryVtx[phi_t1 + 3].v.ob[0] =
                  this->nameEntryVtx[phi_t1].v.ob[0] + 0xA;
-@@ -335,18 +354,27 @@ void FileSelect_SetNameEntryVtx(GameState* thisx) {
+@@ -338,18 +357,27 @@ void FileSelect_SetNameEntryVtx(GameState* thisx) {
  
      for (phi_s0 = 0, phi_v0 = 0; phi_s0 < 0x20; phi_s0 += 4, phi_v0++) {
          FileSelect_DrawCharacter(this->state.gfxCtx,
@@ -145,7 +145,7 @@ index d80dd7bc9..72802f8cc 100644
      }
  
      CLOSE_DISPS(this->state.gfxCtx, "../z_file_nameset_PAL.c", 307);
-@@ -569,30 +597,30 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
+@@ -572,30 +600,30 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
      FileSelect_PulsateCursor(&this->state);
  
      tmp = (this->newFileNameCharCount * 4) + 4;
@@ -186,7 +186,7 @@ index d80dd7bc9..72802f8cc 100644
              gNameEntryVtx[(this->kbdX + 1) * 4].v.ob[1] + 4;
      } else {
          if (this->charIndex >= 65) {
-@@ -604,17 +632,17 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
+@@ -607,17 +635,17 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
          this->nameEntryVtx[40].v.ob[0] = this->nameEntryVtx[42].v.ob[0] =
              this->keyboardVtx[this->charIndex * 4].v.ob[0] - 6;
  #else
@@ -209,7 +209,7 @@ index d80dd7bc9..72802f8cc 100644
      gDPPipeSync(POLY_OPA_DISP++);
      gDPSetCombineLERP(POLY_OPA_DISP++, 1, 0, PRIMITIVE, 0, TEXEL0, 0, PRIMITIVE, 0, 1, 0, PRIMITIVE, 0, TEXEL0, 0,
                        PRIMITIVE, 0);
-@@ -647,32 +675,43 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
+@@ -650,32 +678,43 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
                        PRIMITIVE, 0);
      gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, 255);
  
@@ -262,7 +262,7 @@ index d80dd7bc9..72802f8cc 100644
                      SFX_PLAY_CENTERED(NA_SE_SY_FSEL_DECIDE_S);
                  }
              }
-@@ -849,23 +888,27 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
+@@ -852,23 +891,27 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
                                               font->fontBuf + gCharPageEng[this->charIndex] * FONT_CHAR_TEX_SIZE, 0);
  
                      if (CHECK_BTN_ALL(input->press.button, BTN_A)) {
@@ -300,7 +300,7 @@ index d80dd7bc9..72802f8cc 100644
                              SFX_PLAY_CENTERED(NA_SE_SY_FSEL_DECIDE_S);
                          } else {
                              this->newFileNameCharCount--;
-@@ -874,35 +917,138 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
+@@ -877,35 +920,138 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
                                  this->newFileNameCharCount = 0;
                              }
  
@@ -459,7 +459,7 @@ index d80dd7bc9..72802f8cc 100644
                          }
                      }
                  }
-@@ -911,8 +1057,8 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
+@@ -914,8 +1060,8 @@ void FileSelect_DrawNameEntry(GameState* thisx) {
                      SFX_PLAY_CENTERED(NA_SE_SY_FSEL_CURSOR);
                      this->newFileNameCharCount++;
  
@@ -470,7 +470,7 @@ index d80dd7bc9..72802f8cc 100644
                      }
                  } else if (CHECK_BTN_ALL(input->press.button, BTN_CLEFT)) {
                      SFX_PLAY_CENTERED(NA_SE_SY_FSEL_CURSOR);
-@@ -955,7 +1101,11 @@ void FileSelect_StartNameEntry(GameState* thisx) {
+@@ -958,7 +1104,11 @@ void FileSelect_StartNameEntry(GameState* thisx) {
          this->kbdX = 0;
          this->kbdY = 0;
          this->kbdButton = FS_KBD_BTN_NONE;
@@ -483,7 +483,7 @@ index d80dd7bc9..72802f8cc 100644
      }
  }
  
-@@ -1296,11 +1446,12 @@ void FileSelect_UpdateOptionsMenu(GameState* thisx) {
+@@ -1303,11 +1453,12 @@ void FileSelect_UpdateOptionsMenu(GameState* thisx) {
      if (CHECK_BTN_ALL(input->press.button, BTN_B)) {
          SFX_PLAY_CENTERED(NA_SE_SY_FSEL_DECIDE_L);
          this->configMode = CM_OPTIONS_TO_MAIN;
@@ -499,7 +499,7 @@ index d80dd7bc9..72802f8cc 100644
          PRINTF("ＳＡＶＥ");
          Sram_WriteSramHeader(sramCtx);
          PRINTF_COLOR_YELLOW();
-@@ -1325,19 +1476,10 @@ void FileSelect_UpdateOptionsMenu(GameState* thisx) {
+@@ -1332,19 +1483,10 @@ void FileSelect_UpdateOptionsMenu(GameState* thisx) {
              if (gSaveContext.soundSetting > 0xF0) {
                  gSaveContext.soundSetting = SOUND_SETTING_SURROUND;
              }
@@ -522,7 +522,7 @@ index d80dd7bc9..72802f8cc 100644
          }
      } else if (this->stickAdjX > 30) {
          SFX_PLAY_CENTERED(NA_SE_SY_FSEL_CURSOR);
-@@ -1348,19 +1490,10 @@ void FileSelect_UpdateOptionsMenu(GameState* thisx) {
+@@ -1355,19 +1497,10 @@ void FileSelect_UpdateOptionsMenu(GameState* thisx) {
              if (gSaveContext.soundSetting > SOUND_SETTING_SURROUND) {
                  gSaveContext.soundSetting = SOUND_SETTING_STEREO;
              }
@@ -545,7 +545,7 @@ index d80dd7bc9..72802f8cc 100644
          }
      }
  
-@@ -1455,9 +1588,9 @@ static OptionsMenuTextureInfo sOptionsMenuHeaders[] = {
+@@ -1462,9 +1595,9 @@ static OptionsMenuTextureInfo sOptionsMenuHeaders[] = {
      { { gFileSelSOUNDENGTex, gFileSelSOUNDENGTex, gFileSelSOUNDFRATex }, 64, 16 },
      { { gFileSelZTargetingENGTex, gFileSelZTargetingGERTex, gFileSelZTargetingFRATex }, 64, 16 },
      { { gFileSelCheckBrightnessENGTex, gFileSelCheckBrightnessGERTex, gFileSelCheckBrightnessFRATex }, 128, 16 },
@@ -556,7 +556,7 @@ index d80dd7bc9..72802f8cc 100644
  static OptionsMenuTextureInfo sOptionsMenuSettings[] = {
      { { gFileSelStereoENGTex, gFileSelStereoENGTex, gFileSelStereoFRATex }, 48, 16 },
      { { gFileSelMonoENGTex, gFileSelMonoENGTex, gFileSelMonoENGTex }, 48, 16 },
-@@ -1465,8 +1598,8 @@ static OptionsMenuTextureInfo sOptionsMenuSettings[] = {
+@@ -1472,8 +1605,8 @@ static OptionsMenuTextureInfo sOptionsMenuSettings[] = {
      { { gFileSelSurroundENGTex, gFileSelSurroundENGTex, gFileSelSurroundENGTex }, 48, 16 },
      { { gFileSelSwitchENGTex, gFileSelSwitchGERTex, gFileSelSwitchFRATex }, 48, 16 },
      { { gFileSelHoldENGTex, gFileSelHoldGERTex, gFileSelHoldFRATex }, 48, 16 },
@@ -567,7 +567,7 @@ index d80dd7bc9..72802f8cc 100644
  };
  
  #else
-@@ -1761,6 +1894,30 @@ void FileSelect_DrawOptionsImpl(GameState* thisx) {
+@@ -1768,6 +1901,30 @@ void FileSelect_DrawOptionsImpl(GameState* thisx) {
          gSP1Quadrangle(POLY_OPA_DISP++, vtx, vtx + 2, vtx + 3, vtx + 1, 0);
      }
  
@@ -598,7 +598,7 @@ index d80dd7bc9..72802f8cc 100644
      gSPVertex(POLY_OPA_DISP++, gOptionsMenuBrightnessVtx, 8, 0);
      vtx = 0;
  #endif
-@@ -1784,33 +1941,6 @@ void FileSelect_DrawOptionsImpl(GameState* thisx) {
+@@ -1791,33 +1948,6 @@ void FileSelect_DrawOptionsImpl(GameState* thisx) {
  
      vtx += 4;
  
@@ -632,7 +632,7 @@ index d80dd7bc9..72802f8cc 100644
      // blue divider lines
      gDPPipeSync(POLY_OPA_DISP++);
      gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 0, 255, 255, this->titleAlpha[0]);
-@@ -1842,14 +1972,12 @@ void FileSelect_DrawOptionsImpl(GameState* thisx) {
+@@ -1849,14 +1979,12 @@ void FileSelect_DrawOptionsImpl(GameState* thisx) {
      gSP1Quadrangle(POLY_OPA_DISP++, 0, 2, 3, 1, 0);
      Matrix_Pop();
  

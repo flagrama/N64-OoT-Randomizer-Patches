@@ -1,8 +1,8 @@
 diff --git a/Makefile b/Makefile
-index 5103d5869..4a62e4714 100644
+index 8a2f552e6..2fd10bffe 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -16,28 +16,16 @@ SHELL = /usr/bin/env bash
+@@ -16,30 +16,16 @@ SHELL = /usr/bin/env bash
  # If COMPARE is 1, check the output md5sum after building. Set to 0 when modding.
  COMPARE ?= 1
  # If NON_MATCHING is 1, define the NON_MATCHING C flag when building. Set to 1 when modding.
@@ -25,7 +25,9 @@ index 5103d5869..4a62e4714 100644
 -#   gc-jp-mq       GameCube Japan Master Quest
 -#   gc-us          GameCube US
 -#   gc-us-mq       GameCube US Master Quest
+-#   gc-eu-dbg-2    GameCube Europe/PAL Debug (earlier build)
 -#   gc-eu-mq-dbg   GameCube Europe/PAL Master Quest Debug (default)
+-#   gc-eu-dbg      GameCube Europe/PAL Debug
 -#   gc-eu          GameCube Europe/PAL
 -#   gc-eu-mq       GameCube Europe/PAL Master Quest
 -#   gc-jp-ce       GameCube Japan (Collector's Edition disc)
@@ -35,7 +37,7 @@ index 5103d5869..4a62e4714 100644
  # Number of threads to extract and compress with.
  N_THREADS ?= $(shell nproc)
  # If DEBUG_OBJECTS is 1, produce additional debugging files such as objdump output or raw binaries for assets
-@@ -58,41 +46,16 @@ N64_EMULATOR ?=
+@@ -62,41 +48,16 @@ UCODE_ASM_DEBUG ?= 0
  
  # Version-specific settings
  REGIONAL_CHECKSUM := 0
@@ -85,7 +87,7 @@ index 5103d5869..4a62e4714 100644
  else ifeq ($(VERSION),pal-1.1)
    REGION ?= EU
    PLATFORM := N64
-@@ -100,79 +63,8 @@ else ifeq ($(VERSION),pal-1.1)
+@@ -104,95 +65,8 @@ else ifeq ($(VERSION),pal-1.1)
    BUILD_CREATOR := zelda@srd44
    BUILD_DATE := 98-11-18
    BUILD_TIME := 17:36:49
@@ -123,6 +125,14 @@ index 5103d5869..4a62e4714 100644
 -  BUILD_DATE := 02-12-19
 -  BUILD_TIME := 14:05:42
 -  REVISION := 15
+-else ifeq ($(VERSION),gc-eu-dbg-2)
+-  REGION ?= EU
+-  PLATFORM := GC
+-  DEBUG_FEATURES ?= 1
+-  BUILD_CREATOR := zelda@srd022j
+-  BUILD_DATE := 03-02-13
+-  BUILD_TIME := 19:46:49
+-  REVISION := 15
 -else ifeq ($(VERSION),gc-eu-mq-dbg)
 -  REGION ?= EU
 -  PLATFORM := GC
@@ -130,6 +140,14 @@ index 5103d5869..4a62e4714 100644
 -  BUILD_CREATOR := zelda@srd022j
 -  BUILD_DATE := 03-02-21
 -  BUILD_TIME := 00:16:31
+-  REVISION := 15
+-else ifeq ($(VERSION),gc-eu-dbg)
+-  REGION ?= EU
+-  PLATFORM := GC
+-  DEBUG_FEATURES ?= 1
+-  BUILD_CREATOR := zelda@srd022j
+-  BUILD_DATE := 03-02-21
+-  BUILD_TIME := 00:49:18
 -  REVISION := 15
 -else ifeq ($(VERSION),gc-eu)
 -  REGION ?= EU
@@ -166,8 +184,8 @@ index 5103d5869..4a62e4714 100644
  else
  $(error Unsupported version $(VERSION))
  endif
-@@ -197,8 +89,12 @@ endif
- PROJECT_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+@@ -216,8 +90,12 @@ endif
+ 
  BUILD_DIR := build/$(VERSION)
  EXPECTED_DIR := expected/$(BUILD_DIR)
 -BASEROM_DIR := baseroms/$(VERSION)
@@ -181,7 +199,7 @@ index 5103d5869..4a62e4714 100644
  VENV := .venv
  
  MAKE = make
-@@ -220,8 +116,8 @@ $(error Unsupported platform $(PLATFORM))
+@@ -239,8 +117,8 @@ $(error Unsupported platform $(PLATFORM))
  endif
  
  # Converts e.g. ntsc-1.0 to NTSC_1_0
@@ -192,57 +210,38 @@ index 5103d5869..4a62e4714 100644
  CPP_DEFINES += -DOOT_REGION=REGION_$(REGION)
  CPP_DEFINES += -DLIBULTRA_VERSION=LIBULTRA_VERSION_$(LIBULTRA_VERSION)
  CPP_DEFINES += -DLIBULTRA_PATCH=$(LIBULTRA_PATCH)
-@@ -352,6 +248,9 @@ endif
+@@ -409,6 +287,12 @@ endif
  
  ifeq ($(COMPILER),gcc)
    OPTFLAGS := -Os -ffast-math -fno-unsafe-math-optimizations
 +    ifeq ($(DEBUG_FEATURES_SYMBOLS),1)
-+    	OPTFLAGS += -ggdb -Og
++    	OPTFLAGS += -ggdb
++	endif
++	ifeq ($(DEBUG_FEATURES_DEBUG_OPT),1)
++		OPTFLAGS += -Og
 +	endif
  endif
  
  GBI_DEFINES := -DF3DEX_GBI_2
-@@ -495,7 +394,7 @@ ASSET_FILES_OUT := $(foreach f,$(ASSET_FILES_BIN_EXTRACTED:.bin=.bin.inc.c),$(f:
- SPEC_O_FILES := $(shell $(CPP) $(CPPFLAGS) -I. $(SPEC) | $(BUILD_DIR_REPLACE) | sed -n -E 's/^[ \t]*include[ \t]*"([a-zA-Z0-9/_.-]+\.o)"/\1/p')
- 
- # Split out reloc files
--O_FILES := $(filter-out %_reloc.o,$(SPEC_O_FILES))
-+O_FILES := $(filter-out %_reloc.o $(BUILD_DIR)/src/boot/build.o,$(SPEC_O_FILES))
- OVL_RELOC_FILES := $(filter %_reloc.o,$(SPEC_O_FILES))
- 
+@@ -619,7 +503,7 @@ MAKEROM_O_FILES := $(BUILD_DIR)/src/makerom/rom_header.o $(BUILD_DIR)/src/makero
  # Automatic dependency files
-@@ -534,7 +433,8 @@ $(shell mkdir -p $(foreach dir, \
-                     $(dir:$(EXTRACTED_DIR)/%=$(BUILD_DIR)/%)))
- endif
+ DEP_FILES := $(O_FILES:.o=.d) $(O_FILES:.o=.asmproc.d) $(OVL_RELOC_FILES:.o=.d) $(BUILD_DIR)/spec.d $(MAKEROM_O_FILES:.o=.d)
  
 -$(BUILD_DIR)/src/boot/build.o: CPP_DEFINES += -DBUILD_CREATOR="\"$(BUILD_CREATOR)\"" -DBUILD_DATE="\"$(BUILD_DATE)\"" -DBUILD_TIME="\"$(BUILD_TIME)\""
-+$(BUILD_DIR)/src/boot/build.o $(BUILD_DIR)/src/boot/build.d: $(O_FILES)
-+ CPP_DEFINES += -DBUILD_CREATOR="\"$(BUILD_CREATOR)\"" -DBUILD_DATE="\"$(BUILD_DATE)\"" -DBUILD_TIME="\"$(BUILD_TIME)\"" -DBUILD_VERSION="\"$(BUILD_VERSION)\""
++$(BUILD_DIR)/src/boot/build.o $(BUILD_DIR)/src/boot/build.d: CPP_DEFINES += -DBUILD_CREATOR="\"$(BUILD_CREATOR)\"" -DBUILD_DATE="\"$(BUILD_DATE)\"" -DBUILD_TIME="\"$(BUILD_TIME)\"" -DBUILD_VERSION="\"$(BUILD_VERSION)\""
  
  $(BUILD_DIR)/src/audio/internal/seqplayer.o: CPP_DEFINES += -DMML_VERSION=MML_VERSION_OOT
  
-@@ -734,7 +634,7 @@ endif
+@@ -819,7 +703,7 @@ endif
  
- ifeq ($(PERMUTER),)  # permuter + preprocess.py misbehaves, permuter doesn't care about rodata diffs or bss ordering so just don't use it in that case
+ ifeq ($(PERMUTER),)  # permuter + preprocess.sh misbehaves, permuter doesn't care about rodata diffs or bss ordering so just don't use it in that case
  # Handle encoding (UTF-8 -> EUC-JP) and custom pragmas
 -$(BUILD_DIR)/src/%.o: PREPROCESS := ./tools/preprocess.sh -v $(VERSION) -i $(ICONV) --
 +$(BUILD_DIR)/src/%.o: PREPROCESS := ./tools/preprocess.sh -v pal-1.1 -i $(ICONV) --
  endif
  
  else
-@@ -743,8 +643,11 @@ $(BUILD_DIR)/assets/%.o: CFLAGS += -fno-zero-initialized-in-bss -fno-toplevel-re
- $(BUILD_DIR)/src/%.o: CFLAGS += -fexec-charset=euc-jp
- $(BUILD_DIR)/src/libultra/libc/ll.o: OPTFLAGS := -Ofast
- $(BUILD_DIR)/src/overlays/%.o: CFLAGS += -fno-merge-constants -mno-explicit-relocs -mno-split-addresses
-+$(BUILD_DIR)/src/overlays/gamestates/ovl_randomizer/%.o: OPTFLAGS := -O2
- endif
- 
-+-include .make_wii-vc.mk
-+
- #### Main Targets ###
- 
- all: rom compress
-@@ -789,18 +692,26 @@ venv:
+@@ -873,18 +757,26 @@ venv:
  
  setup: venv
  	$(MAKE) -C tools
@@ -276,16 +275,16 @@ index 5103d5869..4a62e4714 100644
  ifeq ($(N64_EMULATOR),)
  	$(error Emulator path not set. Set N64_EMULATOR in the Makefile or define it as an environment variable)
  endif
-@@ -837,7 +748,7 @@ ifeq ($(PLATFORM),IQUE)
-   endif
- endif
+@@ -915,7 +807,7 @@ $(ROMC): $(ROM) $(ELF) $(BUILD_DIR)/compress_ranges.txt
  
--$(ELF): $(TEXTURE_FILES_OUT) $(ASSET_FILES_OUT) $(O_FILES) $(OVL_RELOC_FILES) $(LDSCRIPT) $(BUILD_DIR)/linker_scripts/makerom.ld $(BUILD_DIR)/undefined_syms.txt \
-+$(ELF): $(TEXTURE_FILES_OUT) $(ASSET_FILES_OUT) $(O_FILES) $(BUILD_DIR)/src/boot/build.o $(OVL_RELOC_FILES) $(LDSCRIPT) $(BUILD_DIR)/linker_scripts/makerom.ld $(BUILD_DIR)/undefined_syms.txt \
+ LDFLAGS := -T $(LDSCRIPT) -T $(BUILD_DIR)/linker_scripts/makerom.ld -T $(BUILD_DIR)/undefined_syms.txt --emit-relocs -Map $(MAP)
+ 
+-$(ELF): $(TEXTURE_FILES_OUT) $(ASSET_FILES_OUT) $(SEGMENT_FILES) $(OVL_RELOC_FILES) $(LDSCRIPT) $(MAKEROM_O_FILES) \
++$(ELF): $(TEXTURE_FILES_OUT) $(ASSET_FILES_OUT) $(SEGMENT_FILES) $(BUILD_DIR)/src/boot/build.o $(OVL_RELOC_FILES) $(LDSCRIPT) $(MAKEROM_O_FILES) \
+         $(BUILD_DIR)/linker_scripts/makerom.ld $(BUILD_DIR)/undefined_syms.txt \
          $(SAMPLEBANK_O_FILES) $(SOUNDFONT_O_FILES) $(SEQUENCE_O_FILES) \
          $(BUILD_DIR)/assets/audio/sequence_font_table.o $(BUILD_DIR)/assets/audio/audiobank_padding.o
- 	$(LD) $(LDFLAGS) -o $@
-@@ -878,11 +789,19 @@ else
+@@ -970,11 +862,19 @@ else
    NES_CHARMAP := assets/text/charmap.nes.txt
  endif
  

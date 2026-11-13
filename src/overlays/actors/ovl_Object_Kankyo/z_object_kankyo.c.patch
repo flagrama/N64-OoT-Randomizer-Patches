@@ -1,8 +1,8 @@
 diff --git a/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c b/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c
-index 5f8f580e4..16ad01074 100644
+index ecb37b39a..12bc832fc 100644
 --- a/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c
 +++ b/src/overlays/actors/ovl_Object_Kankyo/z_object_kankyo.c
-@@ -918,8 +918,48 @@ void ObjectKankyo_Beams(ObjectKankyo* this, PlayState* play) {
+@@ -923,8 +923,48 @@ void ObjectKankyo_Beams(ObjectKankyo* this, PlayState* play) {
                      Audio_PlayCutsceneEffectsSequence(SEQ_CS_EFFECTS_TRIAL_DESTROY);
                  }
                  Math_ApproachZeroF(&this->effects[i].size, 0.1f, 0.1f);

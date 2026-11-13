@@ -1,8 +1,8 @@
 diff --git a/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.c b/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.c
-index b4add2965..ffb230b60 100644
+index 6d795095e..eb8c5b717 100644
 --- a/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.c
 +++ b/src/overlays/actors/ovl_En_Po_Relay/z_en_po_relay.c
-@@ -129,6 +129,7 @@ void EnPoRelay_Init(Actor* thisx, PlayState* play) {
+@@ -130,6 +130,7 @@ void EnPoRelay_Init(Actor* thisx, PlayState* play) {
          Actor_Kill(&this->actor);
      } else {
          sAlreadySpawned = temp;
@@ -10,7 +10,7 @@ index b4add2965..ffb230b60 100644
          Actor_SetTextWithPrefix(play, &this->actor, 65);
          this->textId = this->actor.textId;
          EnPoRelay_SetupIdle(this);
-@@ -168,7 +169,7 @@ void EnPoRelay_SetupRace(EnPoRelay* this) {
+@@ -169,7 +170,7 @@ void EnPoRelay_SetupRace(EnPoRelay* this) {
      EnPoRelay_Vec3sToVec3f(&vec, &sPathPoints[this->pathPoint]);
      this->actionTimer = ((s16)(this->actor.shape.rot.y - this->actor.world.rot.y - 0x8000) >> 0xB) % 32U;
      Interface_SetTimer(0);
@@ -19,12 +19,12 @@ index b4add2965..ffb230b60 100644
      this->yawTowardsPathPoint = Actor_WorldYawTowardPoint(&this->actor, &vec);
      this->actor.flags |= ACTOR_FLAG_LOCK_ON_DISABLED;
      Actor_PlaySfx(&this->actor, NA_SE_EN_PO_LAUGH);
-@@ -362,7 +363,7 @@ void EnPoRelay_DisappearAndReward(EnPoRelay* this, PlayState* play) {
+@@ -363,7 +364,7 @@ void EnPoRelay_DisappearAndReward(EnPoRelay* this, PlayState* play) {
          }
      }
      if (Math_StepToF(&this->actor.scale.x, 0.0f, 0.001f) != 0) {
 -        if (this->hookshotSlotFull) {
 +        if (this->hookshotSlotFull != 0) {
              Vec3f posAtGround;
-             s32 pad1;
+             STACK_PAD(s32);
  

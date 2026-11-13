@@ -1,5 +1,5 @@
 diff --git a/include/versions.h b/include/versions.h
-index 620b27999..b5e786798 100644
+index 9c9a80187..c73411cd1 100644
 --- a/include/versions.h
 +++ b/include/versions.h
 @@ -1,6 +1,8 @@
@@ -9,9 +9,9 @@ index 620b27999..b5e786798 100644
 +#include "region.h"
 +
  // OOT versions in build order
- #define NTSC_1_0       1
- #define NTSC_1_1       2
-@@ -41,7 +43,7 @@
+ #define NTSC_1_0         1
+ #define NTSC_1_1         2
+@@ -43,7 +45,7 @@
  #endif
  
  // Macro for constants that change in 50 Hz N64 PAL versions.

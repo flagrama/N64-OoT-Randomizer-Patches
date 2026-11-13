@@ -1,8 +1,8 @@
 diff --git a/src/audio/internal/load.c b/src/audio/internal/load.c
-index 9989d1407..986b98b93 100644
+index abfc5502f..3716c5208 100644
 --- a/src/audio/internal/load.c
 +++ b/src/audio/internal/load.c
-@@ -1296,7 +1296,7 @@ void AudioLoad_Init(void* heap, u32 heapSize) {
+@@ -1297,7 +1297,7 @@ void AudioLoad_Init(void* heap, u32 heapSize) {
      }
  
      // 1000 is a conversion from seconds to milliseconds

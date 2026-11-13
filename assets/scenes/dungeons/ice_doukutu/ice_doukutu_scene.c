@@ -13,6 +13,8 @@
 #include "stdbool.h"
 #include "ultra64.h"
 
+#include "src/overlays/actors/ovl_En_Door/z_en_door.h"
+
 SceneCmd ice_doukutu_scene[] = {
 #include "assets/scenes/dungeons/ice_doukutu/ice_doukutu_scene.inc.c"
 };
