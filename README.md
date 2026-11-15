@@ -62,21 +62,21 @@ git apply ./patch
 
 #### 4. Prepare a base ROM
 
-Place a copy of the PAL 1.1 ROM inside the `baseroms/pal-1.1/` folder.
+Place a copy of the PAL 1.1 ROM inside the `baseroms/pal-1.1/` folder. Also place a copy of the NTSC 1.2 ROM inside `baseroms/ntsc-1.2/`.
 
-Rename the file to `baserom.z64`, `baserom.n64`, or `baserom.v64`, depending on the original extension.
+Rename the files to `baserom.z64`, `baserom.n64`, or `baserom.v64`, depending on the original extension.
 
 #### 5. Set up the ROM and build process
 
-Set up and extract everything from your ROM with the following command:
+Set up and extract everything from your ROMs with the following command:
 
 ```bash
 make setup
 ```
 
 This downloads some dependencies (from pip), and compiles tools for the build process.
-Then it generates a new ROM `baseroms/pal-1.1/baserom-decompressed.z64`.
-It will also extract the individual assets from the ROM.
+Then it generates new ROMs `baseroms/pal-1.1/baserom-decompressed.z64` and `baseroms/ntsc-1.2/baserom-decompressed.z64`.
+It will also extract the individual assets from the ROMs.
 
 #### 6. Build the ROM
 
