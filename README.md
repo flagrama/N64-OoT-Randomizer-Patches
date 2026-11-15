@@ -50,7 +50,7 @@ This is not required though, as the remainder of these build instructions will e
 
 #### 2. Download the patch file
 
-Download [the patch file](https://github.com/flagrama/N64-OoT-Randomizer-Patches/releases/download/v1.0.0/patch) and place it in the `oot` folder.
+Download [the patch file](https://github.com/flagrama/N64-OoT-Randomizer-Patches/releases/download/v1.2.0/patch) and place it in the `oot` folder.
 
 #### 3. Apply the patch file
 
