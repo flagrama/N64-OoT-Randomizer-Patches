@@ -1,0 +1,70 @@
+name: Bug report
+description: Report an issue you encountered when playing the randomizer.
+labels:
+  - bug
+
+body:
+  - type: markdown
+    attributes:
+      value: Before filing this bug, [please check if it hasn't already been reported](https://github.com/flagrama/N64-OoT-Randomizer-Patches/issues?q=is%3Aissue+label%3Abug). If it has, please add useful information to the existing issue instead.
+
+  - type: input
+    attributes:
+      label: Operating System
+      placeholder: e.g. Windows 10, 64-bit
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Platform
+      placeholder: e.g. Project 64, Everdrive64 X7, etc
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Randomizer version
+      placeholder: e.g. 1.1
+      description: You can see the version the Nintendo 64 logo screen on boot.
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: Patch region
+      description: Which region patch did you use?
+      multiple: true
+      options:
+        - NTSC
+        - PAL
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Describe the issue
+      description: Please describe the issue you are experiencing here.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: We highly suggest including a screenshot and a bug report log (System tray->Report bug).
+      placeholder: |
+        Tell us the steps required to trigger your bug. Example:
+        1. Load a save file
+        2. Open the map pause subscreen
+        3. Try opening the spoiler log for Kakariko Village
+        4. The game crashes
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Attachments
+      description: Please add any screenshots, files and/or videos here that may help us fix the issue.
+      placeholder: Drag and drop files here to add them
+    validations:
+      required: false
