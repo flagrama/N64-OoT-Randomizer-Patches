@@ -1,5 +1,5 @@
 diff --git a/spec/overlays.inc b/spec/overlays.inc
-index d368b96a0..22ce79b5f 100644
+index d368b96a0..8064ac256 100644
 --- a/spec/overlays.inc
 +++ b/spec/overlays.inc
 @@ -25,11 +25,31 @@ beginseg
@@ -34,3 +34,11 @@ index d368b96a0..22ce79b5f 100644
  beginseg
      name "ovl_kaleido_scope"
      compress
+@@ -39,6 +59,7 @@ beginseg
+     include "$(BUILD_DIR)/src/overlays/misc/ovl_kaleido_scope/z_kaleido_equipment.o"
+     include "$(BUILD_DIR)/src/overlays/misc/ovl_kaleido_scope/z_kaleido_item.o"
+     include "$(BUILD_DIR)/src/overlays/misc/ovl_kaleido_scope/z_kaleido_map.o"
++    include "$(BUILD_DIR)/src/overlays/misc/ovl_kaleido_scope/r_kaleido_map_spoiler.o"
+     include "$(BUILD_DIR)/src/overlays/misc/ovl_kaleido_scope/z_kaleido_prompt.o"
+     include "$(BUILD_DIR)/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.o"
+     include "$(BUILD_DIR)/src/overlays/misc/ovl_kaleido_scope/z_lmap_mark.o"

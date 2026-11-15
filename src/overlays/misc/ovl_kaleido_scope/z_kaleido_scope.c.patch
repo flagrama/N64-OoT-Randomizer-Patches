@@ -1,0 +1,400 @@
+diff --git a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.c b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.c
+index f41a29510..0ad14d0eb 100644
+--- a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.c
++++ b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_scope.c
+@@ -1,4 +1,5 @@
+ #include "z_kaleido_scope.h"
++#include "r_kaleido_scope.h"
+ 
+ #include "attributes.h"
+ #include "libc64/sleep.h"
+@@ -1110,6 +1111,10 @@ void KaleidoScope_HandlePageToggles(PauseContext* pauseCtx, Input* input) {
+         return;
+     }
+ 
++    if (KaleidoMapSpoiler_IsOpen()) {
++        return;
++    }
++
+     if (CHECK_BTN_ALL(input->press.button, BTN_R)) {
+         KaleidoScope_SetupPageSwitch(pauseCtx, PAGE_SWITCH_PT_RIGHT);
+         return;
+@@ -3454,6 +3459,10 @@ void KaleidoScope_Draw(PlayState* play) {
+ 
+         KaleidoScope_SetView(pauseCtx, 0.0f, 0.0f, 64.0f);
+ 
++        if (KaleidoMapSpoiler_IsOpen() && pauseCtx->state == PAUSE_STATE_MAIN) {
++            KaleidoMapSpoiler_Draw(play);
++        }
++
+         if (!IS_PAUSE_STATE_GAMEOVER(pauseCtx)) {
+             KaleidoScope_DrawUIOverlay(play);
+         }
+@@ -3895,158 +3904,239 @@ void KaleidoScope_Update(PlayState* play) {
+                 pauseCtx->worldMapPoints[i] = WORLD_MAP_POINT_STATE_HIDE;
+             }
+ 
+-            if (CHECK_QUEST_ITEM(QUEST_GERUDOS_CARD)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_HAUNTED_WASTELAND] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (CHECK_QUEST_ITEM(QUEST_MEDALLION_SPIRIT)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_HAUNTED_WASTELAND] = WORLD_MAP_POINT_STATE_SHOW;
++            if (gSaveContext.save.randomizer.shuffleChests) {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_HAUNTED_WASTELAND] ||
++                    gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_DESERT_COLOSSUS]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_HAUNTED_WASTELAND] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++            } else {
++                if (CHECK_QUEST_ITEM(QUEST_GERUDOS_CARD)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_HAUNTED_WASTELAND] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (CHECK_QUEST_ITEM(QUEST_MEDALLION_SPIRIT)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_HAUNTED_WASTELAND] = WORLD_MAP_POINT_STATE_SHOW;
++                }
+             }
+ 
+-            if (INV_CONTENT(ITEM_LONGSHOT) == ITEM_LONGSHOT) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDOS_FORTRESS] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (CHECK_QUEST_ITEM(QUEST_GERUDOS_CARD)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDOS_FORTRESS] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+ 
+-            if (GET_EVENTCHKINF(EVENTCHKINF_B2)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDO_VALLEY] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (INV_CONTENT(ITEM_LONGSHOT) == ITEM_LONGSHOT) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDO_VALLEY] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (CHECK_QUEST_ITEM(QUEST_GERUDOS_CARD)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDO_VALLEY] = WORLD_MAP_POINT_STATE_SHOW;
++            if (gSaveContext.save.randomizer.shuffleChests) {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_GERUDOS_FORTRESS]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDOS_FORTRESS] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++            } else {
++                if (INV_CONTENT(ITEM_LONGSHOT) == ITEM_LONGSHOT) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDOS_FORTRESS] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (CHECK_QUEST_ITEM(QUEST_GERUDOS_CARD)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDOS_FORTRESS] = WORLD_MAP_POINT_STATE_SHOW;
++                }
+             }
+ 
+-            if (CUR_UPG_VALUE(UPG_SCALE)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LAKE_HYLIA] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LAKE_HYLIA] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (CHECK_QUEST_ITEM(QUEST_MEDALLION_WATER)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LAKE_HYLIA] = WORLD_MAP_POINT_STATE_SHOW;
++            if (gSaveContext.save.randomizer.shuffleChests) {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_GERUDO_VALLEY]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDO_VALLEY] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++            } else {
++                if (GET_EVENTCHKINF(EVENTCHKINF_B2)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDO_VALLEY] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (INV_CONTENT(ITEM_LONGSHOT) == ITEM_LONGSHOT) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDO_VALLEY] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (CHECK_QUEST_ITEM(QUEST_GERUDOS_CARD)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_GERUDO_VALLEY] = WORLD_MAP_POINT_STATE_SHOW;
++                }
+             }
+ 
+-            if (GET_EVENTCHKINF(EVENTCHKINF_09)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LON_LON_RANCH] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (INV_CONTENT(ITEM_OCARINA_FAIRY) != ITEM_NONE) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LON_LON_RANCH] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (CHECK_QUEST_ITEM(QUEST_SONG_EPONA)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LON_LON_RANCH] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_TALON_WOKEN_IN_KAKARIKO)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LON_LON_RANCH] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_EPONA_OBTAINED)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LON_LON_RANCH] = WORLD_MAP_POINT_STATE_SHOW;
++            if (gSaveContext.save.randomizer.shuffleChests) {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_LAKE_HYLIA]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LAKE_HYLIA] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++            } else {
++                if (CUR_UPG_VALUE(UPG_SCALE)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LAKE_HYLIA] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LAKE_HYLIA] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (CHECK_QUEST_ITEM(QUEST_MEDALLION_WATER)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LAKE_HYLIA] = WORLD_MAP_POINT_STATE_SHOW;
++                }
+             }
+ 
+-            if (GET_EVENTCHKINF(EVENTCHKINF_09)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_MARKET] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_OBTAINED_ZELDAS_LETTER)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_MARKET] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (INV_CONTENT(ITEM_OCARINA_OF_TIME) == ITEM_OCARINA_OF_TIME) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_MARKET] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_OBTAINED_MASTER_SWORD)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_MARKET] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (INV_CONTENT(ITEM_ARROW_LIGHT) == ITEM_ARROW_LIGHT) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_MARKET] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++            if (gSaveContext.save.randomizer.shuffleChests) {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_LON_LON_RANCH]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LON_LON_RANCH] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++            } else {
++                if (GET_EVENTCHKINF(EVENTCHKINF_09)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LON_LON_RANCH] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (INV_CONTENT(ITEM_OCARINA_FAIRY) != ITEM_NONE) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LON_LON_RANCH] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (CHECK_QUEST_ITEM(QUEST_SONG_EPONA)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LON_LON_RANCH] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_TALON_WOKEN_IN_KAKARIKO)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LON_LON_RANCH] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_EPONA_OBTAINED)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LON_LON_RANCH] = WORLD_MAP_POINT_STATE_SHOW;
++                }
+             }
+ 
+-            if (GET_EVENTCHKINF(EVENTCHKINF_09)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_HYRULE_FIELD] = WORLD_MAP_POINT_STATE_SHOW;
++            if (gSaveContext.save.randomizer.shuffleChests) {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_MARKET] ||
++                    gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_HYRULE_CASTLE] ||
++                    gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_GANONS_CASTLE]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_MARKET] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++            } else {
++                if (GET_EVENTCHKINF(EVENTCHKINF_09)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_MARKET] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_OBTAINED_ZELDAS_LETTER)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_MARKET] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (INV_CONTENT(ITEM_OCARINA_OF_TIME) == ITEM_OCARINA_OF_TIME) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_MARKET] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_OBTAINED_MASTER_SWORD)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_MARKET] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (INV_CONTENT(ITEM_ARROW_LIGHT) == ITEM_ARROW_LIGHT) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_MARKET] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
+             }
+ 
+-            if (GET_EVENTCHKINF(EVENTCHKINF_OBTAINED_ZELDAS_LETTER)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_DEATH_MOUNTAIN] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_25)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_DEATH_MOUNTAIN] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (INV_CONTENT(ITEM_HOOKSHOT) == ITEM_HOOKSHOT) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_DEATH_MOUNTAIN] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_49)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_DEATH_MOUNTAIN] = WORLD_MAP_POINT_STATE_SHOW;
++            if (gSaveContext.save.randomizer.shuffleChests) {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_HYRULE_FIELD]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_HYRULE_FIELD] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++            } else {
++                if (GET_EVENTCHKINF(EVENTCHKINF_09)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_HYRULE_FIELD] = WORLD_MAP_POINT_STATE_SHOW;
++                }
+             }
+ 
+-            if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_KAKARIKO_VILLAGE]) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (CHECK_QUEST_ITEM(QUEST_SONG_LULLABY)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (CHECK_QUEST_ITEM(QUEST_SONG_SUN)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_OBTAINED_MASTER_SWORD)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (INV_CONTENT(ITEM_HOOKSHOT) == ITEM_HOOKSHOT) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (CHECK_QUEST_ITEM(QUEST_SONG_STORMS)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_DRAINED_WELL)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_AA)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (CHECK_QUEST_ITEM(QUEST_MEDALLION_SHADOW)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_SHOW;
++            if (gSaveContext.save.randomizer.shuffleChests) {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_DEATH_MOUNTAIN_TRAIL] ||
++                    gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_DEATH_MOUNTAIN_CRATER] ||
++                    gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_GORON_CITY]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_DEATH_MOUNTAIN] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++            } else {
++                if (GET_EVENTCHKINF(EVENTCHKINF_OBTAINED_ZELDAS_LETTER)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_DEATH_MOUNTAIN] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_25)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_DEATH_MOUNTAIN] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (INV_CONTENT(ITEM_HOOKSHOT) == ITEM_HOOKSHOT) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_DEATH_MOUNTAIN] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_49)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_DEATH_MOUNTAIN] = WORLD_MAP_POINT_STATE_SHOW;
++                }
+             }
+ 
+-            if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_LOST_WOODS]) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LOST_WOODS] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_0F)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LOST_WOODS] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (CHECK_QUEST_ITEM(QUEST_SONG_SARIA)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LOST_WOODS] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (INV_CONTENT(ITEM_HOOKSHOT) == ITEM_HOOKSHOT) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LOST_WOODS] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++            if (gSaveContext.save.randomizer.shuffleChests) {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_KAKARIKO_VILLAGE] ||
++                    gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_GRAVEYARD] ||
++                    gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_QUESTION_MARK]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++            } else {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_KAKARIKO_VILLAGE]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (CHECK_QUEST_ITEM(QUEST_SONG_LULLABY)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (CHECK_QUEST_ITEM(QUEST_SONG_SUN)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_OBTAINED_MASTER_SWORD)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (INV_CONTENT(ITEM_HOOKSHOT) == ITEM_HOOKSHOT) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (CHECK_QUEST_ITEM(QUEST_SONG_STORMS)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_DRAINED_WELL)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_AA)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (CHECK_QUEST_ITEM(QUEST_MEDALLION_SHADOW)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KAKARIKO_VILLAGE] = WORLD_MAP_POINT_STATE_SHOW;
++                }
+             }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_48)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_LOST_WOODS] = WORLD_MAP_POINT_STATE_SHOW;
++
++            if (gSaveContext.save.randomizer.shuffleChests) {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_LOST_WOODS] ||
++                    gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_SACRED_FOREST_MEADOW]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LOST_WOODS] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++            } else {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_LOST_WOODS]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LOST_WOODS] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_0F)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LOST_WOODS] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (CHECK_QUEST_ITEM(QUEST_SONG_SARIA)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LOST_WOODS] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (INV_CONTENT(ITEM_HOOKSHOT) == ITEM_HOOKSHOT) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LOST_WOODS] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_48)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_LOST_WOODS] = WORLD_MAP_POINT_STATE_SHOW;
++                }
+             }
+ 
+-            pauseCtx->worldMapPoints[WORLD_MAP_POINT_KOKIRI_FOREST] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            if (GET_EVENTCHKINF(EVENTCHKINF_09)) {
++            if (gSaveContext.save.randomizer.shuffleChests) {
+                 pauseCtx->worldMapPoints[WORLD_MAP_POINT_KOKIRI_FOREST] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_6E)) {
++            } else {
+                 pauseCtx->worldMapPoints[WORLD_MAP_POINT_KOKIRI_FOREST] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_0F)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_KOKIRI_FOREST] = WORLD_MAP_POINT_STATE_SHOW;
++                if (GET_EVENTCHKINF(EVENTCHKINF_09)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KOKIRI_FOREST] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_6E)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KOKIRI_FOREST] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_0F)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_KOKIRI_FOREST] = WORLD_MAP_POINT_STATE_SHOW;
++                }
+             }
+ 
+-            if (CHECK_QUEST_ITEM(QUEST_SONG_LULLABY)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_ZORAS_DOMAIN] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_25)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_ZORAS_DOMAIN] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (GET_EVENTCHKINF(EVENTCHKINF_37)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_ZORAS_DOMAIN] = WORLD_MAP_POINT_STATE_SHOW;
+-            }
+-            if (INV_CONTENT(ITEM_HOOKSHOT) == ITEM_HOOKSHOT) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_ZORAS_DOMAIN] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
+-            }
+-            if (CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON)) {
+-                pauseCtx->worldMapPoints[WORLD_MAP_POINT_ZORAS_DOMAIN] = WORLD_MAP_POINT_STATE_SHOW;
++            if (gSaveContext.save.randomizer.shuffleChests) {
++                if (gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_ZORAS_RIVER] ||
++                    gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_ZORAS_DOMAIN] ||
++                    gSaveContext.save.info.worldMapAreaData & gBitFlags[WORLD_MAP_AREA_ZORAS_FOUNTAIN]) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_ZORAS_DOMAIN] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++            } else {
++                if (CHECK_QUEST_ITEM(QUEST_SONG_LULLABY)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_ZORAS_DOMAIN] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_25)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_ZORAS_DOMAIN] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (GET_EVENTCHKINF(EVENTCHKINF_37)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_ZORAS_DOMAIN] = WORLD_MAP_POINT_STATE_SHOW;
++                }
++                if (INV_CONTENT(ITEM_HOOKSHOT) == ITEM_HOOKSHOT) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_ZORAS_DOMAIN] = WORLD_MAP_POINT_STATE_HIGHLIGHT;
++                }
++                if (CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON)) {
++                    pauseCtx->worldMapPoints[WORLD_MAP_POINT_ZORAS_DOMAIN] = WORLD_MAP_POINT_STATE_SHOW;
++                }
+             }
+ 
+             // Trade quest marker

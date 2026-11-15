@@ -1,5 +1,5 @@
 diff --git a/src/code/z_scene.c b/src/code/z_scene.c
-index f514264b0..affc779ef 100644
+index f514264b0..320126b41 100644
 --- a/src/code/z_scene.c
 +++ b/src/code/z_scene.c
 @@ -80,6 +80,33 @@ s32 Object_LoadPersistent(ObjectContext* objectCtx, s16 objectId) {
@@ -36,3 +36,15 @@ index f514264b0..affc779ef 100644
  // PAL N64 versions reduce the size of object space by 4 KiB in order to give some space back to
  // the Zelda arena, which can help prevent an issue where actors fail to spawn in specific areas
  // (sometimes referred to as the "Hyrule Field Glitch" although it can happen in more places than Hyrule Field).
+@@ -562,6 +589,11 @@ BAD_RETURN(s32) Scene_CommandMiscSettings(PlayState* play, SceneCmd* cmd) {
+                    ((void)0, gSaveContext.worldMapArea));
+         }
+     }
++    if (gSaveContext.save.randomizer.shuffleChests) {
++        if (play->sceneId == SCENE_WINDMILL_AND_DAMPES_GRAVE) {
++            gSaveContext.save.info.worldMapAreaData |= gBitFlags[WORLD_MAP_AREA_QUESTION_MARK];
++        }
++    }
+ }
+ 
+ void Scene_SetTransitionForNextEntrance(PlayState* play) {

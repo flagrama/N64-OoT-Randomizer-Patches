@@ -29,7 +29,7 @@ The only supported emulator is [Ares](https://ares-emu.net/).
 
 Contributions are limited.
 There are various factors at work causing this.
-If you wish to try and contribute still, start a discussion on the Discord channel.
+If you wish to try and contribute still, start a [Discussion thread](https://github.com/flagrama/N64-OoT-Randomizer-Patches/discussions).
 
 ## Building
 

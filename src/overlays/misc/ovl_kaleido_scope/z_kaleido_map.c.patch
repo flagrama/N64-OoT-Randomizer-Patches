@@ -1,0 +1,53 @@
+diff --git a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_map.c b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_map.c
+index 7e3f46427..2f068cf42 100644
+--- a/src/overlays/misc/ovl_kaleido_scope/z_kaleido_map.c
++++ b/src/overlays/misc/ovl_kaleido_scope/z_kaleido_map.c
+@@ -1,4 +1,5 @@
+ #include "z_kaleido_scope.h"
++#include "r_kaleido_scope.h"
+ 
+ #include "attributes.h"
+ #include "gfx.h"
+@@ -67,7 +68,7 @@ void KaleidoScope_DrawDungeonMap(PlayState* play, GraphicsContext* gfxCtx) {
+     OPEN_DISPS(gfxCtx, "../z_kaleido_map_PAL.c", 123);
+ 
+     if ((pauseCtx->state == PAUSE_STATE_MAIN) && (pauseCtx->mainState == PAUSE_MAIN_STATE_IDLE) &&
+-        (pauseCtx->pageIndex == PAUSE_MAP)) {
++        (pauseCtx->pageIndex == PAUSE_MAP) && !KaleidoMapSpoiler_IsOpen()) {
+         pauseCtx->cursorColorSet = 0;
+         oldCursorPoint = pauseCtx->cursorPoint[PAUSE_MAP];
+ 
+@@ -147,6 +148,8 @@ void KaleidoScope_DrawDungeonMap(PlayState* play, GraphicsContext* gfxCtx) {
+                             }
+                         }
+                     }
++                } else {
++                    KaleidoMapSpoiler_HandleDungeonMapInput(&play->state.input[0], play->sceneId);
+                 }
+ 
+                 i = R_MAP_TEX_INDEX;
+@@ -555,7 +558,7 @@ void KaleidoScope_DrawWorldMap(PlayState* play, GraphicsContext* gfxCtx) {
+     OPEN_DISPS(gfxCtx, "../z_kaleido_map_PAL.c", 556);
+ 
+     if ((pauseCtx->state == PAUSE_STATE_MAIN) && (pauseCtx->mainState == PAUSE_MAIN_STATE_IDLE) &&
+-        (pauseCtx->pageIndex == PAUSE_MAP)) {
++        (pauseCtx->pageIndex == PAUSE_MAP) && !KaleidoMapSpoiler_IsOpen()) {
+         pauseCtx->cursorColorSet = 0;
+         oldCursorPoint = pauseCtx->cursorPoint[PAUSE_WORLD_MAP];
+ 
+@@ -584,6 +587,7 @@ void KaleidoScope_DrawWorldMap(PlayState* play, GraphicsContext* gfxCtx) {
+                          WORLD_MAP_POINT_STATE_HIDE);
+             } else {
+                 D_8082A6D4++;
++                KaleidoMapSpoiler_HandleWorldMapInput(&play->state.input[0], pauseCtx->cursorPoint[PAUSE_WORLD_MAP]);
+             }
+ 
+             pauseCtx->cursorItem[PAUSE_MAP] = pauseCtx->cursorPoint[PAUSE_WORLD_MAP];
+@@ -643,6 +647,7 @@ void KaleidoScope_DrawWorldMap(PlayState* play, GraphicsContext* gfxCtx) {
+             SFX_PLAY_CENTERED(NA_SE_SY_CURSOR);
+         }
+     }
++    KaleidoScope_SetCursorPos(pauseCtx, pauseCtx->cursorSlot[PAUSE_MAP] * 4, pauseCtx->mapPageVtx);
+ 
+     gDPPipeSync(POLY_OPA_DISP++);
+ 
