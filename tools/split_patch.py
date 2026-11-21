@@ -53,6 +53,7 @@ def split_patches(patch_file: Path) -> list[Path]:
                         last_offset = f.tell()
                         line = f.readline()
                         continue
+                    file_name.parent.mkdir(parents=True, exist_ok=True)
                     file = open(file_name, "w+")
                     f.readline()
                     f.readline()
@@ -60,6 +61,7 @@ def split_patches(patch_file: Path) -> list[Path]:
                     continue
                 elif line.startswith("index"):
                     f.seek(file_offset)
+                    file_name.parent.mkdir(parents=True, exist_ok=True)
                     file = open(str(file_name) + ".patch", "w+")
                     file.write(f.readline())
                     f.readline()
