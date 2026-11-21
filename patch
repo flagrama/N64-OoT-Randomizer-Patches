@@ -29909,7 +29909,7 @@ index 7432fb0a3..d8bc121fc 100644
      this->exit = true;
 diff --git a/src/overlays/misc/ovl_kaleido_scope/r_kaleido_map_spoiler.c b/src/overlays/misc/ovl_kaleido_scope/r_kaleido_map_spoiler.c
 new file mode 100644
-index 000000000..ba38532f0
+index 000000000..49db3957d
 --- /dev/null
 +++ b/src/overlays/misc/ovl_kaleido_scope/r_kaleido_map_spoiler.c
 @@ -0,0 +1,535 @@
@@ -29935,7 +29935,7 @@ index 000000000..ba38532f0
 +    SceneID scene;
 +    u8 flag;
 +    WorldMapPoint worldMapPoint; // WORLD_MAP_POINT_MAX for dungeon-interior rows, which only ever show via scene match
-+    WorldMapArea area; // WORLD_MAP_AREA_MAX for rows that should always show once their scene/point matches
++    WorldMapArea area;           // WORLD_MAP_AREA_MAX for rows that should always show once their scene/point matches
 +} SpoilerLocationRow;
 +
 +typedef struct SpoilerItemNameRow {
@@ -30076,27 +30076,27 @@ index 000000000..ba38532f0
 +    { .name = "Ice Cavern Map Chest", .scene = SCENE_ICE_CAVERN, .flag = 0x00, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
 +    { .name = "Ice Cavern Compass Chest", .scene = SCENE_ICE_CAVERN, .flag = 0x01, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
 +    { .name = "Ice Cavern Iron Boots Chest", .scene = SCENE_ICE_CAVERN, .flag = 0x02, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Lobby Left Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x13, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Lobby Right Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x07, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Stalfos Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x00, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Before Heavy Block Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x11, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Heavy Block First Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0F, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Heavy Block Second Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0E, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Heavy Block Third Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x14, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Heavy Block Fourth Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x02, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Eye Statue Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x03, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Near Scarecrow Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x04, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Hammer Room Clear Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x12, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Hammer Room Switch Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x10, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Maze Right Central Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x05, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Maze Right Side Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x08, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Underwater Silver Rupee Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0D, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Beamos Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x01, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Hidden Ceiling Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0B, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Maze Path First Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x06, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Maze Path Second Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0A, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Maze Path Third Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x09, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
-+    { .name = "GTG Maze Path Fourth Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0C, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
++    { .name = "GTG Lobby Left Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x13, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Lobby Right Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x07, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Stalfos Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x00, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Before Heavy Block Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x11, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Heavy Block First Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0F, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Heavy Block Second Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0E, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Heavy Block Third Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x14, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Heavy Block Fourth Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x02, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Eye Statue Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x03, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Near Scarecrow Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x04, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Hammer Room Clear Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x12, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Hammer Room Switch Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x10, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Maze Right Central Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x05, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Maze Right Side Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x08, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Underwater Silver Rupee Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0D, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Beamos Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x01, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Hidden Ceiling Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0B, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Maze Path First Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x06, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Maze Path Second Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0A, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Maze Path Third Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x09, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
++    { .name = "GTG Maze Path Fourth Chest", .scene = SCENE_GERUDO_TRAINING_GROUND, .flag = 0x0C, .worldMapPoint = WORLD_MAP_POINT_GERUDOS_FORTRESS, .area = WORLD_MAP_AREA_GERUDOS_FORTRESS },
 +    { .name = "Castle Forest Trial Chest", .scene = SCENE_INSIDE_GANONS_CASTLE, .flag = 0x09, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
 +    { .name = "Castle Water Trial Left Chest", .scene = SCENE_INSIDE_GANONS_CASTLE, .flag = 0x07, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
 +    { .name = "Castle Water Trial Right Chest", .scene = SCENE_INSIDE_GANONS_CASTLE, .flag = 0x06, .worldMapPoint = WORLD_MAP_POINT_MAX, .area = WORLD_MAP_AREA_MAX },
@@ -30233,7 +30233,7 @@ index 000000000..ba38532f0
 +    // The currently-loaded scene's flags aren't copied into sceneFlags until it unloads or the game
 +    // saves, so that one scene must be read live from actorCtx instead.
 +    u32 chestFlags = ((s16)row->scene == play->sceneId) ? play->actorCtx.flags.chest
-+                                                     : gSaveContext.save.info.sceneFlags[row->scene].chest;
++                                                        : gSaveContext.save.info.sceneFlags[row->scene].chest;
 +    return (chestFlags & (1 << row->flag)) != 0;
 +}
 +
@@ -30348,14 +30348,14 @@ index 000000000..ba38532f0
 +            if (!loaded) {
 +                gDPPipeSync(gfx++);
 +                gDPLoadTextureBlock_4b(gfx++, &sGlyphTexBuf[glyphIndex * FONT_CHAR_TEX_SIZE], G_IM_FMT_I,
-+                                      FONT_CHAR_TEX_WIDTH, FONT_CHAR_TEX_HEIGHT, 0, G_TX_NOMIRROR | G_TX_CLAMP,
-+                                      G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
++                                       FONT_CHAR_TEX_WIDTH, FONT_CHAR_TEX_HEIGHT, 0, G_TX_NOMIRROR | G_TX_CLAMP,
++                                       G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
 +                loaded = true;
 +            }
 +
 +            gDPSetPrimColor(gfx++, 0, 0, req->obtained ? 0 : 255, 255, req->obtained ? 0 : 255, 255);
 +            gSPTextureRectangle(gfx++, req->x << 2, req->y << 2, (req->x + charTexSize) << 2,
-+                               (req->y + charTexSize) << 2, G_TX_RENDERTILE, 0, 0, charTexScale, charTexScale);
++                                (req->y + charTexSize) << 2, G_TX_RENDERTILE, 0, 0, charTexScale, charTexScale);
 +        }
 +    }
 +
