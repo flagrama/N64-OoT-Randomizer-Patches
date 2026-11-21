@@ -1,5 +1,6 @@
 from io import TextIOWrapper
 from pathlib import Path
+from os import walk
 
 
 def main():
@@ -10,6 +11,7 @@ def main():
             f"File {patch_file_name} not found. Run from the repository root.\ncwd = {Path.cwd()}"
         )
         exit(1)
+    clean_previous_patches()
     binaries = split_patches(patch_path)
 
     if binaries:
@@ -17,6 +19,22 @@ def main():
         print("Copy the following binary files:")
         for binary in binaries:
             print(binary)
+
+
+def clean_previous_patches():
+    skip_dirs = {".git", ".github"}
+    clean_suffixes = {".c", ".h", ".patch"}
+    root = Path.cwd()
+
+    for dirpath, _, filenames in walk(root, topdown=False):
+        path = Path(dirpath)
+        if skip_dirs.intersection(path.relative_to(root).parts[:1]):
+            continue
+        for name in filenames:
+            if Path(name).suffix in clean_suffixes:
+                (path / name).unlink()
+        if path != root and not any(path.iterdir()):
+            path.rmdir()
 
 
 def split_patches(patch_file: Path) -> list[Path]:
